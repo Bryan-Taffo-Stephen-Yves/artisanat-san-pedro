@@ -7,22 +7,22 @@ export type CategoryAccent = {
 };
 
 const TERRACOTTA: CategoryAccent = {
-  hex: "#99420d",
-  text: "text-[#99420d]",
-  bg: "bg-[#99420d]",
-  border: "border-[#99420d]",
+  hex: "#C3622D",
+  text: "text-[#C3622D]",
+  bg: "bg-[#C3622D]",
+  border: "border-[#C3622D]",
 };
 const FOREST: CategoryAccent = {
-  hex: "#2D4A2D",
-  text: "text-[#2D4A2D]",
-  bg: "bg-[#2D4A2D]",
-  border: "border-[#2D4A2D]",
+  hex: "#A55427",
+  text: "text-[#A55427]",
+  bg: "bg-[#A55427]",
+  border: "border-[#A55427]",
 };
 const BORDEAUX: CategoryAccent = {
-  hex: "#8B1A1A",
-  text: "text-[#8B1A1A]",
-  bg: "bg-[#8B1A1A]",
-  border: "border-[#8B1A1A]",
+  hex: "#864521",
+  text: "text-[#864521]",
+  bg: "bg-[#864521]",
+  border: "border-[#864521]",
 };
 
 const MAP: Record<string, CategoryAccent> = {

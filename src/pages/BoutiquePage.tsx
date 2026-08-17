@@ -125,7 +125,7 @@ const BoutiquePage = () => {
           {CATEGORIES.map((cat) => {
             const isActive = cat.toLowerCase() === selectedCategory.toLowerCase();
             const accent =
-              cat === "Tout" ? { hex: "#99420d" } : categoryAccent(cat);
+              cat === "Tout" ? { hex: "#C3622D" } : categoryAccent(cat);
             return (
               <button
                 key={cat}

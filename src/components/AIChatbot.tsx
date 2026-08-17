@@ -138,9 +138,9 @@ const AIChatbot = () => {
             <div className="px-4 py-3 flex gap-2 overflow-x-auto no-scrollbar border-b border-border/10">
               {quickActions.map((action, i) => {
                 const palette = [
-                  { c: "#99420d", bg: "rgba(153,66,13,0.10)" },
-                  { c: "#2D4A2D", bg: "rgba(45,74,45,0.10)" },
-                  { c: "#8B1A1A", bg: "rgba(139,26,26,0.10)" },
+                  { c: "#C3622D", bg: "rgba(153,66,13,0.10)" },
+                  { c: "#A55427", bg: "rgba(45,74,45,0.10)" },
+                  { c: "#864521", bg: "rgba(139,26,26,0.10)" },
                 ];
                 const p = palette[i % palette.length];
                 return (

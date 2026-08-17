@@ -14,8 +14,8 @@ const stats = [
   { value: "2026", label: "Année de lancement" },
 ];
 
-const MISSION_BORDERS = ["#99420d", "#2D4A2D", "#8B1A1A"];
-const PARTNER_COLORS = ["#99420d", "#2D4A2D", "#8B1A1A"];
+const MISSION_BORDERS = ["#C3622D", "#A55427", "#864521"];
+const PARTNER_COLORS = ["#C3622D", "#A55427", "#864521"];
 
 const missions = [
   {

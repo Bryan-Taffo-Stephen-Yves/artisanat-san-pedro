@@ -25,9 +25,9 @@ const ArtisanAvatar = ({ src, initials, accentColor, name, className = "" }: Pro
     >
       <span
         style={{
-          fontFamily: "Noto Serif, serif",
+          fontFamily: "Oswald, sans-serif",
           fontStyle: "italic",
-          color: "#FFDCB4",
+          color: "#F6E7DD",
           fontWeight: 600,
           fontSize: "1.4em",
           letterSpacing: "-0.02em",

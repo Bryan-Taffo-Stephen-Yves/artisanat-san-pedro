@@ -151,7 +151,7 @@ const HeroSection = () => {
       <h1 className="font-serif text-5xl leading-[1.05] text-white mb-6" style={{ mixBlendMode: "difference" }}>
         <span className="s-hero-line" style={{ "--index": 0 } as React.CSSProperties}>
           <span className="s-hero-word">
-            L&apos;art <em className="not-italic text-[#b95925]">vivant</em> de
+            L&apos;art <em className="not-italic text-[#D28962]">vivant</em> de
           </span>
         </span>
         <span className="s-hero-line" style={{ "--index": 1 } as React.CSSProperties}>
@@ -168,9 +168,9 @@ const HeroSection = () => {
         transition={{ duration: 0.6, delay: 0.85 }}
         className="flex gap-2 mt-4 opacity-60"
       >
-        <span className="w-2 h-2 rounded-full" style={{ background: "#99420d" }} />
-        <span className="w-2 h-2 rounded-full" style={{ background: "#8B1A1A" }} />
-        <span className="w-2 h-2 rounded-full" style={{ background: "#2D4A2D" }} />
+        <span className="w-2 h-2 rounded-full" style={{ background: "#C3622D" }} />
+        <span className="w-2 h-2 rounded-full" style={{ background: "#864521" }} />
+        <span className="w-2 h-2 rounded-full" style={{ background: "#A55427" }} />
       </motion.div>
     </div>
 
@@ -299,11 +299,11 @@ const artisans = [
 
 const metierAccent = (metier: string): string => {
   const m = metier.toLowerCase();
-  if (m.startsWith("sculpt") || m.startsWith("pot")) return "#99420d";
-  if (m.startsWith("tisser") || m.startsWith("tiss")) return "#8B1A1A";
-  if (m.startsWith("forge")) return "#8B1A1A";
-  if (m.startsWith("tress") || m.startsWith("peintr")) return "#2D4A2D";
-  return "#99420d";
+  if (m.startsWith("sculpt") || m.startsWith("pot")) return "#C3622D";
+  if (m.startsWith("tisser") || m.startsWith("tiss")) return "#864521";
+  if (m.startsWith("forge")) return "#864521";
+  if (m.startsWith("tress") || m.startsWith("peintr")) return "#A55427";
+  return "#C3622D";
 };
 
 const ArtisansSection = () => (
@@ -381,7 +381,7 @@ const EditoSection = () => (
       targetColor="rgb(255,255,255)"
     />
     <blockquote className="font-serif text-3xl italic text-primary-foreground mt-6 leading-snug">
-      <span style={{ color: "#4A7A4A" }}>“</span>Chaque pièce porte l'histoire de tout un peuple.<span style={{ color: "#4A7A4A" }}>”</span>
+      <span style={{ color: "#D28962" }}>“</span>Chaque pièce porte l'histoire de tout un peuple.<span style={{ color: "#D28962" }}>”</span>
     </blockquote>
     <p className="label-caps text-[10px] text-primary-foreground/50 mt-2 tracking-widest">
       — Kofi Asante, Sculpteur

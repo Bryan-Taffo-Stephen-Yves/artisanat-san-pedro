@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Inter:wght@200;300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -59,12 +59,12 @@
   }
 
   body {
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Inter', sans-serif;
     @apply bg-background text-foreground antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Noto Serif', serif;
+    font-family: 'Oswald', sans-serif;
   }
 }
 
@@ -84,7 +84,7 @@
   .label-caps {
     @apply uppercase tracking-widest font-semibold;
     font-size: 0.625rem;
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   .shadow-luxury {
@@ -99,13 +99,13 @@
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   .gradient-tribal {
-    background: linear-gradient(135deg, #99420d, #8B1A1A);
+    background: linear-gradient(135deg, #C3622D, #864521);
   }
   .gradient-nature {
-    background: linear-gradient(135deg, #2D4A2D, #4A7A4A);
+    background: linear-gradient(135deg, #A55427, #D28962);
   }
   .gradient-earth {
-    background: linear-gradient(135deg, #99420d, #2D4A2D);
+    background: linear-gradient(135deg, #C3622D, #A55427);
   }
   .gradient-newsletter {
     background: linear-gradient(135deg, #f5ede8, #e8f0e8);
@@ -121,9 +121,9 @@
     height: 3px;
     width: 100%;
   }
-  .brand-bar > span:nth-child(1) { background: #99420d; }
-  .brand-bar > span:nth-child(2) { background: #2D4A2D; }
-  .brand-bar > span:nth-child(3) { background: #8B1A1A; }
+  .brand-bar > span:nth-child(1) { background: #C3622D; }
+  .brand-bar > span:nth-child(2) { background: #A55427; }
+  .brand-bar > span:nth-child(3) { background: #864521; }
 }
 
 @keyframes fadeUp {
@@ -229,7 +229,7 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: 1.5rem;
   padding: 0 2rem;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;

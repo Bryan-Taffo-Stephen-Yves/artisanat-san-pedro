@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom'
 import { useArtisans } from '@/hooks/useArtisans'
 import ArtisanAvatar from '@/components/ArtisanAvatar'
 
-function SanPedroCardBack({ accent = '#8B3A0F' }: { accent?: string }) {
+function SanPedroCardBack({ accent = '#C3622D' }: { accent?: string }) {
   return (
     <div
       style={{
         width: '100%',
         height: '100%',
-        background: `linear-gradient(135deg, #1A2D1A 0%, ${accent} 50%, #8B1A1A 100%)`,
+        background: `linear-gradient(135deg, #1A2D1A 0%, ${accent} 50%, #864521 100%)`,
         position: 'relative',
         padding: '20px',
         display: 'flex',
@@ -21,34 +21,34 @@ function SanPedroCardBack({ accent = '#8B3A0F' }: { accent?: string }) {
       <svg width="100%" height="100%" style={{ position: 'absolute', inset: 0, opacity: 0.15 }}>
         <defs>
           <pattern id="kente" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M0 20 L20 0 L40 20 L20 40 Z" stroke="#FFDCB4" strokeWidth="0.5" fill="none" />
-            <circle cx="20" cy="20" r="2" fill="#FFDCB4" />
+            <path d="M0 20 L20 0 L40 20 L20 40 Z" stroke="#F6E7DD" strokeWidth="0.5" fill="none" />
+            <circle cx="20" cy="20" r="2" fill="#F6E7DD" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#kente)" />
       </svg>
       <div style={{ textAlign: 'center', marginTop: '20px', position: 'relative', zIndex: 2 }}>
-        <p style={{ fontFamily: 'Manrope, sans-serif', fontSize: '8px', letterSpacing: '0.3em', color: '#FFDCB4', textTransform: 'uppercase', margin: 0 }}>
+        <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '8px', letterSpacing: '0.3em', color: '#F6E7DD', textTransform: 'uppercase', margin: 0 }}>
           ARTISANAT SAN PEDRO
         </p>
       </div>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 2 }}>
         <div style={{ width: '180px', height: '180px', borderRadius: '50%', border: '2px solid rgba(255, 220, 180, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
           <div style={{ width: '140px', height: '140px', borderRadius: '50%', border: '1px solid rgba(255, 220, 180, 0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)' }}>
-            <h1 style={{ fontFamily: 'Noto Serif, serif', fontSize: '48px', fontStyle: 'italic', fontWeight: 700, color: '#FFDCB4', margin: 0, letterSpacing: '-0.05em' }}>
+            <h1 style={{ fontFamily: 'Oswald, sans-serif', fontSize: '48px', fontStyle: 'italic', fontWeight: 700, color: '#F6E7DD', margin: 0, letterSpacing: '-0.05em' }}>
               ASP
             </h1>
           </div>
           {[0, 90, 180, 270].map((angle) => (
-            <div key={angle} style={{ position: 'absolute', width: '8px', height: '8px', background: '#FFDCB4', borderRadius: '50%', transform: `rotate(${angle}deg) translateY(-100px)` }} />
+            <div key={angle} style={{ position: 'absolute', width: '8px', height: '8px', background: '#F6E7DD', borderRadius: '50%', transform: `rotate(${angle}deg) translateY(-100px)` }} />
           ))}
         </div>
-        <p style={{ fontFamily: 'Noto Serif, serif', fontStyle: 'italic', fontSize: '12px', color: '#FFDCB4', marginTop: '20px', opacity: 0.8 }}>
+        <p style={{ fontFamily: 'Oswald, sans-serif', fontStyle: 'italic', fontSize: '12px', color: '#F6E7DD', marginTop: '20px', opacity: 0.8 }}>
           Programme PACTE
         </p>
       </div>
       <div style={{ textAlign: 'center', marginBottom: '20px', position: 'relative', zIndex: 2 }}>
-        <p style={{ fontFamily: 'Manrope, sans-serif', fontSize: '8px', letterSpacing: '0.3em', color: '#FFDCB4', textTransform: 'uppercase', margin: 0 }}>
+        <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '8px', letterSpacing: '0.3em', color: '#F6E7DD', textTransform: 'uppercase', margin: 0 }}>
           CÔTE D'IVOIRE · 2026
         </p>
       </div>
@@ -209,7 +209,7 @@ export function ArtisansCardFlipSection() {
                       <div className="absolute bottom-7 left-7 right-7">
                         <p
                           className="font-label text-[10px] uppercase tracking-widest mb-2"
-                          style={{ color: artisan.accentColor === '#8B3A0F' ? '#FFB693' : '#FFF' }}
+                          style={{ color: artisan.accentColor === '#C3622D' ? '#FFB693' : '#FFF' }}
                         >
                           {artisan.metier}
                         </p>
@@ -238,7 +238,7 @@ export function ArtisansCardFlipSection() {
                 className="h-full rounded-full"
                 style={{
                   width: i < activeIndex ? '100%' : i === activeIndex ? '50%' : '0%',
-                  background: 'linear-gradient(90deg, #99420d, #b95925)',
+                  background: 'linear-gradient(90deg, #C3622D, #D28962)',
                   transition: 'width 0.4s ease',
                 }}
               />
