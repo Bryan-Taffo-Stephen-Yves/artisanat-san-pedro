@@ -283,10 +283,10 @@ html.lenis, html.lenis body { height: auto; }
 body {
   transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-body[data-theme="dark"] { background-color: #0E0D0D; }
-body[data-theme="forest"] { background-color: #1A2D1A; }
-body[data-theme="light"] { background-color: #fcf9f4; }
-body[data-theme="terracotta"] { background-color: #f5ede8; }
+body[data-theme="dark"] { background-color: #1A120C; }
+body[data-theme="forest"] { background-color: #66361B; }
+body[data-theme="light"] { background-color: #FFFCF9; }
+body[data-theme="terracotta"] { background-color: #F6E7DD; }
 
 /* Scroll-jack touch optimization */
 html, body {
