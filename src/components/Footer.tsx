@@ -23,9 +23,9 @@ const Footer = () => {
               l'artisanat à San Pedro, Côte d'Ivoire.
             </p>
             <div className="flex gap-2 mt-6 opacity-70">
-              <span className="w-2 h-2 rounded-full" style={{ background: "#99420d" }} />
-              <span className="w-2 h-2 rounded-full" style={{ background: "#8B1A1A" }} />
-              <span className="w-2 h-2 rounded-full" style={{ background: "#2D4A2D" }} />
+              <span className="w-2 h-2 rounded-full" style={{ background: "#C3622D" }} />
+              <span className="w-2 h-2 rounded-full" style={{ background: "#864521" }} />
+              <span className="w-2 h-2 rounded-full" style={{ background: "#A55427" }} />
             </div>
           </div>
 

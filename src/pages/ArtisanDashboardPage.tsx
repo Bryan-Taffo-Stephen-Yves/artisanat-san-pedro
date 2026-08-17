@@ -87,8 +87,8 @@ const ArtisanDashboardPage = () => {
       <div className="px-6 mt-6 grid grid-cols-2 gap-3">
         {[
           { icon: Package, value: artisanProducts.length.toString(), label: "Total Produits", bg: "bg-surface-container-low", iconColor: "text-primary" },
-          { icon: Eye, value: "1,2k", label: "Vues (mois)", bg: "bg-[#E8F0E8]", iconColor: "text-[#2D4A2D]" },
-          { icon: ShoppingCart, value: "8", label: "Commandes", bg: "bg-[#F5E8E8]", iconColor: "text-[#8B1A1A]" },
+          { icon: Eye, value: "1,2k", label: "Vues (mois)", bg: "bg-[#F6E7DD]", iconColor: "text-[#A55427]" },
+          { icon: ShoppingCart, value: "8", label: "Commandes", bg: "bg-[#F6E7E0]", iconColor: "text-[#864521]" },
           { icon: Star, value: displayRating.toString(), label: "Note Globale", bg: "bg-surface-container-low", iconColor: "text-primary" },
         ].map((stat) => (
           <div key={stat.label} className={`${stat.bg} p-5 rounded-xl`}>
@@ -102,11 +102,11 @@ const ArtisanDashboardPage = () => {
       {/* Stock Alert */}
       {lowStockProducts.length > 0 && (
         <div className="px-6 mt-6">
-          <div className="bg-[#F5E8E8] p-4 rounded-xl flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-[#8B1A1A] shrink-0 mt-0.5" />
+          <div className="bg-[#F6E7E0] p-4 rounded-xl flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-[#864521] shrink-0 mt-0.5" />
             <div>
-              <p className="font-medium text-[#8B1A1A] text-sm">Stock faible</p>
-              <p className="text-xs text-[#8B1A1A]/80 mt-0.5">
+              <p className="font-medium text-[#864521] text-sm">Stock faible</p>
+              <p className="text-xs text-[#864521]/80 mt-0.5">
                 {lowStockProducts.length} produit(s) bientôt épuisé(s).
               </p>
             </div>
@@ -176,7 +176,7 @@ const ArtisanDashboardPage = () => {
               </div>
               <div className="text-right">
                 <p className="font-serif text-foreground">{order.amount.toLocaleString("fr-FR")} F</p>
-                <span className={`text-[9px] uppercase tracking-widest ${order.status === "pending" ? "text-[#8B1A1A]" : "text-[#2D4A2D]"}`}>
+                <span className={`text-[9px] uppercase tracking-widest ${order.status === "pending" ? "text-[#864521]" : "text-[#A55427]"}`}>
                   {order.status === "pending" ? "En attente" : "Expédiée"}
                 </span>
               </div>

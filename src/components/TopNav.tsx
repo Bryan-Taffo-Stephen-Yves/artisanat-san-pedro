@@ -34,7 +34,7 @@ const TopNav = () => {
           left: 0,
           right: 0,
           height: "2px",
-          background: "linear-gradient(90deg, #99420d, #2D4A2D)",
+          background: "linear-gradient(90deg, #C3622D, #A55427)",
           zIndex: 999,
           pointerEvents: "none",
         }}

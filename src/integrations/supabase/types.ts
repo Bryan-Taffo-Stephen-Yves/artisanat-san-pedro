@@ -12,200 +12,9 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
-      artisans: {
-        Row: {
-          avatar_url: string | null
-          bio: string
-          cover_image_url: string | null
-          created_at: string | null
-          diagnostic_order: number | null
-          email: string | null
-          featured: boolean | null
-          id: string
-          location: string
-          metier: string
-          metier_category: Database["public"]["Enums"]["metier_category"]
-          name: string
-          phone: string | null
-          products_count: number | null
-          published: boolean | null
-          rating: number | null
-          reviews_count: number | null
-          since: number | null
-          slug: string
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio: string
-          cover_image_url?: string | null
-          created_at?: string | null
-          diagnostic_order?: number | null
-          email?: string | null
-          featured?: boolean | null
-          id?: string
-          location?: string
-          metier: string
-          metier_category: Database["public"]["Enums"]["metier_category"]
-          name: string
-          phone?: string | null
-          products_count?: number | null
-          published?: boolean | null
-          rating?: number | null
-          reviews_count?: number | null
-          since?: number | null
-          slug: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string
-          cover_image_url?: string | null
-          created_at?: string | null
-          diagnostic_order?: number | null
-          email?: string | null
-          featured?: boolean | null
-          id?: string
-          location?: string
-          metier?: string
-          metier_category?: Database["public"]["Enums"]["metier_category"]
-          name?: string
-          phone?: string | null
-          products_count?: number | null
-          published?: boolean | null
-          rating?: number | null
-          reviews_count?: number | null
-          since?: number | null
-          slug?: string
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      products: {
-        Row: {
-          artisan_id: string | null
-          badge: string | null
-          category: Database["public"]["Enums"]["metier_category"]
-          created_at: string | null
-          description: string | null
-          id: string
-          image_url: string | null
-          name: string
-          price: number
-          published: boolean | null
-          rating: number | null
-          reviews_count: number | null
-          slug: string
-          stock: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          artisan_id?: string | null
-          badge?: string | null
-          category: Database["public"]["Enums"]["metier_category"]
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          name: string
-          price: number
-          published?: boolean | null
-          rating?: number | null
-          reviews_count?: number | null
-          slug: string
-          stock?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          artisan_id?: string | null
-          badge?: string | null
-          category?: Database["public"]["Enums"]["metier_category"]
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          name?: string
-          price?: number
-          published?: boolean | null
-          rating?: number | null
-          reviews_count?: number | null
-          slug?: string
-          stock?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "products_artisan_id_fkey"
-            columns: ["artisan_id"]
-            isOneToOne: false
-            referencedRelation: "artisans"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string | null
-          email: string | null
-          full_name: string | null
-          id: string
-          phone: string | null
-          role: Database["public"]["Enums"]["user_role"]
-          updated_at: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id: string
-          phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          updated_at?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string | null
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          phone?: string | null
-          role?: Database["public"]["Enums"]["user_role"]
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
@@ -214,18 +23,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      metier_category:
-        | "Sculpture"
-        | "Tressage"
-        | "Tissage"
-        | "Poterie"
-        | "Forge"
-        | "Peinture"
-        | "Bijouterie"
-        | "Botterie"
-        | "Accessoires"
-        | "Sérigraphie"
-      user_role: "client" | "artisan" | "admin"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -351,24 +149,7 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
-    Enums: {
-      metier_category: [
-        "Sculpture",
-        "Tressage",
-        "Tissage",
-        "Poterie",
-        "Forge",
-        "Peinture",
-        "Bijouterie",
-        "Botterie",
-        "Accessoires",
-        "Sérigraphie",
-      ],
-      user_role: ["client", "artisan", "admin"],
-    },
+    Enums: {},
   },
 } as const

@@ -150,14 +150,14 @@ const ArtisanMap = () => {
         <line x1="50" y1="100" x2="350" y2="180" stroke="hsl(20,30%,80%)" strokeWidth="1.5" />
         <line x1="180" y1="40" x2="200" y2="260" stroke="hsl(20,30%,80%)" strokeWidth="1.5" />
         {/* City label */}
-        <text x="180" y="155" textAnchor="middle" fontFamily="'Noto Serif', serif" fontStyle="italic" fontSize="13" fill="hsl(50,8%,10%)">
+        <text x="180" y="155" textAnchor="middle" fontFamily="'Oswald', sans-serif" fontStyle="italic" fontSize="13" fill="hsl(50,8%,10%)">
           San Pedro
         </text>
         {/* Dots */}
         {dots.map((d, i) => (
           <g key={i} onClick={() => setTooltip(tooltip?.name === d.name ? null : { x: d.cx, y: d.cy, name: d.name, metier: d.metier })} className="cursor-pointer">
-            <circle cx={d.cx} cy={d.cy} r="12" fill="none" stroke="#99420d" strokeOpacity="0.3" className="animate-[mapPulse_2s_ease_infinite]" />
-            <circle cx={d.cx} cy={d.cy} r="5" fill="#99420d" />
+            <circle cx={d.cx} cy={d.cy} r="12" fill="none" stroke="#C3622D" strokeOpacity="0.3" className="animate-[mapPulse_2s_ease_infinite]" />
+            <circle cx={d.cx} cy={d.cy} r="5" fill="#C3622D" />
           </g>
         ))}
       </svg>
@@ -297,9 +297,9 @@ const AdminDashboard = () => {
                 viewport={{ once: true, margin: "-40px" }}
               >
                 {[
-                  { node: <AnimatedNumber value={2340000} />, l: "FCFA reversés artisans", c: "#99420d" },
-                  { node: <AnimatedNumber value={240} />, l: "Artisans actifs", c: "#4A7A4A" },
-                  { node: <AnimatedNumber value={1847} />, l: "Œuvres en ligne", c: "#B83A3A" },
+                  { node: <AnimatedNumber value={2340000} />, l: "FCFA reversés artisans", c: "#C3622D" },
+                  { node: <AnimatedNumber value={240} />, l: "Artisans actifs", c: "#D28962" },
+                  { node: <AnimatedNumber value={1847} />, l: "Œuvres en ligne", c: "#A55427" },
                 ].map(({ node, l, c }) => (
                   <motion.div key={l} variants={staggerItem} className="bg-white/5 rounded-xl p-4 text-center border-t-2" style={{ borderTopColor: c }}>
                     <div className="font-serif text-2xl" style={{ color: c }}>{node}</div>

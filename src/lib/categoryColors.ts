@@ -6,39 +6,39 @@ export type CategoryAccent = {
   border: string;
 };
 
-const TERRACOTTA: CategoryAccent = {
-  hex: "#99420d",
-  text: "text-[#99420d]",
-  bg: "bg-[#99420d]",
-  border: "border-[#99420d]",
+const CLAY_500: CategoryAccent = {
+  hex: "#C3622D",
+  text: "text-[#C3622D]",
+  bg: "bg-[#C3622D]",
+  border: "border-[#C3622D]",
 };
-const FOREST: CategoryAccent = {
-  hex: "#2D4A2D",
-  text: "text-[#2D4A2D]",
-  bg: "bg-[#2D4A2D]",
-  border: "border-[#2D4A2D]",
+const CLAY_700: CategoryAccent = {
+  hex: "#864521",
+  text: "text-[#864521]",
+  bg: "bg-[#864521]",
+  border: "border-[#864521]",
 };
-const BORDEAUX: CategoryAccent = {
-  hex: "#8B1A1A",
-  text: "text-[#8B1A1A]",
-  bg: "bg-[#8B1A1A]",
-  border: "border-[#8B1A1A]",
+const CLAY_400: CategoryAccent = {
+  hex: "#D28962",
+  text: "text-[#D28962]",
+  bg: "bg-[#D28962]",
+  border: "border-[#D28962]",
 };
 
 const MAP: Record<string, CategoryAccent> = {
-  sculpture: TERRACOTTA,
-  scu: TERRACOTTA,
-  tressage: FOREST,
-  tre: FOREST,
-  tissage: BORDEAUX,
-  tis: BORDEAUX,
-  poterie: TERRACOTTA,
-  pot: TERRACOTTA,
-  forge: BORDEAUX,
-  for: BORDEAUX,
-  peinture: FOREST,
-  pnt: FOREST,
+  sculpture: CLAY_500,
+  scu: CLAY_500,
+  tressage: CLAY_400,
+  tre: CLAY_400,
+  tissage: CLAY_700,
+  tis: CLAY_700,
+  poterie: CLAY_500,
+  pot: CLAY_500,
+  forge: CLAY_700,
+  for: CLAY_700,
+  peinture: CLAY_400,
+  pnt: CLAY_400,
 };
 
 export const categoryAccent = (category?: string): CategoryAccent =>
-  MAP[(category ?? "").toLowerCase()] ?? TERRACOTTA;
+  MAP[(category ?? "").toLowerCase()] ?? CLAY_500;

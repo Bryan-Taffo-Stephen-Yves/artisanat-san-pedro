@@ -14,8 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'Noto Serif'", "serif"],
-        sans: ["'Manrope'", "sans-serif"],
+        serif: ["'Oswald'", "sans-serif"],
+        sans: ["'Inter'", "sans-serif"],
+        display: ["'Oswald'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -58,18 +59,30 @@ export default {
         },
         "inverse-surface": "hsl(var(--inverse-surface))",
         terracotta: {
-          DEFAULT: "#99420d",
-          light: "#b95925",
+          DEFAULT: "#C3622D",
+          light: "#D28962",
         },
         forest: {
-          DEFAULT: "#2D4A2D",
-          light: "#4A7A4A",
-          container: "#E8F0E8",
+          DEFAULT: "#A55427",
+          light: "#D28962",
+          container: "#F6E7DD",
         },
         bordeaux: {
-          DEFAULT: "#8B1A1A",
-          light: "#B83A3A",
-          container: "#F5E8E8",
+          DEFAULT: "#864521",
+          light: "#A55427",
+          container: "#F6E7E0",
+        },
+        clay: {
+          50: "#FAF2EE",
+          100: "#F6E7E0",
+          200: "#EDD0C0",
+          300: "#E1B096",
+          400: "#D28962",
+          500: "#C3622D",
+          600: "#A55427",
+          700: "#864521",
+          800: "#66361B",
+          900: "#492815",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

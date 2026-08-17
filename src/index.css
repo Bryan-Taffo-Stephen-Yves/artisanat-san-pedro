@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,8 +6,8 @@
 
 @layer base {
   :root {
-    --background: 36 50% 97%;
-    --foreground: 50 8% 10%;
+    --background: 24 60% 99%;
+    --foreground: 25 45% 8%;
 
     --card: 36 40% 95%;
     --card-foreground: 50 8% 10%;
@@ -15,26 +15,31 @@
     --popover: 36 50% 97%;
     --popover-foreground: 50 8% 10%;
 
-    --primary: 22 82% 33%;
-    --primary-foreground: 36 50% 97%;
+    --primary: 22 63% 47%;
+    --primary-foreground: 24 60% 99%;
 
-    --secondary: 20 20% 50%;
+    --secondary: 20 25% 40%;
     --secondary-foreground: 36 50% 97%;
 
-    --muted: 33 25% 91%;
-    --muted-foreground: 30 8% 45%;
+    --muted: 24 35% 94%;
+    --muted-foreground: 25 12% 42%;
 
-    --accent: 36 60% 50%;
-    --accent-foreground: 50 8% 10%;
+    --accent: 22 55% 88%;
+    --accent-foreground: 22 63% 30%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 25 20% 85%;
-    --input: 25 20% 85%;
-    --ring: 22 82% 33%;
+    --border: 24 30% 90%;
+    --input: 24 30% 90%;
+    --ring: 22 63% 47%;
 
     --radius: 0.75rem;
+
+    /* Terracotta scale */
+    --clay-50:#FAF2EE; --clay-100:#F6E7E0; --clay-200:#EDD0C0; --clay-300:#E1B096;
+    --clay-400:#D28962; --clay-500:#C3622D; --clay-600:#A55427; --clay-700:#864521;
+    --clay-800:#66361B; --clay-900:#492815;
 
     /* Custom surface tokens */
     --surface: 36 50% 97%;
@@ -44,12 +49,12 @@
 
     --sidebar-background: 33 35% 94%;
     --sidebar-foreground: 50 8% 10%;
-    --sidebar-primary: 22 82% 33%;
+    --sidebar-primary: 22 63% 47%;
     --sidebar-primary-foreground: 36 50% 97%;
     --sidebar-accent: 33 30% 91%;
     --sidebar-accent-foreground: 50 8% 10%;
-    --sidebar-border: 25 20% 85%;
-    --sidebar-ring: 22 82% 33%;
+    --sidebar-border: 24 30% 90%;
+    --sidebar-ring: 22 63% 47%;
   }
 }
 
@@ -59,12 +64,15 @@
   }
 
   body {
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Inter', sans-serif;
     @apply bg-background text-foreground antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Noto Serif', serif;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    font-style: normal;
   }
 }
 
@@ -84,7 +92,7 @@
   .label-caps {
     @apply uppercase tracking-widest font-semibold;
     font-size: 0.625rem;
-    font-family: 'Manrope', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
 
   .shadow-luxury {
@@ -99,21 +107,21 @@
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   .gradient-tribal {
-    background: linear-gradient(135deg, #99420d, #8B1A1A);
+    background: linear-gradient(135deg, #C3622D, #864521);
   }
   .gradient-nature {
-    background: linear-gradient(135deg, #2D4A2D, #4A7A4A);
+    background: linear-gradient(135deg, #D28962, #A55427);
   }
   .gradient-earth {
-    background: linear-gradient(135deg, #99420d, #2D4A2D);
+    background: linear-gradient(135deg, #C3622D, #492815);
   }
   .gradient-newsletter {
-    background: linear-gradient(135deg, #f5ede8, #e8f0e8);
+    background: linear-gradient(135deg, #FBEFE9, #F6E7DD);
   }
   .texture-overlay {
     background-image:
-      radial-gradient(circle at 20% 50%, rgba(45,74,45,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(139,26,26,0.06) 0%, transparent 50%);
+      radial-gradient(circle at 20% 50%, rgba(195,98,45,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(134,69,33,0.06) 0%, transparent 50%);
   }
   .brand-bar {
     display: grid;
@@ -121,9 +129,9 @@
     height: 3px;
     width: 100%;
   }
-  .brand-bar > span:nth-child(1) { background: #99420d; }
-  .brand-bar > span:nth-child(2) { background: #2D4A2D; }
-  .brand-bar > span:nth-child(3) { background: #8B1A1A; }
+  .brand-bar > span:nth-child(1) { background: #C3622D; }
+  .brand-bar > span:nth-child(2) { background: #A55427; }
+  .brand-bar > span:nth-child(3) { background: #864521; }
 }
 
 @keyframes fadeUp {
@@ -229,7 +237,7 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: 1.5rem;
   padding: 0 2rem;
-  font-family: 'Manrope', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -275,10 +283,10 @@ html.lenis, html.lenis body { height: auto; }
 body {
   transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-body[data-theme="dark"] { background-color: #0E0D0D; }
-body[data-theme="forest"] { background-color: #1A2D1A; }
-body[data-theme="light"] { background-color: #fcf9f4; }
-body[data-theme="terracotta"] { background-color: #f5ede8; }
+body[data-theme="dark"] { background-color: #1A120C; }
+body[data-theme="forest"] { background-color: #66361B; }
+body[data-theme="light"] { background-color: #FFFCF9; }
+body[data-theme="terracotta"] { background-color: #F6E7DD; }
 
 /* Scroll-jack touch optimization */
 html, body {
@@ -293,3 +301,11 @@ html, body {
     backface-visibility: hidden;
   }
 }
+
+/* Charte Mains de San Pedro : Oswald ne s'italise pas */
+h1, h2, h3, h4, h5, h6,
+h1 em, h2 em, h3 em, h4 em, h5 em, h6 em,
+h1.italic, h2.italic, h3.italic, h4.italic, h5.italic, h6.italic {
+  font-style: normal;
+}
+:is(h1, h2, h3, h4, h5, h6) * { font-style: normal; }

@@ -21,16 +21,16 @@ export interface ArtisanUI {
 }
 
 const ACCENT_BY_CATEGORY: Record<string, string> = {
-  Sculpture: "#8B3A0F",
-  Tressage: "#2D4A2D",
-  Tissage: "#8B1A1A",
-  Poterie: "#8B3A0F",
-  Forge: "#8B1A1A",
-  Peinture: "#2D4A2D",
-  Bijouterie: "#8B1A1A",
+  Sculpture: "#C3622D",
+  Tressage: "#A55427",
+  Tissage: "#864521",
+  Poterie: "#C3622D",
+  Forge: "#864521",
+  Peinture: "#A55427",
+  Bijouterie: "#864521",
   Botterie: "#5C3A1E",
-  Accessoires: "#2D4A2D",
-  Sérigraphie: "#8B3A0F",
+  Accessoires: "#A55427",
+  Sérigraphie: "#C3622D",
 };
 
 function getInitials(name: string): string {
@@ -40,7 +40,7 @@ function getInitials(name: string): string {
 }
 
 function mapArtisanRow(row: any): ArtisanUI {
-  const accent = ACCENT_BY_CATEGORY[row.metier_category] || "#8B3A0F";
+  const accent = ACCENT_BY_CATEGORY[row.metier_category] || "#C3622D";
   return {
     id: row.id,
     slug: row.slug,
