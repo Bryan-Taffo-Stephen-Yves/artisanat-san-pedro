@@ -9,7 +9,7 @@ const metiers = [
     accent: '#C3622D',
     description: 'Art ancestral du bois et de la pierre. Masques baoulé et dan transmis sur quatre générations.',
     image: 'https://picsum.photos/seed/asp-sculpture/900/1200',
-    fallback: 'https://placehold.co/900x1200/8B3A0F/FFDCB4/png?text=Sculpture',
+    fallback: 'https://placehold.co/900x1200/C3622D/F6E7DD/png?text=Sculpture',
   },
   {
     id: 'tressage',
@@ -19,7 +19,7 @@ const metiers = [
     accent: '#A55427',
     description: 'Paniers, nattes et objets décoratifs tressés à la main avec patience et précision.',
     image: 'https://picsum.photos/seed/asp-tressage/900/1200',
-    fallback: 'https://placehold.co/900x1200/2D4A2D/FFDCB4/png?text=Tressage',
+    fallback: 'https://placehold.co/900x1200/A55427/F6E7DD/png?text=Tressage',
   },
   {
     id: 'tissage',
@@ -29,7 +29,7 @@ const metiers = [
     accent: '#864521',
     description: 'Pagnes Baoulé, bogolans et textiles aux motifs géométriques chargés de symbolisme.',
     image: 'https://picsum.photos/seed/asp-tissage/900/1200',
-    fallback: 'https://placehold.co/900x1200/8B1A1A/FFDCB4/png?text=Tissage',
+    fallback: 'https://placehold.co/900x1200/864521/F6E7DD/png?text=Tissage',
   },
   {
     id: 'poterie',
@@ -39,7 +39,7 @@ const metiers = [
     accent: '#C3622D',
     description: 'Modelée à la main dans la terre argileuse locale, cuite au bois selon des techniques millénaires.',
     image: 'https://picsum.photos/seed/asp-poterie/900/1200',
-    fallback: 'https://placehold.co/900x1200/8B3A0F/FFDCB4/png?text=Poterie',
+    fallback: 'https://placehold.co/900x1200/C3622D/F6E7DD/png?text=Poterie',
   },
   {
     id: 'forge',
@@ -49,7 +49,7 @@ const metiers = [
     accent: '#864521',
     description: 'Bracelets, couteaux cérémoniels et outils forgés au charbon de bois selon les rites Akan.',
     image: 'https://picsum.photos/seed/asp-forge/900/1200',
-    fallback: 'https://placehold.co/900x1200/8B1A1A/FFDCB4/png?text=Forge',
+    fallback: 'https://placehold.co/900x1200/864521/F6E7DD/png?text=Forge',
   },
   {
     id: 'peinture',
@@ -59,7 +59,7 @@ const metiers = [
     accent: '#A55427',
     description: "Toiles expressives aux pigments naturels qui capturent l'âme des villages ivoiriens.",
     image: 'https://picsum.photos/seed/asp-peinture/900/1200',
-    fallback: 'https://placehold.co/900x1200/2D4A2D/FFDCB4/png?text=Peinture',
+    fallback: 'https://placehold.co/900x1200/A55427/F6E7DD/png?text=Peinture',
   },
 ]
 
