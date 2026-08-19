@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Sparkles, Copy, Upload, Loader2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Copy, Upload, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
+import { createProduct, PRODUCT_CATEGORIES } from "@/hooks/useCreateProduct";
 
-const categories = ["Sculpture", "Tressage", "Tissage", "Poterie", "Forge", "Peinture"];
+interface ArtisanSession {
+  id: string;
+  slug: string;
+  name: string;
+}
 
 const AIStudioPage = () => {
   const navigate = useNavigate();
+  const [session, setSession] = useState<ArtisanSession | null>(null);
+
   const [description, setDescription] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedText, setGeneratedText] = useState("");
@@ -16,7 +23,32 @@ const AIStudioPage = () => {
   const [productName, setProductName] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
-  const [category, setCategory] = useState(categories[0]);
+  const [category, setCategory] = useState<string>(PRODUCT_CATEGORIES[0]);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const [publishing, setPublishing] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem("artisan_connecte");
+    if (!stored) {
+      navigate("/espace-artisan/login");
+      return;
+    }
+    try {
+      setSession(JSON.parse(stored));
+    } catch {
+      navigate("/espace-artisan/login");
+    }
+  }, [navigate]);
+
+  const imagePreview = useMemo(() => (imageFile ? URL.createObjectURL(imageFile) : ""), [imageFile]);
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
 
   const handleGenerate = async () => {
     if (!description.trim()) return;
@@ -43,6 +75,41 @@ const AIStudioPage = () => {
     navigator.clipboard.writeText(generatedText);
   };
 
+  const handlePublish = async () => {
+    setErrorMsg("");
+    setSuccessMsg("");
+    setPublishing(true);
+
+    const result = await createProduct({
+      artisanId: session?.id || "",
+      artisanSlug: session?.slug || "",
+      name: productName,
+      price: Number(price),
+      stock: stock === "" ? 1 : Number(stock),
+      category,
+      description: generatedText || description,
+      imageFile,
+    });
+
+    setPublishing(false);
+
+    if (!result.ok) {
+      setErrorMsg(result.error || "Publication impossible.");
+      return;
+    }
+
+    setSuccessMsg("Produit publié avec succès. Redirection…");
+    setProductName("");
+    setPrice("");
+    setStock("");
+    setCategory(PRODUCT_CATEGORIES[0]);
+    setImageFile(null);
+    setDescription("");
+    setGeneratedText("");
+
+    setTimeout(() => navigate("/espace-artisan"), 1400);
+  };
+
   return (
     <AppShell>
       {/* Header */}
@@ -51,7 +118,7 @@ const AIStudioPage = () => {
           <ArrowLeft className="w-4 h-4" /> Retour
         </button>
         <p className="text-[10px] uppercase tracking-widest text-primary mb-1">IA STUDIO</p>
-        <h1 className="font-serif text-3xl italic text-foreground">Le Conteur</h1>
+        <h1 className="font-serif text-3xl text-foreground">Le Conteur</h1>
         <p className="text-sm text-muted-foreground font-light mt-1">
           Décrivez votre œuvre, l'IA génère une fiche professionnelle.
         </p>
@@ -68,7 +135,6 @@ const AIStudioPage = () => {
         />
         <p className="text-[9px] text-muted-foreground text-right">{description.length}/500</p>
 
-        {/* Generate button */}
         <button
           onClick={handleGenerate}
           disabled={isGenerating || !description.trim()}
@@ -139,7 +205,7 @@ const AIStudioPage = () => {
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     className="bg-background rounded-xl px-4 py-3 w-full border-none text-sm focus:ring-1 focus:ring-primary focus:outline-none"
-                    placeholder="45 000"
+                    placeholder="45000"
                   />
                 </div>
                 <div>
@@ -160,20 +226,59 @@ const AIStudioPage = () => {
                   onChange={(e) => setCategory(e.target.value)}
                   className="bg-background rounded-xl px-4 py-3 w-full border-none text-sm focus:ring-1 focus:ring-primary focus:outline-none appearance-none"
                 >
-                  {categories.map((c) => (
+                  {PRODUCT_CATEGORIES.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
               </div>
               <div>
                 <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Photo</label>
-                <div className="rounded-xl border-2 border-dashed border-muted-foreground/30 p-8 text-center cursor-pointer hover:border-primary/40 transition-colors">
-                  <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">Glissez-déposez une photo ou cliquez</p>
-                </div>
+                <label className="block rounded-xl border-2 border-dashed border-muted-foreground/30 p-6 text-center cursor-pointer hover:border-primary/40 transition-colors">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                  />
+                  {imagePreview ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <img src={imagePreview} alt="Aperçu du produit" className="w-32 h-32 object-cover rounded-xl" />
+                      <p className="text-xs text-muted-foreground">{imageFile?.name} — cliquez pour changer</p>
+                    </div>
+                  ) : (
+                    <>
+                      <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">Cliquez pour choisir une photo</p>
+                    </>
+                  )}
+                </label>
               </div>
-              <button className="w-full h-14 mt-2 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full uppercase tracking-widest text-[11px] font-bold">
-                Publier le produit
+
+              {errorMsg && (
+                <div className="flex items-start gap-2 rounded-xl bg-destructive/10 text-destructive p-3 text-sm">
+                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+              {successMsg && (
+                <div className="flex items-start gap-2 rounded-xl bg-emerald-500/10 text-emerald-700 p-3 text-sm">
+                  <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>{successMsg}</span>
+                </div>
+              )}
+
+              <button
+                onClick={handlePublish}
+                disabled={publishing}
+                className="w-full h-14 mt-2 flex items-center justify-center gap-3 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full uppercase tracking-widest text-[11px] font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {publishing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Publication…
+                  </>
+                ) : (
+                  "Publier le produit"
+                )}
               </button>
             </div>
           </div>
