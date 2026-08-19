@@ -61,14 +61,14 @@ const AboutPage = () => (
         PROGRAMME PACTE · SAN PEDRO
       </p>
       <h1 className="font-serif text-4xl italic text-white leading-tight">
-        Artisanat San Pedro
+        Mains de San Pedro
       </h1>
       <p className="font-serif text-lg italic text-primary mt-1">
         La Plateforme Numérique de l'Artisanat
       </p>
       <div className="w-16 h-px bg-white/20 mt-6 mb-6" />
       <p className="text-sm font-light leading-relaxed text-white/70">
-        Artisanat San Pedro est la vitrine numérique officielle des artisans de la région de San Pedro, en Côte d'Ivoire. Portée par le programme PACTE — Partenariat pour une Administration Citoyenne et la Transformation de l'État — cette plateforme e-commerce connecte des créateurs d'exception aux marchés local, national et international. Elle réunit six corps de métiers : Sculpture, Tressage, Tissage, Poterie, Forge et Peinture, à travers une expérience d'achat moderne, sécurisée et culturellement ancrée.
+        Mains de San Pedro est la vitrine numérique officielle des artisans de la région de San Pedro, en Côte d'Ivoire. Portée par le programme PACTE — Partenariat pour une Administration Citoyenne et la Transformation de l'État — cette plateforme e-commerce connecte des créateurs d'exception aux marchés local, national et international. Elle réunit sept corps de métiers : Botterie, Bijouterie, Décoration, Vannerie, Sculpture, Sérigraphie et Tissage, à travers une expérience d'achat moderne, sécurisée et culturellement ancrée.
       </p>
     </ScrollReveal>
 

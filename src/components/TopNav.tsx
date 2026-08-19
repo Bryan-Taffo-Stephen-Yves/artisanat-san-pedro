@@ -41,10 +41,18 @@ const TopNav = () => {
       />
       <header className="glass-card fixed top-0 w-full z-50 px-4 md:px-6 py-3 flex items-center gap-3 md:gap-6">
         {/* Logo */}
-        <Link to="/" className="shrink-0">
-          <span className="font-serif text-base md:text-lg italic text-inverse-surface tracking-tight whitespace-nowrap">
-            Artisanat San Pedro
-          </span>
+        <Link to="/" className="shrink-0" aria-label="Mains de San Pedro — Accueil">
+          {/* Icône seule sur mobile, logo horizontal complet sur desktop */}
+          <img
+            src="/logo/logo-icone-terracotta.svg"
+            alt="Mains de San Pedro"
+            className="h-9 w-auto md:hidden"
+          />
+          <img
+            src="/logo/logo-horizontal-terracotta.svg"
+            alt="Mains de San Pedro"
+            className="hidden md:block h-9 w-auto"
+          />
         </Link>
 
         {/* Search bar — desktop inline */}

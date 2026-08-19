@@ -32,7 +32,7 @@ const PasswordGate = ({ onSuccess }: { onSuccess: () => void }) => {
       <div className={`text-center w-full max-w-sm ${shake ? "animate-[shake_0.4s_ease]" : ""}`}>
         <span className="font-serif text-3xl italic text-[hsl(36,50%,97%)]">Accès Réservé</span>
         <p className="text-[10px] uppercase tracking-widest text-[hsl(22,82%,33%)] mt-2 mb-8">
-          Artisanat San Pedro · Admin
+          Mains de San Pedro · Admin
         </p>
         <input
           type="password"

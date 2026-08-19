@@ -30,7 +30,7 @@ const quickActions = [
 const initialMessage: Message = {
   id: "init",
   role: "assistant",
-  content: "Bonjour ! Je suis l'assistant d'Artisanat San Pedro. Je peux vous aider à trouver une œuvre, découvrir nos artisans ou suivre votre commande. Comment puis-je vous aider ?",
+  content: "Bonjour ! Je suis l'assistant d'Mains de San Pedro. Je peux vous aider à trouver une œuvre, découvrir nos artisans ou suivre votre commande. Comment puis-je vous aider ?",
 };
 
 const AIChatbot = () => {
@@ -123,7 +123,7 @@ const AIChatbot = () => {
               </div>
               <div className="flex-1">
                 <p className="font-serif text-base">Assistant IA</p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-widest">Artisanat San Pedro · PACTE</p>
+                <p className="text-[9px] text-muted-foreground uppercase tracking-widest">Mains de San Pedro · PACTE</p>
               </div>
               <div className="flex items-center gap-1.5 mr-2">
                 <span className="w-2 h-2 rounded-full bg-green-400" />

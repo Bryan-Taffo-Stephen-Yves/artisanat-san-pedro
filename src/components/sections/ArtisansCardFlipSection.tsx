@@ -35,7 +35,7 @@ function SanPedroCardBack({ accent = '#C3622D' }: { accent?: string }) {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 2 }}>
         <div style={{ width: '180px', height: '180px', borderRadius: '50%', border: '2px solid rgba(255, 220, 180, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
           <div style={{ width: '140px', height: '140px', borderRadius: '50%', border: '1px solid rgba(255, 220, 180, 0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.2)' }}>
-            <h1 style={{ fontFamily: 'Oswald, sans-serif', fontSize: '48px', fontStyle: 'normal', fontWeight: 700, color: '#F6E7DD', margin: 0, letterSpacing: '-0.05em' }}>
+            <h1 style={{ fontFamily: 'Oswald, sans-serif', fontSize: '48px', fontStyle: 'italic', fontWeight: 700, color: '#F6E7DD', margin: 0, letterSpacing: '-0.05em' }}>
               ASP
             </h1>
           </div>
@@ -43,7 +43,7 @@ function SanPedroCardBack({ accent = '#C3622D' }: { accent?: string }) {
             <div key={angle} style={{ position: 'absolute', width: '8px', height: '8px', background: '#F6E7DD', borderRadius: '50%', transform: `rotate(${angle}deg) translateY(-100px)` }} />
           ))}
         </div>
-        <p style={{ fontFamily: 'Oswald, sans-serif', fontStyle: 'normal', fontSize: '12px', color: '#F6E7DD', marginTop: '20px', opacity: 0.8 }}>
+        <p style={{ fontFamily: 'Oswald, sans-serif', fontStyle: 'italic', fontSize: '12px', color: '#F6E7DD', marginTop: '20px', opacity: 0.8 }}>
           Programme PACTE
         </p>
       </div>

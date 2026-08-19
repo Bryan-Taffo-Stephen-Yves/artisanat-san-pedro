@@ -31,12 +31,14 @@ export function Preloader() {
       }}
     >
       <div className="text-center">
-        <p className="text-[10px] uppercase tracking-[0.4em] text-white/40 mb-4 font-sans">
+        <p className="text-[10px] uppercase tracking-[0.4em] text-white/40 mb-6 font-sans">
           PROGRAMME PACTE · CÔTE D'IVOIRE
         </p>
-        <h1 className="font-serif text-4xl italic text-white">
-          Artisanat San Pedro
-        </h1>
+        <img
+          src="/logo/logo-vertical-terracotta.svg"
+          alt="Mains de San Pedro"
+          className="h-32 w-auto mx-auto"
+        />
       </div>
 
       <div className="absolute bottom-12 left-0 right-0 px-8 flex justify-between items-end">

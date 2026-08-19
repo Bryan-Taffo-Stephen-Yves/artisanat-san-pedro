@@ -62,6 +62,8 @@ export default {
           DEFAULT: "#C3622D",
           light: "#D28962",
         },
+        /* forest & bordeaux conservés comme alias terracotta pour
+           compatibilité — la charte Mains de San Pedro est monochrome */
         forest: {
           DEFAULT: "#A55427",
           light: "#D28962",
@@ -73,16 +75,9 @@ export default {
           container: "#F6E7E0",
         },
         clay: {
-          50: "#FAF2EE",
-          100: "#F6E7E0",
-          200: "#EDD0C0",
-          300: "#E1B096",
-          400: "#D28962",
-          500: "#C3622D",
-          600: "#A55427",
-          700: "#864521",
-          800: "#66361B",
-          900: "#492815",
+          50: "#FAF2EE", 100: "#F6E7E0", 200: "#EDD0C0", 300: "#E1B096",
+          400: "#D28962", 500: "#C3622D", 600: "#A55427", 700: "#864521",
+          800: "#66361B", 900: "#492815",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

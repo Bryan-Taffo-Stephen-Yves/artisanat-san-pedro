@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-8">
           <a href="/" className="font-serif text-xl font-bold text-inverse-surface tracking-tight">
-            Artisanat<span className="text-primary font-light italic"> San Pedro</span>
+            Mains de<span className="text-primary font-light italic"> San Pedro</span>
           </a>
           <div className="hidden md:flex items-center gap-6">
             <a href="#" className="label-caps text-muted-foreground hover:text-primary transition-colors">Galerie</a>

@@ -14,10 +14,11 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
-            <h3 className="font-serif text-2xl text-inverse-surface mb-4 leading-tight">
-              Artisanat
-              <span className="italic font-light text-primary"> San Pedro</span>
-            </h3>
+            <img
+              src="/logo/logo-horizontal-blanc.svg"
+              alt="Mains de San Pedro"
+              className="h-12 w-auto mb-4"
+            />
             <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-sm">
               Plateforme digitale du programme PACTE pour la promotion de
               l'artisanat à San Pedro, Côte d'Ivoire.
@@ -68,7 +69,7 @@ const Footer = () => {
 
         <div className="mt-16 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <p className="text-muted-foreground text-xs font-light">
-            © 2026 Artisanat San Pedro — Programme PACTE.
+            © 2026 Mains de San Pedro — Programme PACTE.
           </p>
           <p className="label-caps text-muted-foreground text-[10px]">
             Côte d'Ivoire · 2026

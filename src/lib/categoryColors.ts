@@ -1,4 +1,6 @@
-// Per-category accent colors for the tri-color brand system.
+// Accents par catégorie — charte "Mains de San Pedro" (monochrome terracotta).
+// L'ancien système tricolore (terracotta/forest/bordeaux) est remplacé par
+// des déclinaisons de la couleur signature #C3622D.
 export type CategoryAccent = {
   hex: string;
   text: string;
@@ -25,19 +27,27 @@ const CLAY_400: CategoryAccent = {
   border: "border-[#D28962]",
 };
 
+// Chaque métier reçoit une nuance de terracotta pour garder une légère
+// différenciation visuelle sans casser le monochrome de la charte.
 const MAP: Record<string, CategoryAccent> = {
   sculpture: CLAY_500,
   scu: CLAY_500,
-  tressage: CLAY_400,
-  tre: CLAY_400,
-  tissage: CLAY_700,
-  tis: CLAY_700,
+  tressage: CLAY_700,
+  tre: CLAY_700,
+  tissage: CLAY_400,
+  tis: CLAY_400,
   poterie: CLAY_500,
   pot: CLAY_500,
   forge: CLAY_700,
   for: CLAY_700,
   peinture: CLAY_400,
   pnt: CLAY_400,
+  // Métiers réels de la base PACTE
+  botterie: CLAY_500,
+  bijouterie: CLAY_700,
+  accessoires: CLAY_400,
+  serigraphie: CLAY_500,
+  peinturecategory: CLAY_400,
 };
 
 export const categoryAccent = (category?: string): CategoryAccent =>
