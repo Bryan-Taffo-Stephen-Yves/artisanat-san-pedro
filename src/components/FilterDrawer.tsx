@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface Props { open: boolean; onClose: () => void; }
 
-const CATEGORIES = ["Sculpture", "Tressage", "Tissage", "Poterie", "Forge", "Peinture"];
+const CATEGORIES = ["Botterie", "Bijouterie", "Accessoires", "Sculpture", "Sérigraphie", "Tressage", "Tissage", "Peinture"];
 const PRICE_RANGES = [
   { label: "< 20 000 FCFA", value: "0-20000" },
   { label: "20 000 – 50 000", value: "20000-50000" },

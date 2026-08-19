@@ -1,38 +1,11 @@
 import AppShell from "@/components/AppShell";
-import { allArtisans } from "@/data/artisans";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { staggerContainer, staggerItem } from "@/lib/motionVariants";
 
-import catSculpture from "@/assets/cat-sculpture.jpg";
-import catTissage from "@/assets/cat-tissage.jpg";
+const articles: { image: string; category: string; title: string; extract: string }[] = [];
 
-const articles = [
-  {
-    image: catSculpture,
-    category: "Histoire",
-    title: "L'Art de la Sculpture Baoulé",
-    extract: "Depuis des siècles, le peuple Baoulé sculpte le bois avec une précision spirituelle. Chaque masque est le réceptacle d'un esprit protecteur, chaque figurine un lien entre le monde visible et l'invisible. Découvrez comment cette tradition millénaire survit et se réinvente à San Pedro.",
-  },
-  {
-    image: catTissage,
-    category: "Technique",
-    title: "Le Bogolan : un Tissu qui Parle",
-    extract: "Teint à la boue fermentée et aux décoctions de feuilles, le bogolan est un langage textile. Chaque motif géométrique porte un message — fertilité, bravoure, sagesse. Les tisserands de San Pedro perpétuent cet art avec des teintures 100% naturelles.",
-  },
-  {
-    image: allArtisans[0].avatar,
-    category: "Portrait",
-    title: "Kofi Asante : 30 Ans de Bois et d'Âme",
-    extract: "Depuis 1998, Kofi Asante transforme l'ébène en émotion. Rencontre avec un maître sculpteur dont les mains racontent l'histoire de trois générations d'artisans dans la région de San Pedro.",
-  },
-];
-
-const events = [
-  { day: "5", month: "AVR", name: "Festival de l'Artisanat de San Pedro", location: "Place du Marché", desc: "3 jours de démonstrations, ventes et ateliers" },
-  { day: "19", month: "AVR", name: "Atelier Poterie — Démonstration", location: "Boutique PACTE", desc: "Apprenez les techniques de la terre cuite Bété" },
-  { day: "3", month: "MAI", name: "Exposition Sculptures Baoulé", location: "Maison de la Culture", desc: "20 œuvres majeures de la collection régionale" },
-];
+const events: { day: string; month: string; name: string; location: string; desc: string }[] = [];
 
 const DecouvertePage = () => (
   <AppShell>
@@ -49,23 +22,33 @@ const DecouvertePage = () => (
 
     {/* Articles */}
     <div className="px-6 py-10 space-y-6">
-      {articles.map((a, i) => (
-        <ScrollReveal key={a.title} delay={i * 0.1}>
-        <article className="bg-background rounded-[2rem] overflow-hidden shadow-[0_10px_30px_rgba(14,13,13,0.04)]">
-          <img src={a.image} alt={a.title} className="w-full aspect-[16/7] object-cover sepia-[0.15]" />
-          <div className="p-6">
-            <span className="inline-flex px-3 py-1 rounded-full bg-primary/10 text-[9px] uppercase tracking-widest text-primary backdrop-blur-sm">
-              {a.category}
-            </span>
-            <h2 className="font-serif text-xl italic leading-snug mt-3">{a.title}</h2>
-            <p className="text-sm text-muted-foreground font-light leading-relaxed mt-2">{a.extract}</p>
-            <button className="text-primary text-[10px] uppercase tracking-widest font-bold mt-4 underline">
-              Lire la suite →
-            </button>
-          </div>
-        </article>
-        </ScrollReveal>
-      ))}
+      {articles.length === 0 ? (
+        <div className="bg-surface-container-low rounded-[2rem] p-10 text-center">
+          <p className="text-[10px] uppercase tracking-widest text-primary mb-2">À VENIR</p>
+          <h2 className="font-serif text-xl text-foreground">Nos récits arrivent bientôt</h2>
+          <p className="text-sm text-muted-foreground font-light mt-2 max-w-sm mx-auto">
+            Portraits d'artisans, techniques traditionnelles et histoires du patrimoine de San Pedro seront publiés ici prochainement.
+          </p>
+        </div>
+      ) : (
+        articles.map((a, i) => (
+          <ScrollReveal key={a.title} delay={i * 0.1}>
+          <article className="bg-background rounded-[2rem] overflow-hidden shadow-[0_10px_30px_rgba(14,13,13,0.04)]">
+            <img src={a.image} alt={a.title} className="w-full aspect-[16/7] object-cover sepia-[0.15]" />
+            <div className="p-6">
+              <span className="inline-flex px-3 py-1 rounded-full bg-primary/10 text-[9px] uppercase tracking-widest text-primary backdrop-blur-sm">
+                {a.category}
+              </span>
+              <h2 className="font-serif text-xl leading-snug mt-3">{a.title}</h2>
+              <p className="text-sm text-muted-foreground font-light leading-relaxed mt-2">{a.extract}</p>
+              <button className="text-primary text-[10px] uppercase tracking-widest font-bold mt-4 underline">
+                Lire la suite →
+              </button>
+            </div>
+          </article>
+          </ScrollReveal>
+        ))
+      )}
     </div>
 
     {/* Agenda */}
@@ -79,19 +62,27 @@ const DecouvertePage = () => (
         whileInView="visible"
         viewport={{ once: true, margin: "-40px" }}
       >
-        {events.map((e) => (
-          <motion.div key={e.name} variants={staggerItem} className="flex items-center gap-4 bg-background rounded-[1.5rem] p-4">
-            <div className="bg-primary text-primary-foreground rounded-xl p-3 text-center flex-shrink-0 w-14">
-              <span className="font-serif text-xl font-bold block">{e.day}</span>
-              <span className="text-[8px] uppercase">{e.month}</span>
-            </div>
-            <div>
-              <p className="text-sm font-bold">{e.name}</p>
-              <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{e.location}</p>
-              <p className="text-[10px] text-muted-foreground font-light">{e.desc}</p>
-            </div>
-          </motion.div>
-        ))}
+        {events.length === 0 ? (
+          <div className="bg-background rounded-[1.5rem] p-8 text-center">
+            <p className="text-sm text-muted-foreground font-light">
+              Les prochains événements culturels seront annoncés ici. Restez connectés.
+            </p>
+          </div>
+        ) : (
+          events.map((e) => (
+            <motion.div key={e.name} variants={staggerItem} className="flex items-center gap-4 bg-background rounded-[1.5rem] p-4">
+              <div className="bg-primary text-primary-foreground rounded-xl p-3 text-center flex-shrink-0 w-14">
+                <span className="font-serif text-xl font-bold block">{e.day}</span>
+                <span className="text-[8px] uppercase">{e.month}</span>
+              </div>
+              <div>
+                <p className="text-sm font-bold">{e.name}</p>
+                <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{e.location}</p>
+                <p className="text-[10px] text-muted-foreground font-light">{e.desc}</p>
+              </div>
+            </motion.div>
+          ))
+        )}
       </motion.div>
     </div>
 

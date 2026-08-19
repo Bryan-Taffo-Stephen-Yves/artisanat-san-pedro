@@ -64,6 +64,16 @@ const ContactPage = () => {
         </motion.div>
       </motion.div>
 
+      {/* Réseaux sociaux — espace prévu, à compléter dès la création des comptes */}
+      <div className="px-6 mt-8">
+        <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2 text-center">Suivez-nous</p>
+        <div className="bg-surface-container-low rounded-xl p-5 text-center">
+          <p className="text-sm text-muted-foreground font-light">
+            Nos réseaux sociaux arrivent bientôt.
+          </p>
+        </div>
+      </div>
+
       {/* Chat IA CTA */}
       <div className="px-6 mt-4 pb-16">
         <div className="bg-primary/5 rounded-[1.5rem] p-6 text-center">

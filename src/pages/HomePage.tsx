@@ -14,7 +14,6 @@ import { MetiersDeckSection } from "../components/sections/MetiersDeckSection";
 import { PinnedProductsSection } from "../components/sections/PinnedProductsSection";
 import MonthlySelectionSection from "@/components/sections/MonthlySelectionSection";
 import TrustStrip from "@/components/sections/TrustStrip";
-import PressMentionsSection from "@/components/sections/PressMentionsSection";
 
 import AppShell from "@/components/AppShell";
 import { ProductCard, mockProducts } from "@/components/ProductCard";
@@ -448,7 +447,6 @@ const HomePage = () => {
       <div ref={artisansRef}><ArtisansCardFlipSection /></div>
       <MonthlySelectionSection />
       <TrustStrip />
-      <PressMentionsSection />
       <NewsletterSection />
     </AppShell>
   );

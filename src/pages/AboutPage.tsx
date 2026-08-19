@@ -10,7 +10,7 @@ const stats = [
   { value: "1 200+", label: "Œuvres référencées" },
   { value: "35", label: "Artisans formés Phase 1" },
   { value: "17", label: "Pays acheteurs" },
-  { value: "6", label: "Corps de métiers" },
+  { value: "7", label: "Corps de métiers" },
   { value: "2026", label: "Année de lancement" },
 ];
 
@@ -42,9 +42,8 @@ const values = [
 const partners = [
   { name: "Chambre des Métiers de San Pedro", role: "Partenaire institutionnel" },
   { name: "Conseil Citoyen", role: "Gouvernance locale" },
-  { name: "SELLARS AFRICA", role: "Partenaire technique" },
+  { name: "SellArts Africa", role: "Partenaire technique" },
   { name: "Mairie de San Pedro", role: "Autorité locale" },
-  { name: "AMF-UEMOA", role: "Partenaire financier" },
 ];
 
 const phases = [

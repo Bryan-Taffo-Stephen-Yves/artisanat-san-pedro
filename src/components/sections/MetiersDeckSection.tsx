@@ -2,64 +2,67 @@ import { useEffect, useRef, useState } from 'react'
 
 const metiers = [
   {
+    id: 'botterie',
+    name: 'Botterie',
+    code: 'BOT',
+    accent: '#C3622D',
+    description: 'Chaussures, sandales et articles en cuir façonnés à la main selon un savoir-faire transmis de génération en génération.',
+    image: 'https://picsum.photos/seed/asp-botterie/900/1200',
+    fallback: 'https://placehold.co/900x1200/C3622D/F6E7DD/png?text=Botterie',
+  },
+  {
+    id: 'bijouterie',
+    name: 'Bijouterie',
+    code: 'BIJ',
+    accent: '#A55427',
+    description: 'Parures, colliers et bracelets créés à partir de perles, métaux et matériaux locaux.',
+    image: 'https://picsum.photos/seed/asp-bijouterie/900/1200',
+    fallback: 'https://placehold.co/900x1200/A55427/F6E7DD/png?text=Bijouterie',
+  },
+  {
+    id: 'decoration',
+    name: 'Décoration',
+    code: 'DEC',
+    accent: '#864521',
+    description: "Objets d'ornement et pièces décoratives qui subliment l'artisanat ivoirien dans l'habitat.",
+    image: 'https://picsum.photos/seed/asp-decoration/900/1200',
+    fallback: 'https://placehold.co/900x1200/864521/F6E7DD/png?text=Decoration',
+  },
+  {
+    id: 'vannerie',
+    name: 'Vannerie',
+    code: 'VAN',
+    accent: '#C3622D',
+    description: 'Paniers, nattes et accessoires tressés à partir de fibres naturelles selon les techniques ancestrales.',
+    image: 'https://picsum.photos/seed/asp-vannerie/900/1200',
+    fallback: 'https://placehold.co/900x1200/C3622D/F6E7DD/png?text=Vannerie',
+  },
+  {
     id: 'sculpture',
     name: 'Sculpture',
     code: 'SCU',
-    artisans: 42,
-    accent: '#C3622D',
-    description: 'Art ancestral du bois et de la pierre. Masques baoulé et dan transmis sur quatre générations.',
+    accent: '#A55427',
+    description: 'Art ancestral du bois. Masques baoulé et dan, statues et figurines transmis sur plusieurs générations.',
     image: 'https://picsum.photos/seed/asp-sculpture/900/1200',
-    fallback: 'https://placehold.co/900x1200/C3622D/F6E7DD/png?text=Sculpture',
+    fallback: 'https://placehold.co/900x1200/A55427/F6E7DD/png?text=Sculpture',
   },
   {
-    id: 'tressage',
-    name: 'Tressage',
-    code: 'TRE',
-    artisans: 38,
-    accent: '#A55427',
-    description: 'Paniers, nattes et objets décoratifs tressés à la main avec patience et précision.',
-    image: 'https://picsum.photos/seed/asp-tressage/900/1200',
-    fallback: 'https://placehold.co/900x1200/A55427/F6E7DD/png?text=Tressage',
+    id: 'serigraphie',
+    name: 'Sérigraphie',
+    code: 'SER',
+    accent: '#864521',
+    description: 'Impression artisanale au service de la création textile et visuelle locale.',
+    image: 'https://picsum.photos/seed/asp-serigraphie/900/1200',
+    fallback: 'https://placehold.co/900x1200/864521/F6E7DD/png?text=Serigraphie',
   },
   {
     id: 'tissage',
     name: 'Tissage',
     code: 'TIS',
-    artisans: 51,
-    accent: '#864521',
+    accent: '#C3622D',
     description: 'Pagnes Baoulé, bogolans et textiles aux motifs géométriques chargés de symbolisme.',
     image: 'https://picsum.photos/seed/asp-tissage/900/1200',
-    fallback: 'https://placehold.co/900x1200/864521/F6E7DD/png?text=Tissage',
-  },
-  {
-    id: 'poterie',
-    name: 'Poterie',
-    code: 'POT',
-    artisans: 29,
-    accent: '#C3622D',
-    description: 'Modelée à la main dans la terre argileuse locale, cuite au bois selon des techniques millénaires.',
-    image: 'https://picsum.photos/seed/asp-poterie/900/1200',
-    fallback: 'https://placehold.co/900x1200/C3622D/F6E7DD/png?text=Poterie',
-  },
-  {
-    id: 'forge',
-    name: 'Forge',
-    code: 'FOR',
-    artisans: 18,
-    accent: '#864521',
-    description: 'Bracelets, couteaux cérémoniels et outils forgés au charbon de bois selon les rites Akan.',
-    image: 'https://picsum.photos/seed/asp-forge/900/1200',
-    fallback: 'https://placehold.co/900x1200/864521/F6E7DD/png?text=Forge',
-  },
-  {
-    id: 'peinture',
-    name: 'Peinture',
-    code: 'PNT',
-    artisans: 22,
-    accent: '#A55427',
-    description: "Toiles expressives aux pigments naturels qui capturent l'âme des villages ivoiriens.",
-    image: 'https://picsum.photos/seed/asp-peinture/900/1200',
-    fallback: 'https://placehold.co/900x1200/A55427/F6E7DD/png?text=Peinture',
+    fallback: 'https://placehold.co/900x1200/C3622D/F6E7DD/png?text=Tissage',
   },
 ]
 
@@ -191,7 +194,7 @@ export function MetiersDeckSection() {
                     <div className="flex items-center gap-2">
                       <div className="w-1 h-1 rounded-full" style={{ background: metier.accent }} />
                       <p className="font-label text-[10px] uppercase tracking-widest text-white/60">
-                        {metier.artisans} artisans actifs
+                        Programme PACTE · San Pedro
                       </p>
                     </div>
                   </div>
