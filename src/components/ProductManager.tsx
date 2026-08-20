@@ -1,7 +1,34 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Pencil, Trash2, X, Check, Loader2, AlertTriangle } from "lucide-react";
+import { Pencil, Trash2, X, Check, Loader2, AlertTriangle, Image as ImageIcon, Plus, Star } from "lucide-react";
 import { toast } from "sonner";
+
+async function compressImage(file: File, maxSize = 1200, quality = 0.82): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = (e) => { img.src = e.target?.result as string; };
+    reader.onerror = reject;
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxSize || height > maxSize) {
+        if (width > height) { height = (height / width) * maxSize; width = maxSize; }
+        else { width = (width / height) * maxSize; height = maxSize; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject(new Error("no ctx"));
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error("compression failed")),
+        "image/jpeg", quality
+      );
+    };
+    img.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 interface ManagedProduct {
   id: string;
@@ -12,6 +39,7 @@ interface ManagedProduct {
   stock: number;
   category: string;
   image_url: string;
+  gallery: string[];
   artisan_name?: string;
 }
 
@@ -42,6 +70,8 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<EditForm>({ name: "", price: 0, description: "", stock: 0, category: "" });
+  const [managingPhotosId, setManagingPhotosId] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -62,6 +92,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
         stock: row.stock ?? 0,
         category: row.category,
         image_url: row.image_url ?? "",
+        gallery: Array.isArray(row.gallery) ? row.gallery : (row.image_url ? [row.image_url] : []),
         artisan_name: row.artisans?.name ?? "",
       }));
       setProducts(mapped);
@@ -131,6 +162,74 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
       toast.error("Erreur lors de la suppression");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleAddPhotos = async (product: ManagedProduct, files: FileList) => {
+    if (!files || files.length === 0) return;
+    setUploadingPhoto(true);
+    try {
+      const newUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type.startsWith("image/")) continue;
+        const compressed = await compressImage(file);
+        const path = `products/${product.slug}-${Date.now()}-${i}.jpg`;
+        const { error: upErr } = await supabase.storage
+          .from("artisan-images")
+          .upload(path, compressed, { contentType: "image/jpeg", upsert: true });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from("artisan-images").getPublicUrl(path);
+        newUrls.push(pub.publicUrl);
+      }
+      if (newUrls.length === 0) { toast.error("Aucune image valide"); return; }
+      const updatedGallery = [...product.gallery, ...newUrls];
+      const newCover = product.image_url || newUrls[0];
+      const { error } = await (supabase as any)
+        .from("products")
+        .update({ gallery: updatedGallery, image_url: newCover })
+        .eq("id", product.id);
+      if (error) throw error;
+      toast.success(`${newUrls.length} photo(s) ajoutée(s)`);
+      loadProducts();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de l'ajout des photos");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handleDeletePhoto = async (product: ManagedProduct, url: string) => {
+    try {
+      const updatedGallery = product.gallery.filter((g) => g !== url);
+      let newCover = product.image_url;
+      if (product.image_url === url) newCover = updatedGallery[0] || "";
+      const { error } = await (supabase as any)
+        .from("products")
+        .update({ gallery: updatedGallery, image_url: newCover })
+        .eq("id", product.id);
+      if (error) throw error;
+      toast.success("Photo supprimée");
+      loadProducts();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de la suppression de la photo");
+    }
+  };
+
+  const handleSetCover = async (product: ManagedProduct, url: string) => {
+    try {
+      const { error } = await (supabase as any)
+        .from("products")
+        .update({ image_url: url })
+        .eq("id", product.id);
+      if (error) throw error;
+      toast.success("Photo principale définie");
+      loadProducts();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur");
     }
   };
 
