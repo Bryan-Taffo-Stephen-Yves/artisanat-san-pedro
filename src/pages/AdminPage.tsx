@@ -10,6 +10,7 @@ import {
   AlertTriangle, TrendingDown, UserX, TrendingUp, Download, FileText, Share2, Mail,
   MessageCircle
 } from "lucide-react";
+import ProductManager from "@/components/ProductManager";
 
 /* ────────────────────── PASSWORD GATE ────────────────────── */
 const PasswordGate = ({ onSuccess }: { onSuccess: () => void }) => {
