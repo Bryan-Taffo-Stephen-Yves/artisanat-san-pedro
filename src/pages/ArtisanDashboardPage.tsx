@@ -160,6 +160,11 @@ const ArtisanDashboardPage = () => {
         )}
       </div>
 
+      {/* Gestion des produits (édition + suppression) */}
+      <div className="px-6 mt-8">
+        <ProductManager artisanId={session.id} title="Gérer mes produits" />
+      </div>
+
       {/* Commandes récentes */}
       <div className="px-6 mt-8 pb-32">
         <h2 className="font-serif text-xl italic text-foreground mb-4">Commandes récentes</h2>
