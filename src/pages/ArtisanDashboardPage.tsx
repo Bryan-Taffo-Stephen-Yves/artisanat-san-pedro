@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Package, Eye, ShoppingCart, Star, Sparkles, ChevronRight, AlertTriangle, Check, LogOut } from "lucide-react";
 import AppShell from "@/components/AppShell";
+import ProductManager from "@/components/ProductManager";
 import { useArtisan } from "@/hooks/useArtisans";
 import { useProductsByArtisan } from "@/hooks/useProducts";
 
