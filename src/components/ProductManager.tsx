@@ -1,7 +1,34 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Pencil, Trash2, X, Check, Loader2, AlertTriangle } from "lucide-react";
+import { Pencil, Trash2, X, Check, Loader2, AlertTriangle, Image as ImageIcon, Plus, Star } from "lucide-react";
 import { toast } from "sonner";
+
+async function compressImage(file: File, maxSize = 1200, quality = 0.82): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = (e) => { img.src = e.target?.result as string; };
+    reader.onerror = reject;
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxSize || height > maxSize) {
+        if (width > height) { height = (height / width) * maxSize; width = maxSize; }
+        else { width = (width / height) * maxSize; height = maxSize; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject(new Error("no ctx"));
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => blob ? resolve(blob) : reject(new Error("compression failed")),
+        "image/jpeg", quality
+      );
+    };
+    img.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 interface ManagedProduct {
   id: string;
@@ -12,6 +39,7 @@ interface ManagedProduct {
   stock: number;
   category: string;
   image_url: string;
+  gallery: string[];
   artisan_name?: string;
 }
 
@@ -42,6 +70,8 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<EditForm>({ name: "", price: 0, description: "", stock: 0, category: "" });
+  const [managingPhotosId, setManagingPhotosId] = useState<string | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   const loadProducts = async () => {
     setLoading(true);
@@ -62,6 +92,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
         stock: row.stock ?? 0,
         category: row.category,
         image_url: row.image_url ?? "",
+        gallery: Array.isArray(row.gallery) ? row.gallery : (row.image_url ? [row.image_url] : []),
         artisan_name: row.artisans?.name ?? "",
       }));
       setProducts(mapped);
@@ -131,6 +162,74 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
       toast.error("Erreur lors de la suppression");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleAddPhotos = async (product: ManagedProduct, files: FileList) => {
+    if (!files || files.length === 0) return;
+    setUploadingPhoto(true);
+    try {
+      const newUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!file.type.startsWith("image/")) continue;
+        const compressed = await compressImage(file);
+        const path = `products/${product.slug}-${Date.now()}-${i}.jpg`;
+        const { error: upErr } = await supabase.storage
+          .from("artisan-images")
+          .upload(path, compressed, { contentType: "image/jpeg", upsert: true });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from("artisan-images").getPublicUrl(path);
+        newUrls.push(pub.publicUrl);
+      }
+      if (newUrls.length === 0) { toast.error("Aucune image valide"); return; }
+      const updatedGallery = [...product.gallery, ...newUrls];
+      const newCover = product.image_url || newUrls[0];
+      const { error } = await (supabase as any)
+        .from("products")
+        .update({ gallery: updatedGallery, image_url: newCover })
+        .eq("id", product.id);
+      if (error) throw error;
+      toast.success(`${newUrls.length} photo(s) ajoutée(s)`);
+      loadProducts();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de l'ajout des photos");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handleDeletePhoto = async (product: ManagedProduct, url: string) => {
+    try {
+      const updatedGallery = product.gallery.filter((g) => g !== url);
+      let newCover = product.image_url;
+      if (product.image_url === url) newCover = updatedGallery[0] || "";
+      const { error } = await (supabase as any)
+        .from("products")
+        .update({ gallery: updatedGallery, image_url: newCover })
+        .eq("id", product.id);
+      if (error) throw error;
+      toast.success("Photo supprimée");
+      loadProducts();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur lors de la suppression de la photo");
+    }
+  };
+
+  const handleSetCover = async (product: ManagedProduct, url: string) => {
+    try {
+      const { error } = await (supabase as any)
+        .from("products")
+        .update({ image_url: url })
+        .eq("id", product.id);
+      if (error) throw error;
+      toast.success("Photo principale définie");
+      loadProducts();
+    } catch (e) {
+      console.error(e);
+      toast.error("Erreur");
     }
   };
 
@@ -259,6 +358,12 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
                   </div>
                   <div className="flex gap-2 shrink-0">
                     <button
+                      onClick={() => setManagingPhotosId(managingPhotosId === p.id ? null : p.id)}
+                      className="w-9 h-9 rounded-full bg-background flex items-center justify-center text-foreground hover:bg-muted/50"
+                    >
+                      <ImageIcon className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={() => startEdit(p)}
                       className="w-9 h-9 rounded-full bg-background flex items-center justify-center text-primary hover:bg-primary/10"
                     >
@@ -271,6 +376,60 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
+                </div>
+              )}
+
+              {managingPhotosId === p.id && (
+                <div className="mt-3 pt-3 border-t border-border/20">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground">Photos du produit</p>
+                    <label className="cursor-pointer px-3 py-2 rounded-full bg-primary text-primary-foreground text-[10px] uppercase tracking-widest flex items-center gap-1">
+                      {uploadingPhoto ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                      Ajouter
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        disabled={uploadingPhoto}
+                        onChange={(e) => { if (e.target.files) handleAddPhotos(p, e.target.files); e.target.value = ""; }}
+                      />
+                    </label>
+                  </div>
+                  {p.gallery.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">Aucune photo. Ajoutez-en une.</p>
+                  ) : (
+                    <div className="grid grid-cols-3 gap-2">
+                      {p.gallery.map((url, i) => (
+                        <div key={i} className="relative group rounded-lg overflow-hidden aspect-square bg-surface-container">
+                          <img src={url} alt={`photo ${i + 1}`} className="w-full h-full object-cover" />
+                          {p.image_url === url && (
+                            <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-[8px] uppercase px-1.5 py-0.5 rounded-full">
+                              Principale
+                            </span>
+                          )}
+                          <div className="absolute inset-0 bg-inverse-surface/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            {p.image_url !== url && (
+                              <button
+                                onClick={() => handleSetCover(p, url)}
+                                title="Définir comme principale"
+                                className="w-8 h-8 rounded-full bg-background/90 flex items-center justify-center text-primary"
+                              >
+                                <Star className="w-4 h-4" />
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleDeletePhoto(p, url)}
+                              title="Supprimer"
+                              className="w-8 h-8 rounded-full bg-background/90 flex items-center justify-center text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
