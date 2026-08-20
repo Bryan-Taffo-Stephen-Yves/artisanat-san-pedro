@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Package, Eye, ShoppingCart, Star, Sparkles, ChevronRight, AlertTriangle, Check, LogOut } from "lucide-react";
 import AppShell from "@/components/AppShell";
+import ProductManager from "@/components/ProductManager";
 import { useArtisan } from "@/hooks/useArtisans";
 import { useProductsByArtisan } from "@/hooks/useProducts";
 
@@ -157,6 +158,11 @@ const ArtisanDashboardPage = () => {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Gestion des produits (édition + suppression) */}
+      <div className="px-6 mt-8">
+        <ProductManager artisanId={session.id} title="Gérer mes produits" />
       </div>
 
       {/* Commandes récentes */}
