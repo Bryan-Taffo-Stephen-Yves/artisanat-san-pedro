@@ -589,6 +589,11 @@ const AdminDashboard = () => {
             </div>
           </div>
         </Section>
+
+        {/* S7 — GESTION DES PRODUITS */}
+        <Section delay={600}>
+          <ProductManager title="Gestion des produits" />
+        </Section>
       </div>
     </div>
   );
