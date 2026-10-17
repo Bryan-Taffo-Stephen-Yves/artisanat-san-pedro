@@ -8,9 +8,49 @@ const navLinks: { label: string; to: string }[] = [
   { label: "Contact", to: "/contact" },
 ];
 
+const partenaires: { src: string; alt: string; className: string }[] = [
+  {
+    src: "/partenaires/pacte.webp",
+    alt: "PACTE",
+    className: "h-20 md:h-24",
+  },
+  {
+    src: "/partenaires/prime.jpg",
+    alt: "PRIME — Programme national d'appui aux réformes institutionnelles et à la modernisation de l'État",
+    className: "h-14 md:h-16",
+  },
+  {
+    src: "/partenaires/ministere-europe-affaires-etrangeres.jpg",
+    alt: "Ministère de l'Europe et des Affaires étrangères — République française",
+    className: "h-16 md:h-20",
+  },
+];
+
 const Footer = () => {
   return (
-    <footer className="bg-surface-container pt-16 pb-10">
+    <footer>
+      {/* Bande partenaires / bailleurs — fond clair */}
+      <div className="bg-white border-y border-black/5 py-10">
+        <div className="container mx-auto px-6">
+          <p className="label-caps text-center text-neutral-500 mb-7 text-[11px] tracking-[0.18em] uppercase">
+            Un projet soutenu par
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-7">
+            {partenaires.map((p) => (
+              <img
+                key={p.src}
+                src={p.src}
+                alt={p.alt}
+                loading="lazy"
+                className={`${p.className} w-auto object-contain`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer principal — fond sombre */}
+      <div className="bg-surface-container pt-16 pb-10">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
@@ -75,6 +115,7 @@ const Footer = () => {
             Côte d'Ivoire · 2026
           </p>
         </div>
+      </div>
       </div>
     </footer>
   );
