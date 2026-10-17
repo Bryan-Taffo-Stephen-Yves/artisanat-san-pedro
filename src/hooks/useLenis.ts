@@ -7,11 +7,11 @@ export let lenisInstance: Lenis | null = null
 export function useLenis() {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 0.9,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      wheelMultiplier: 0.8,
-      touchMultiplier: 1.5,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 2,
     })
 
     lenisInstance = lenis
