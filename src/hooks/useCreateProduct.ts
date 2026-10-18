@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { compressImage } from "@/lib/compressImage";
 
 // Catégories réelles de la base (enum metier_category / colonne category).
 // Alignées sur les vraies valeurs PACTE San Pedro.
@@ -67,11 +68,23 @@ export async function createProduct(input: NewProductInput): Promise<CreateProdu
     let imageUrl = "";
     const gallery: string[] = [];
     if (imageFile) {
-      const ext = imageFile.name.split(".").pop()?.toLowerCase() || "jpg";
+      // Compression avant envoi ; si le navigateur ne sait pas lire le format, on envoie l'original
+      let body: Blob = imageFile;
+      let ext = imageFile.name.split(".").pop()?.toLowerCase() || "jpg";
+      try {
+        body = await compressImage(imageFile);
+        ext = "jpg";
+      } catch {
+        /* original conservé */
+      }
       const path = `products/${baseSlug}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("artisan-images")
-        .upload(path, imageFile, { upsert: true, cacheControl: "3600" });
+        .upload(path, body, {
+          upsert: true,
+          cacheControl: "31536000",
+          contentType: ext === "jpg" ? "image/jpeg" : imageFile.type || undefined,
+        });
       if (upErr) {
         return { ok: false, error: `Échec de l'upload photo : ${upErr.message}` };
       }

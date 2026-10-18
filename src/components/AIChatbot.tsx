@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Sparkles, Send, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { IMG } from "@/lib/image";
 
 interface ProductCard {
   id: string;
@@ -184,7 +185,7 @@ const AIChatbot = () => {
                         >
                           <div className="w-full h-36 overflow-hidden">
                             {p.image_url ? (
-                              <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                              <img src={IMG.thumb(p.image_url)} alt={p.name} loading="lazy" className="w-full h-full object-cover" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center" style={{ background: "#E8E0D5" }}>
                                 <span className="font-serif italic text-[10px] text-muted-foreground">{p.category}</span>

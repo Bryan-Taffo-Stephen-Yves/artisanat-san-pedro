@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import Lenis from 'lenis'
 
 // Global lenis instance accessible across components
@@ -6,24 +6,19 @@ export let lenisInstance: Lenis | null = null
 
 export function useLenis() {
   useEffect(() => {
+    // Respecte le réglage système "réduire les animations"
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     const lenis = new Lenis({
-      duration: 0.9,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      // Interpolation douce mais réactive à la molette ; sur mobile le
+      // défilement tactile reste natif (syncTouch désactivé par défaut),
+      // c'est ce qui est le plus fluide sur téléphone.
+      lerp: 0.12,
       smoothWheel: true,
-      wheelMultiplier: 1.1,
-      touchMultiplier: 2,
+      wheelMultiplier: 1,
     })
 
     lenisInstance = lenis
-
-    // Like Locomotive's scrollCallback — track direction
-    let lastProgress = 0
-    lenis.on('scroll', ({ progress }: { progress: number }) => {
-      const direction = progress > lastProgress ? '1' : '-1'
-      document.documentElement.style.setProperty('--scroll-direction', direction)
-      document.documentElement.style.setProperty('--scroll-progress', String(progress))
-      lastProgress = progress
-    })
 
     let rafId: number
     function raf(time: number) {

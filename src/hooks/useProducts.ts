@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { IMG } from "@/lib/image";
 
 export interface ProductUI {
   id: string;
@@ -46,18 +47,18 @@ function mapProductRow(row: any): ProductUI {
     categoryCode: CATEGORY_CODES[row.category] ?? "ART",
     artisan: a?.name ?? "Artisan",
     artisanSlug: a?.slug ?? "",
-    artisanAvatar: a?.avatar_url || "",
+    artisanAvatar: IMG.thumb(a?.avatar_url),
     artisanMetier: a?.metier ?? "",
     artisanLocation: a?.location ?? "",
     price: Number(row.price ?? 0),
-    image: row.image_url || "",
+    image: IMG.card(row.image_url),
     rating: row.rating ?? 0,
     reviews: row.reviews_count ?? 0,
     badge: row.badge ?? undefined,
     date: row.created_at ?? "",
     stock: row.stock ?? 0,
     description: row.description ?? "",
-    gallery: (row.gallery && row.gallery.length > 0) ? row.gallery : (row.image_url ? [row.image_url] : []),
+    gallery: ((row.gallery && row.gallery.length > 0) ? row.gallery : (row.image_url ? [row.image_url] : [])).map(IMG.full),
   };
 }
 

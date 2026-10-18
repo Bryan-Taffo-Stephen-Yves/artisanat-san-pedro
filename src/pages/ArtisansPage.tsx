@@ -9,7 +9,7 @@ import ArtisanAvatar from "@/components/ArtisanAvatar";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { staggerContainer, staggerItem, slideLeft, scaleReveal } from "@/lib/motionVariants";
 
-const METIERS = ["Tous", "Sculpture", "Tressage", "Tissage", "Poterie", "Peinture", "Bijouterie", "Botterie", "Accessoires", "Sérigraphie"];
+const METIERS = ["Tous", "Botterie", "Bijouterie", "Peinture", "Sculpture", "Accessoires", "Tressage", "Sérigraphie"];
 
 const ArtisansPage = () => {
   const [selectedMetier, setSelectedMetier] = useState("Tous");

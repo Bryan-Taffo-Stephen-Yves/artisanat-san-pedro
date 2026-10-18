@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { IMG } from "@/lib/image";
 
 export interface ArtisanUI {
   id: string;
@@ -47,8 +48,8 @@ function mapArtisanRow(row: any): ArtisanUI {
     name: row.name,
     metier: row.metier,
     metierCategory: row.metier_category,
-    avatar: row.avatar_url || "",
-    coverImage: row.cover_image_url || "",
+    avatar: IMG.avatar(row.avatar_url),
+    coverImage: IMG.full(row.cover_image_url),
     location: row.location,
     since: row.since ?? new Date().getFullYear(),
     rating: row.rating ?? 0,

@@ -10,7 +10,7 @@ import { categoryAccent } from "@/lib/categoryColors";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { staggerContainer, staggerItem } from "@/lib/motionVariants";
 
-const CATEGORIES = ["Tout", "Sculpture", "Tressage", "Tissage", "Poterie", "Peinture", "Bijouterie", "Botterie", "Accessoires", "Sérigraphie"];
+const CATEGORIES = ["Tout", "Botterie", "Bijouterie", "Peinture", "Sculpture", "Accessoires", "Tressage", "Tissage", "Sérigraphie"];
 const SORT_OPTIONS = [
   { value: "populaires", label: "Populaires" },
   { value: "prix-asc", label: "Prix ↑" },

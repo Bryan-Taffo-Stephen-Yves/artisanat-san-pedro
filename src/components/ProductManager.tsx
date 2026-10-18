@@ -2,33 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Pencil, Trash2, X, Check, Loader2, AlertTriangle, Image as ImageIcon, Plus, Star } from "lucide-react";
 import { toast } from "sonner";
-
-async function compressImage(file: File, maxSize = 1200, quality = 0.82): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    const reader = new FileReader();
-    reader.onload = (e) => { img.src = e.target?.result as string; };
-    reader.onerror = reject;
-    img.onload = () => {
-      let { width, height } = img;
-      if (width > maxSize || height > maxSize) {
-        if (width > height) { height = (height / width) * maxSize; width = maxSize; }
-        else { width = (width / height) * maxSize; height = maxSize; }
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return reject(new Error("no ctx"));
-      ctx.drawImage(img, 0, 0, width, height);
-      canvas.toBlob(
-        (blob) => blob ? resolve(blob) : reject(new Error("compression failed")),
-        "image/jpeg", quality
-      );
-    };
-    img.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
+import { IMG } from "@/lib/image";
+import { compressImage } from "@/lib/compressImage";
 
 interface ManagedProduct {
   id: string;
@@ -59,7 +34,7 @@ interface Props {
 }
 
 const CATEGORIES = [
-  "Sculpture", "Tressage", "Tissage", "Poterie", "Peinture",
+  "Sculpture", "Tressage", "Tissage", "Peinture",
   "Bijouterie", "Botterie", "Accessoires", "Sérigraphie",
 ];
 
@@ -342,7 +317,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
                 <div className="flex items-center gap-3">
                   <div className="w-14 h-14 rounded-lg overflow-hidden bg-surface-container shrink-0">
                     {p.image_url ? (
-                      <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                      <img src={IMG.thumb(p.image_url)} alt={p.name} loading="lazy" className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center" style={{ background: "#E8E0D5" }}>
                         <span className="text-[8px] text-muted-foreground text-center px-1">{p.category}</span>
@@ -402,7 +377,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
                     <div className="grid grid-cols-3 gap-2">
                       {p.gallery.map((url, i) => (
                         <div key={i} className="relative group rounded-lg overflow-hidden aspect-square bg-surface-container">
-                          <img src={url} alt={`photo ${i + 1}`} className="w-full h-full object-cover" />
+                          <img src={IMG.thumb(url)} alt={`photo ${i + 1}`} loading="lazy" className="w-full h-full object-cover" />
                           {p.image_url === url && (
                             <span className="absolute top-1 left-1 bg-primary text-primary-foreground text-[8px] uppercase px-1.5 py-0.5 rounded-full">
                               Principale

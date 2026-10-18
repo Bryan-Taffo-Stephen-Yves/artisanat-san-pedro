@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
@@ -7,28 +7,31 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
 import HomePage from "./pages/HomePage";
-import BoutiquePage from "./pages/BoutiquePage";
-import ProductDetailPage from "./pages/ProductDetailPage";
-import ArtisansPage from "./pages/ArtisansPage";
-import ArtisanProfilePage from "./pages/ArtisanProfilePage";
-import CartPage from "./pages/CartPage";
-import CheckoutPage from "./pages/CheckoutPage";
-import ClientHubPage from "./pages/ClientHubPage";
-import ArtisanDashboardPage from "./pages/ArtisanDashboardPage";
-import ArtisanLoginPage from "./pages/ArtisanLoginPage";
-import AIStudioPage from "./pages/AIStudioPage";
-import DecouvertePage from "./pages/DecouvertePage";
-import AboutPage from "./pages/AboutPage";
-import ContactPage from "./pages/ContactPage";
-import AIChatbot from "./components/AIChatbot";
-import NotFound from "./pages/NotFound";
-import AdminPage from "./pages/AdminPage";
 import { useLenis } from "./hooks/useLenis";
-import { useScrollSkew } from "./hooks/useScrollSkew";
-import { MagneticCursor } from "./components/ui/MagneticCursor";
 import { Preloader } from "./components/ui/Preloader";
 
+// Les pages hors accueil sont chargées à la demande : le premier
+// chargement ne télécharge que le code de la page d'accueil.
+const BoutiquePage = lazy(() => import("./pages/BoutiquePage"));
+const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage"));
+const ArtisansPage = lazy(() => import("./pages/ArtisansPage"));
+const ArtisanProfilePage = lazy(() => import("./pages/ArtisanProfilePage"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
+const ClientHubPage = lazy(() => import("./pages/ClientHubPage"));
+const ArtisanDashboardPage = lazy(() => import("./pages/ArtisanDashboardPage"));
+const ArtisanLoginPage = lazy(() => import("./pages/ArtisanLoginPage"));
+const AIStudioPage = lazy(() => import("./pages/AIStudioPage"));
+const DecouvertePage = lazy(() => import("./pages/DecouvertePage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
+const AIChatbot = lazy(() => import("./components/AIChatbot"));
+
 const queryClient = new QueryClient();
+
+const PageFallback = () => <div className="min-h-screen bg-background" />;
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -36,29 +39,31 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.18, ease: "easeOut" }}
       >
-        <Routes location={location}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/boutique" element={<BoutiquePage />} />
-          <Route path="/boutique/:slug" element={<ProductDetailPage />} />
-          <Route path="/artisans" element={<ArtisansPage />} />
-          <Route path="/artisans/:slug" element={<ArtisanProfilePage />} />
-          <Route path="/panier" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/mon-espace" element={<ClientHubPage />} />
-          <Route path="/espace-artisan/login" element={<ArtisanLoginPage />} />
-          <Route path="/espace-artisan" element={<ArtisanDashboardPage />} />
-          <Route path="/espace-artisan/ia-studio" element={<AIStudioPage />} />
-          <Route path="/decouverte" element={<DecouvertePage />} />
-          <Route path="/a-propos" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<PageFallback />}>
+          <Routes location={location}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/boutique" element={<BoutiquePage />} />
+            <Route path="/boutique/:slug" element={<ProductDetailPage />} />
+            <Route path="/artisans" element={<ArtisansPage />} />
+            <Route path="/artisans/:slug" element={<ArtisanProfilePage />} />
+            <Route path="/panier" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/mon-espace" element={<ClientHubPage />} />
+            <Route path="/espace-artisan/login" element={<ArtisanLoginPage />} />
+            <Route path="/espace-artisan" element={<ArtisanDashboardPage />} />
+            <Route path="/espace-artisan/ia-studio" element={<AIStudioPage />} />
+            <Route path="/decouverte" element={<DecouvertePage />} />
+            <Route path="/a-propos" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   );
@@ -84,50 +89,74 @@ const HomePreloader = () => {
 
 const App = () => {
   useLenis();
-  useScrollSkew();
+
+  // Filet de sécurité : si une image redimensionnée par Supabase échoue,
+  // on retombe sur l'original (une seule écoute pour tout le site).
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const onError = (e: Event) => {
+      const img = e.target as HTMLImageElement;
+      if (img?.tagName !== "IMG" || !img.src.includes("/storage/v1/render/image/public/")) return;
+      img.src = img.src.replace("/storage/v1/render/image/public/", "/storage/v1/object/public/").split("?")[0];
+    };
+    document.addEventListener("error", onError, true);
+    return () => document.removeEventListener("error", onError, true);
+  }, []);
+
+  // Révélations au scroll ([data-san-scroll]) : un seul IntersectionObserver,
+  // alimenté par un MutationObserver quand de nouveaux éléments apparaissent
+  // (au lieu d'un scan du DOM toutes les secondes).
+  useEffect(() => {
+    const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-inview');
+            entry.target.classList.add("is-inview");
+            io.unobserve(entry.target);
           }
         });
       },
-      { rootMargin: '-50px 0px' }
+      { rootMargin: "-50px 0px" }
     );
 
+    let scheduled = false;
     const observe = () => {
-      document.querySelectorAll('[data-san-scroll]').forEach((el) => {
-        observer.observe(el);
-      });
+      scheduled = false;
+      document
+        .querySelectorAll("[data-san-scroll]:not(.is-inview)")
+        .forEach((el) => io.observe(el));
+    };
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(observe);
     };
 
     observe();
-    const interval = setInterval(observe, 1000);
+    const mo = new MutationObserver(schedule);
+    mo.observe(document.body, { childList: true, subtree: true });
 
     return () => {
-      observer.disconnect();
-      clearInterval(interval);
+      io.disconnect();
+      mo.disconnect();
     };
   }, []);
+
   return (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <CartProvider>
-        {typeof window !== 'undefined' && window.innerWidth > 768 && <MagneticCursor />}
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <HomePreloader />
-          <div className="skew-container" style={{ willChange: 'transform' }}>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <CartProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <HomePreloader />
             <AnimatedRoutes />
-          </div>
-          <AIChatbot />
-        </BrowserRouter>
-      </CartProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+            <Suspense fallback={null}>
+              <AIChatbot />
+            </Suspense>
+          </BrowserRouter>
+        </CartProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 
