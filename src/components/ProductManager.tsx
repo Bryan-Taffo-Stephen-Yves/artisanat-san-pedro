@@ -4,7 +4,7 @@ import { Pencil, Trash2, X, Check, Loader2, AlertTriangle, Image as ImageIcon, P
 import { toast } from "sonner";
 import { IMG } from "@/lib/image";
 import { compressImage } from "@/lib/compressImage";
-import { adminApi } from "@/lib/admin";
+import { adminApi, isMissingFunction } from "@/lib/admin";
 
 interface ManagedProduct {
   id: string;
@@ -60,7 +60,17 @@ const ProductManager = ({ artisanId, title = "Gestion des produits", adminCode, 
     try {
       let data: any[] = [];
       if (adminCode) {
-        data = await adminApi.produits(adminCode);
+        try {
+          data = await adminApi.produits(adminCode);
+        } catch (e: any) {
+          if (!isMissingFunction(e.message)) throw e;
+          // Base pas encore à jour : lecture classique de tous les produits
+          const fb = await (supabase as any)
+            .from("products").select("*, artisans(name)")
+            .order("created_at", { ascending: false });
+          if (fb.error) throw fb.error;
+          data = fb.data ?? [];
+        }
       } else if (artisanId) {
         // Inclut les produits en attente / refusés de l'artisan
         const res = await (supabase as any).rpc("artisan_produits", { p_artisan_id: artisanId });

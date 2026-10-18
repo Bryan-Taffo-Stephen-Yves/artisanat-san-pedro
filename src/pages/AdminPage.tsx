@@ -9,6 +9,7 @@ import ProductManager from "@/components/ProductManager";
 import { IMG } from "@/lib/image";
 import {
   adminApi, getAdminCode, setAdminCode, ORDER_STATUS_LABEL,
+  isMissingFunction, legacyCodeOk, isLegacyAdmin, setLegacyAdmin,
   type AdminArtisan, type AdminOrder, type AdminProduct, type AdminStats,
 } from "@/lib/admin";
 
@@ -17,7 +18,7 @@ const dateFr = (d: string | null) =>
   d ? new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }) : "—";
 
 /* ─────────────── ACCÈS (code vérifié par la base) ─────────────── */
-const AdminGate = ({ onSuccess }: { onSuccess: (code: string) => void }) => {
+const AdminGate = ({ onSuccess }: { onSuccess: (code: string, legacy: boolean) => void }) => {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -28,14 +29,16 @@ const AdminGate = ({ onSuccess }: { onSuccess: (code: string) => void }) => {
     setError(null);
     try {
       const ok = await adminApi.verifier(code.trim());
-      if (ok) onSuccess(code.trim());
+      if (ok) onSuccess(code.trim(), false);
       else setError("Code incorrect");
     } catch (e: any) {
-      setError(
-        /admin_verifier/.test(e.message)
-          ? "La mise à jour de la base (script 07) n'est pas encore appliquée."
-          : "Impossible de vérifier le code. Réessayez."
-      );
+      if (isMissingFunction(e.message)) {
+        // Base pas encore à jour : accès transitoire avec l'ancien code
+        if (await legacyCodeOk(code.trim())) onSuccess(code.trim(), true);
+        else setError("Code incorrect");
+      } else {
+        setError("Impossible de vérifier le code. Réessayez.");
+      }
     } finally {
       setLoading(false);
     }
@@ -520,17 +523,55 @@ const AdminDashboard = ({ code, onLogout }: { code: string; onLogout: () => void
 };
 
 /* ─────────────── PAGE ─────────────── */
+// Tant que le script 07 n'est pas appliqué : gestion des produits uniquement
+const LegacyAdmin = ({ onLogout }: { onLogout: () => void }) => (
+  <div className="min-h-screen bg-surface-container-low pb-16">
+    <header className="bg-[#1A120C] text-white px-6 pt-10 pb-8">
+      <div className="max-w-5xl mx-auto flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-[#E8A27C]">Programme PACTE · San Pedro</p>
+          <h1 className="font-serif text-3xl italic mt-1">Administration</h1>
+        </div>
+        <button onClick={onLogout} className="h-10 px-4 rounded-full border border-white/20 inline-flex items-center gap-2 text-[10px] uppercase tracking-widest hover:bg-white/10">
+          <LogOut className="w-3.5 h-3.5" /> Quitter
+        </button>
+      </div>
+    </header>
+    <main className="max-w-5xl mx-auto px-6 pt-8 space-y-6">
+      <p className="flex items-start gap-2 text-sm text-amber-800 bg-amber-50 rounded-xl p-4" role="status">
+        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+        Mise à jour de la base en attente (script SQL 07) : la validation des produits, les
+        artisans, les commandes et les chiffres apparaîtront ici dès qu'elle sera appliquée.
+      </p>
+      <ProductManager adminCode="legacy" title="Gestion des produits" />
+    </main>
+  </div>
+);
+
 const AdminPage = () => {
   const [code, setCode] = useState<string | null>(() => getAdminCode());
+  const [legacy, setLegacy] = useState(() => isLegacyAdmin());
 
   const logout = useCallback(() => {
     setAdminCode(null);
+    setLegacyAdmin(false);
     setCode(null);
+    setLegacy(false);
   }, []);
 
   if (!code) {
-    return <AdminGate onSuccess={(c) => { setAdminCode(c); setCode(c); }} />;
+    return (
+      <AdminGate
+        onSuccess={(c, isLegacy) => {
+          setAdminCode(c);
+          setLegacyAdmin(isLegacy);
+          setCode(c);
+          setLegacy(isLegacy);
+        }}
+      />
+    );
   }
+  if (legacy) return <LegacyAdmin onLogout={logout} />;
   return <AdminDashboard code={code} onLogout={logout} />;
 };
 

@@ -111,7 +111,9 @@ const CheckoutPage = () => {
       setError(
         /plus disponible/.test(rpcError.message)
           ? "Un article de votre panier n'est plus disponible. Retirez-le puis réessayez."
-          : "La commande n'a pas pu être enregistrée. Réessayez dans un instant."
+          : /Could not find the function|schema cache|PGRST202/i.test(rpcError.message)
+            ? "La commande en ligne ouvre très bientôt. Votre panier est conservé : revenez dans quelques jours."
+            : "La commande n'a pas pu être enregistrée. Réessayez dans un instant."
       );
       return;
     }
