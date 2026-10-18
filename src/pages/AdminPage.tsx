@@ -275,7 +275,7 @@ const PhoneField = ({ code, artisan, onSaved }: { code: string; artisan: AdminAr
       setEditing(false);
       onSaved();
     } catch (e: any) {
-      toast.error(e.message.replace(/^.*?:\s*/, "") || "Numéro invalide");
+      toast.error(e.message || "Numéro invalide");
     } finally {
       setBusy(false);
     }
