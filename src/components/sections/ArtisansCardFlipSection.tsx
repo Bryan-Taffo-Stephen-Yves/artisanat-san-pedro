@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useArtisans } from '@/hooks/useArtisans'
 import ArtisanAvatar from '@/components/ArtisanAvatar'
@@ -56,9 +56,14 @@ function SanPedroCardBack({ accent = '#C3622D' }: { accent?: string }) {
   )
 }
 
+const SCROLL_PER_CARD_VH = 32
+
 export function ArtisansCardFlipSection() {
   const sectionRef = useRef<HTMLElement>(null)
-  const [progress, setProgress] = useState(0)
+  const wrapRefs = useRef<(HTMLDivElement | null)[]>([])
+  const flipRefs = useRef<(HTMLDivElement | null)[]>([])
+  const barRefs = useRef<(HTMLDivElement | null)[]>([])
+  const counterRef = useRef<HTMLSpanElement>(null)
   const { data: realArtisans = [] } = useArtisans()
   const artisans = useMemo(
     () =>
@@ -77,37 +82,81 @@ export function ArtisansCardFlipSection() {
     [realArtisans]
   )
 
+  const count = artisans.length
+
+  // Animation pilotée directement sur le DOM (pas de setState à chaque frame)
   useEffect(() => {
-    let rafId: number
-    const handleScroll = () => {
-      cancelAnimationFrame(rafId)
-      rafId = requestAnimationFrame(() => {
-        const section = sectionRef.current
-        if (!section) return
-        const rect = section.getBoundingClientRect()
-        const scroll = window.scrollY || window.pageYOffset
-        const sectionTop = scroll + rect.top
-        const sectionScrollRange = section.offsetHeight - window.innerHeight
-        const raw = (scroll - sectionTop) / sectionScrollRange
-        setProgress(Math.max(0, Math.min(1, raw)))
-      })
+    const section = sectionRef.current
+    if (!section || count === 0) return
+
+    let viewportH = window.innerHeight
+    let lastW = window.innerWidth
+    let lastActive = -1
+    let rafId = 0
+
+    const render = () => {
+      rafId = 0
+      const rect = section.getBoundingClientRect()
+      const range = section.offsetHeight - viewportH
+      const progress = range > 0 ? Math.max(0, Math.min(1, -rect.top / range)) : 0
+      const cardRange = 1 / count
+      const active = Math.min(Math.floor(progress / cardRange), count - 1)
+
+      for (let i = 0; i < count; i++) {
+        const local = Math.max(0, Math.min(1, (progress - i * cardRange) / cardRange))
+        let flipDeg = 0
+        if (local >= 0.7) flipDeg = 180
+        else if (local > 0.3) flipDeg = ((local - 0.3) / 0.4) * 180
+        const flip = flipRefs.current[i]
+        if (flip) flip.style.transform = `rotateY(${flipDeg}deg)`
+      }
+
+      if (active !== lastActive) {
+        lastActive = active
+        wrapRefs.current.forEach((wrap, i) => {
+          if (!wrap) return
+          const isActive = i === active
+          wrap.style.opacity = isActive ? '1' : '0'
+          wrap.style.transform = i < active ? 'translateY(-100vh)' : isActive ? 'translateY(0)' : 'translateY(50px)'
+          wrap.style.pointerEvents = isActive ? 'auto' : 'none'
+        })
+        if (counterRef.current) counterRef.current.textContent = String(active + 1).padStart(2, '0')
+        barRefs.current.forEach((bar, i) => {
+          if (bar) bar.style.width = i < active ? '100%' : i === active ? '50%' : '0%'
+        })
+      }
     }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
+
+    const onScroll = () => {
+      if (!rafId) rafId = requestAnimationFrame(render)
+    }
+    const onResize = () => {
+      if (window.innerWidth !== lastW) {
+        lastW = window.innerWidth
+        viewportH = window.innerHeight
+      }
+      onScroll()
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onResize)
+    render()
     return () => {
       cancelAnimationFrame(rafId)
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
     }
-  }, [])
+  }, [count])
 
-  if (artisans.length === 0) return null
-
-  const cardRange = 1 / artisans.length
-  const activeIndex = Math.min(Math.floor(progress / cardRange), artisans.length - 1)
+  if (count === 0) return null
 
   return (
-    <section ref={sectionRef} className="relative bg-surface-container-low h-[180vh] sm:h-[200vh]">
-      <div className="sticky top-0 h-screen overflow-hidden flex flex-col">
+    <section
+      ref={sectionRef}
+      className="relative bg-surface-container-low"
+      style={{ height: `calc(100svh + ${count * SCROLL_PER_CARD_VH}vh)` }}
+    >
+      <div className="sticky top-0 h-[100svh] overflow-hidden flex flex-col">
         <div className="px-4 sm:px-8 pt-24 pb-4 flex justify-between items-end">
           <div>
             <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">
@@ -122,45 +171,36 @@ export function ArtisansCardFlipSection() {
               Faites défiler
             </p>
             <p className="font-headline text-4xl sm:text-5xl text-primary/20 italic tabular-nums">
-              {String(activeIndex + 1).padStart(2, '0')}
+              <span ref={counterRef}>01</span>
             </p>
             <p className="font-label text-[9px] uppercase tracking-widest text-on-surface-variant">
-              / 0{artisans.length}
+              / {String(count).padStart(2, '0')}
             </p>
           </div>
         </div>
 
         <div className="flex-1 flex items-center justify-center px-4 sm:px-8" style={{ perspective: '1500px' }}>
           {artisans.map((artisan, i) => {
-            const cardStart = i * cardRange
-            const cardEnd = (i + 1) * cardRange
-            const cardProgress = (progress - cardStart) / cardRange
-            const clampedProgress = Math.max(0, Math.min(1, cardProgress))
-            let flipDeg = 0
-            if (clampedProgress < 0.3) flipDeg = 0
-            else if (clampedProgress > 0.7) flipDeg = 180
-            else flipDeg = ((clampedProgress - 0.3) / 0.4) * 180
-            const isActive = progress >= cardStart && progress < cardEnd
-            const isPast = progress >= cardEnd
             return (
               <div
                 key={artisan.id}
+                ref={(el) => { wrapRefs.current[i] = el }}
                 className="absolute"
                 style={{
-                  opacity: isActive ? 1 : 0,
-                  transform: isPast ? 'translateY(-100vh)' : isActive ? 'translateY(0)' : 'translateY(50px)',
+                  opacity: i === 0 ? 1 : 0,
+                  transform: i === 0 ? 'translateY(0)' : 'translateY(50px)',
                   transition: 'opacity 0.4s ease, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                  pointerEvents: isActive ? 'auto' : 'none',
+                  pointerEvents: i === 0 ? 'auto' : 'none',
                   perspective: '1500px',
                 }}
               >
                 <div
+                  ref={(el) => { flipRefs.current[i] = el }}
                   className="w-[280px] h-[420px] sm:w-[340px] sm:h-[500px]"
                   style={{
                     position: 'relative',
                     transformStyle: 'preserve-3d',
-                    transform: `rotateY(${flipDeg}deg)`,
-                    transition: 'transform 0.05s linear',
+                    willChange: 'transform',
                   }}
                 >
                   <div
@@ -235,9 +275,10 @@ export function ArtisansCardFlipSection() {
           {artisans.map((_, i) => (
             <div key={i} className="flex-1 h-0.5 rounded-full bg-outline-variant/20 overflow-hidden">
               <div
+                ref={(el) => { barRefs.current[i] = el }}
                 className="h-full rounded-full"
                 style={{
-                  width: i < activeIndex ? '100%' : i === activeIndex ? '50%' : '0%',
+                  width: i === 0 ? '50%' : '0%',
                   background: 'linear-gradient(90deg, #C3622D, #D28962)',
                   transition: 'width 0.4s ease',
                 }}

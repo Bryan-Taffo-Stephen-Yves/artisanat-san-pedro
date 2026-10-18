@@ -1,5 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
-import { useProducts } from '@/hooks/useProducts'
+import { useProducts, type ProductUI } from '@/hooks/useProducts'
+
+function pickShowcase(all: ProductUI[], n: number): ProductUI[] {
+  const byCat = new Map<string, ProductUI[]>()
+  ;[...all]
+    .filter((p) => p.image)
+    .sort((a, b) => b.rating - a.rating || a.date.localeCompare(b.date))
+    .forEach((p) => {
+      const list = byCat.get(p.category) ?? []
+      list.push(p)
+      byCat.set(p.category, list)
+    })
+  const queues = [...byCat.values()]
+  const picked: ProductUI[] = []
+  while (picked.length < n && queues.some((q) => q.length)) {
+    for (const q of queues) {
+      const next = q.shift()
+      if (next) picked.push(next)
+      if (picked.length >= n) break
+    }
+  }
+  return picked
+}
 
 const ACCENT_BY_CATEGORY: Record<string, string> = {
   Sculpture: '#C3622D', Tressage: '#A55427', Tissage: '#864521',
@@ -13,7 +35,8 @@ export function PinnedProductsSection() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [sectionHeight, setSectionHeight] = useState('400vh')
   const { data: realProducts = [] } = useProducts()
-  const products = realProducts.slice(0, 8).map((p) => ({
+  // 8 pièces : les mieux notées, en alternant les métiers
+  const products = pickShowcase(realProducts, 8).map((p) => ({
     name: p.name,
     artisan: p.artisan,
     price: p.price.toLocaleString('fr-FR'),
@@ -24,7 +47,7 @@ export function PinnedProductsSection() {
   }))
 
   useEffect(() => {
-    const update = () => setSectionHeight(window.innerWidth < 768 ? '320vh' : '400vh')
+    const update = () => setSectionHeight(window.innerWidth < 768 ? '260vh' : '300vh')
     update()
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
@@ -66,7 +89,7 @@ export function PinnedProductsSection() {
 
   return (
     <section ref={sectionRef} className="relative" style={{ height: sectionHeight, background: '#fcf9f4' }}>
-      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+      <div style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <div className="px-4 sm:px-8 mb-8 flex justify-between items-end">
           <div>
             <p className="text-[10px] uppercase tracking-widest text-stone-600 mb-1">NOS CRÉATIONS · COUP DE COEUR</p>
@@ -84,7 +107,6 @@ export function PinnedProductsSection() {
             display: 'flex',
             width: 'max-content',
             willChange: 'transform',
-            transition: 'transform 0.05s linear',
           }}
         >
           {products.map((p, i) => (
@@ -105,6 +127,7 @@ export function PinnedProductsSection() {
                     src={p.image}
                     alt={p.name}
                     loading="lazy"
+                    decoding="async"
                     style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.95) sepia(0.1)' }}
                   />
                 ) : (
@@ -120,7 +143,7 @@ export function PinnedProductsSection() {
                 {p.badge && (
                   <div style={{
                     position: 'absolute', top: '16px', left: '16px',
-                    background: 'rgba(252,249,244,0.85)', backdropFilter: 'blur(12px)',
+                    background: 'rgba(252,249,244,0.94)',
                     padding: '6px 12px', borderRadius: '9999px',
                     fontSize: '9px', fontWeight: 700, letterSpacing: '0.15em',
                     color: '#C3622D', textTransform: 'uppercase',

@@ -187,6 +187,17 @@ html.lenis, html.lenis body { height: auto; }
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* Entrée de la bannière : léger dézoom, joué une seule fois */
+.hero-zoom { animation: heroZoom 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+@keyframes heroZoom {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-zoom, .s-hero-word { animation: none !important; transform: none !important; opacity: 1 !important; }
+}
+
 .s-mask-line { display: block; overflow: hidden; }
 .s-mask-line-inner {
   display: block;
