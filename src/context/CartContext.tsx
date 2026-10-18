@@ -1,5 +1,22 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import type { Product } from "@/data/products";
+
+const STORAGE_KEY = "sp_panier_v1";
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Le panier survit au rafraîchissement de la page (seuls les vrais produits
+// de la base sont conservés : les anciens produits de démo sont ignorés)
+function loadCart(): CartItem[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((i) => i?.product?.id && UUID.test(i.product.id) && i.quantity > 0)
+      : [];
+  } catch {
+    return [];
+  }
+}
 
 export interface CartItem {
   product: Product;
@@ -19,7 +36,15 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(loadCart);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      /* stockage indisponible (navigation privée) : panier en mémoire seulement */
+    }
+  }, [items]);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
     setItems((prev) => {

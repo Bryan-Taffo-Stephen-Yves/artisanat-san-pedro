@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import type { Product } from "@/data/products";
 import { categoryAccent } from "@/lib/categoryColors";
 import { useTilt } from "@/hooks/useTilt";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 interface BoutiqueProductCardProps {
   product: Product;
@@ -14,6 +16,8 @@ const BoutiqueProductCard = ({ product }: BoutiqueProductCardProps) => {
   const navigate = useNavigate();
   const accent = categoryAccent(product.category);
   const { ref, onMouseMove, onMouseLeave } = useTilt(12);
+  const { addItem } = useCart();
+  const outOfStock = product.stock <= 0;
 
   const handleCardClick = () => {
     navigate(`/boutique/${product.slug}`);
@@ -62,6 +66,8 @@ const BoutiqueProductCard = ({ product }: BoutiqueProductCardProps) => {
             setLiked(!liked);
           }}
           className="absolute top-3 right-3 glass-card w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+          aria-label={liked ? `Retirer ${product.name} des favoris` : `Ajouter ${product.name} aux favoris`}
+          aria-pressed={liked}
         >
           <Heart
             className={`w-3.5 h-3.5 ${liked ? "fill-primary text-primary" : "text-inverse-surface"}`}
@@ -97,8 +103,18 @@ const BoutiqueProductCard = ({ product }: BoutiqueProductCardProps) => {
             {product.price.toLocaleString("fr-FR")} <span className="text-[9px]">FCFA</span>
           </span>
           <button
-            onClick={(e) => e.stopPropagation()}
-            className="w-8 h-8 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light flex items-center justify-center text-primary-foreground hover:opacity-90 active:scale-95 transition-all"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (outOfStock) {
+                toast.error("Cette pièce n'est plus en stock");
+                return;
+              }
+              addItem(product);
+              toast.success(`${product.name} ajouté au panier`);
+            }}
+            disabled={outOfStock}
+            aria-label={outOfStock ? `${product.name} : épuisé` : `Ajouter ${product.name} au panier`}
+            className="w-8 h-8 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light flex items-center justify-center text-primary-foreground hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
           >
             <Plus className="w-3.5 h-3.5" />
           </button>

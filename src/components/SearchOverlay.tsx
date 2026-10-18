@@ -2,8 +2,13 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { allProducts } from "@/data/products";
-import { allArtisans } from "@/data/artisans";
+import { useProducts } from "@/hooks/useProducts";
+import { useArtisans } from "@/hooks/useArtisans";
+import ArtisanAvatar from "@/components/ArtisanAvatar";
+
+// Recherche insensible aux accents et à la casse ("serigraphie" trouve "Sérigraphie")
+const normalize = (s: string) =>
+  (s || "").normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 
 interface Props { open: boolean; onClose: () => void; }
 
@@ -11,6 +16,8 @@ const SearchOverlay = ({ open, onClose }: Props) => {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const { data: allProducts = [] } = useProducts();
+  const { data: allArtisans = [] } = useArtisans();
 
   useEffect(() => {
     if (open) {
@@ -31,22 +38,24 @@ const SearchOverlay = ({ open, onClose }: Props) => {
 
   const { products, artisans } = useMemo(() => {
     if (!query.trim()) return { products: [], artisans: [] };
-    const q = query.toLowerCase();
+    const q = normalize(query.trim());
     return {
       products: allProducts
         .filter((p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q)
+          normalize(p.name).includes(q) ||
+          normalize(p.category).includes(q) ||
+          normalize(p.artisan).includes(q)
         )
         .slice(0, 4),
       artisans: allArtisans
         .filter((a) =>
-          a.name.toLowerCase().includes(q) ||
-          a.metier.toLowerCase().includes(q)
+          normalize(a.name).includes(q) ||
+          normalize(a.metier).includes(q) ||
+          normalize(a.metierCategory).includes(q)
         )
         .slice(0, 3),
     };
-  }, [query]);
+  }, [query, allProducts, allArtisans]);
 
   const submitSearch = (q: string) => {
     if (!q.trim()) return;
@@ -91,7 +100,7 @@ const SearchOverlay = ({ open, onClose }: Props) => {
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Suggestions populaires</p>
                 <div className="flex flex-wrap gap-2">
-                  {["Masque Baoulé", "Poterie", "Tissage Bogolan", "Kofi Asante"].map((s) => (
+                  {["Sandales", "Bijouterie", "Sculpture", "Peinture", "Sac"].map((s) => (
                     <button
                       key={s}
                       onClick={() => setQuery(s)}
@@ -121,7 +130,13 @@ const SearchOverlay = ({ open, onClose }: Props) => {
                       onClick={onClose}
                       className="flex items-center gap-4 p-3 rounded-bento hover:bg-surface-container-low transition-colors"
                     >
-                      <img src={a.avatar} alt={a.name} className="w-12 h-12 rounded-full object-cover" />
+                      <ArtisanAvatar
+                        src={a.avatar}
+                        initials={a.initials}
+                        accentColor={a.accentColor}
+                        name={a.name}
+                        className="w-12 h-12 rounded-full shrink-0"
+                      />
                       <div className="flex-1">
                         <p className="font-serif italic text-inverse-surface">{a.name}</p>
                         <p className="text-xs text-muted-foreground">{a.metier} · {a.location}</p>
@@ -143,7 +158,7 @@ const SearchOverlay = ({ open, onClose }: Props) => {
                       onClick={onClose}
                       className="flex items-center gap-4 p-3 rounded-bento hover:bg-surface-container-low transition-colors"
                     >
-                      <img src={p.image} alt={p.name} className="w-16 h-16 rounded-md object-cover" />
+                      <img src={p.image} alt={p.name} loading="lazy" className="w-16 h-16 rounded-md object-cover" />
                       <div className="flex-1 min-w-0">
                         <p className="font-serif italic text-inverse-surface truncate">{p.name}</p>
                         <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{p.category}</p>
