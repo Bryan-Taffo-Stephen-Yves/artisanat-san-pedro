@@ -1,5 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Share2, Star } from "lucide-react";
+import { ArrowLeft, Share2, Star, Heart } from "lucide-react";
+import { toast } from "sonner";
+import { useFavorites } from "@/hooks/useFavorites";
 import { motion } from "framer-motion";
 
 import { useArtisan } from "@/hooks/useArtisans";
@@ -15,6 +17,22 @@ const ArtisanProfilePage = () => {
 
   const { data: artisan, isLoading } = useArtisan(slug);
   const { data: products = [] } = useProductsByArtisan(artisan?.id);
+  const favorites = useFavorites("artisan");
+
+  const share = async () => {
+    const url = window.location.href;
+    const title = artisan ? `${artisan.name} — Mains de San Pedro` : "Mains de San Pedro";
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.success("Lien copié");
+      }
+    } catch {
+      /* partage annulé */
+    }
+  };
 
   if (isLoading) {
     return (
@@ -47,6 +65,7 @@ const ArtisanProfilePage = () => {
       <header className="glass-card fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center">
         <button
           onClick={() => navigate(-1)}
+          aria-label="Retour"
           className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors"
         >
           <ArrowLeft className="w-[18px] h-[18px] text-inverse-surface" />
@@ -54,7 +73,7 @@ const ArtisanProfilePage = () => {
         <Link to="/" className="font-serif text-base italic text-inverse-surface tracking-tight hover:text-primary transition-colors">
           Mains de San Pedro
         </Link>
-        <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors">
+        <button onClick={share} aria-label="Partager cette page" className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors">
           <Share2 className="w-[18px] h-[18px] text-inverse-surface" />
         </button>
       </header>
@@ -100,6 +119,14 @@ const ArtisanProfilePage = () => {
               <span className="text-xs text-muted-foreground">{artisan.location}, Côte d'Ivoire</span>
             </div>
           </div>
+          <button
+            onClick={() => favorites.toggle(artisan.id, artisan.name)}
+            aria-pressed={favorites.isFavorite(artisan.id)}
+            aria-label={favorites.isFavorite(artisan.id) ? `Retirer ${artisan.name} des favoris` : `Ajouter ${artisan.name} aux favoris`}
+            className="w-11 h-11 shrink-0 rounded-full border border-border/30 flex items-center justify-center hover:bg-primary/5 transition-colors"
+          >
+            <Heart className={`w-5 h-5 ${favorites.isFavorite(artisan.id) ? "fill-primary text-primary" : "text-inverse-surface"}`} />
+          </button>
         </div>
       </div>
 
@@ -111,7 +138,7 @@ const ArtisanProfilePage = () => {
         animate="visible"
       >
         {[
-          { value: artisan.productsCount, label: "Œuvres" },
+          { value: products.length, label: "Œuvres" },
           { value: artisan.reviews, label: "Avis" },
           { value: artisan.rating.toString(), label: "Note" },
           { value: artisan.since.toString(), label: "Depuis" },

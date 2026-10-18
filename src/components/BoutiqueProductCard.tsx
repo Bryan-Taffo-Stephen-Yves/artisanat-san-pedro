@@ -1,18 +1,19 @@
 import { Heart, Plus, Star } from "lucide-react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Product } from "@/data/products";
 import { categoryAccent } from "@/lib/categoryColors";
 import { useTilt } from "@/hooks/useTilt";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface BoutiqueProductCardProps {
   product: Product;
 }
 
 const BoutiqueProductCard = ({ product }: BoutiqueProductCardProps) => {
-  const [liked, setLiked] = useState(false);
+  const favorites = useFavorites("product");
+  const liked = favorites.isFavorite(product.id);
   const navigate = useNavigate();
   const accent = categoryAccent(product.category);
   const { ref, onMouseMove, onMouseLeave } = useTilt(12);
@@ -63,7 +64,7 @@ const BoutiqueProductCard = ({ product }: BoutiqueProductCardProps) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setLiked(!liked);
+            favorites.toggle(product.id, product.name);
           }}
           className="absolute top-3 right-3 glass-card w-8 h-8 rounded-full flex items-center justify-center transition-colors"
           aria-label={liked ? `Retirer ${product.name} des favoris` : `Ajouter ${product.name} aux favoris`}
