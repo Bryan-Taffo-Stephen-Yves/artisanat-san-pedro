@@ -84,14 +84,19 @@ const AIStudioPage = () => {
     setIsPublishing(false);
 
     if (result.ok) {
-      setFeedback({ type: "ok", msg: "Produit publié avec succès !" });
+      setFeedback({
+        type: "ok",
+        msg: result.status === "pending"
+          ? "Merci ! Votre produit est envoyé à l'équipe PACTE. Il apparaîtra sur le site dès qu'il sera validé."
+          : "Produit publié avec succès !",
+      });
       // Réinitialise le formulaire
       setProductName(""); setPrice(""); setStock("");
       setCategory(PRODUCT_CATEGORIES[0]);
       setImageFile(null); setImagePreview("");
       setDescription(""); setGeneratedText(""); setShowForm(false);
       // Redirige vers le dashboard après un court délai
-      setTimeout(() => navigate("/espace-artisan"), 1400);
+      setTimeout(() => navigate("/espace-artisan"), result.status === "pending" ? 3000 : 1400);
     } else {
       setFeedback({ type: "err", msg: result.error || "Échec de la publication." });
     }
@@ -231,7 +236,7 @@ const AIStudioPage = () => {
           {[
             { step: "1", title: "Décrivez", text: "Quelques mots sur votre œuvre" },
             { step: "2", title: "Générez", text: "L'IA rédige en 5 secondes" },
-            { step: "3", title: "Publiez", text: "Votre fiche est en ligne" },
+            { step: "3", title: "Publiez", text: "L'équipe PACTE vérifie puis met en ligne" },
           ].map((s) => (
             <div key={s.step} className="bg-primary/5 rounded-xl p-4 min-w-[140px] text-center flex-shrink-0">
               <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-2 text-sm font-bold">

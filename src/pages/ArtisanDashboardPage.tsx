@@ -1,22 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package, Eye, ShoppingCart, Star, Sparkles, ChevronRight, AlertTriangle, Check, LogOut } from "lucide-react";
+import { Package, Clock, CalendarPlus, Star, Sparkles, ChevronRight, AlertTriangle, LogOut, Plus } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import ProductManager from "@/components/ProductManager";
 import { useArtisan } from "@/hooks/useArtisans";
-import { useProductsByArtisan } from "@/hooks/useProducts";
+import { useArtisanAllProducts } from "@/hooks/useProducts";
 
 interface ArtisanSession {
   id: string;
   slug: string;
   name: string;
 }
-
-const mockOrders = [
-  { id: "#SP-9402", client: "Chloé Martin", initials: "CM", amount: 45000, status: "pending" as const },
-  { id: "#SP-8731", client: "Jean Dupont", initials: "JD", amount: 32000, status: "shipped" as const },
-  { id: "#SP-7615", client: "Marie Koné", initials: "MK", amount: 18500, status: "pending" as const },
-];
 
 const ArtisanDashboardPage = () => {
   const navigate = useNavigate();
@@ -39,7 +33,7 @@ const ArtisanDashboardPage = () => {
   }, [navigate]);
 
   const { data: artisan } = useArtisan(session?.slug);
-  const { data: artisanProducts = [] } = useProductsByArtisan(session?.id);
+  const { data: products = [], refetch } = useArtisanAllProducts(session?.id);
 
   const handleLogout = () => {
     sessionStorage.removeItem("artisan_connecte");
@@ -57,7 +51,16 @@ const ArtisanDashboardPage = () => {
     );
   }
 
-  const lowStockProducts = artisanProducts.filter((p) => p.stock <= 2);
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const daysLeft = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate() - now.getDate();
+  const monthName = now.toLocaleDateString("fr-FR", { month: "long" });
+
+  const online = products.filter((p) => p.published).length;
+  const pending = products.filter((p) => p.status === "pending").length;
+  const addedThisMonth = products.filter((p) => new Date(p.created_at).getTime() >= monthStart).length;
+  const lowStock = products.filter((p) => p.published && p.stock <= 2);
+
   const displayName = artisan?.name || session.name;
   const displayMetier = artisan?.metier || "";
   const displayRating = artisan?.rating || 0;
@@ -70,7 +73,7 @@ const ArtisanDashboardPage = () => {
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground">TABLEAU DE BORD</p>
           <h1 className="font-serif text-3xl italic text-foreground">{displayName}</h1>
           {displayMetier && (
-            <span className="inline-block mt-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-[9px] uppercase tracking-widest backdrop-blur-sm">
+            <span className="inline-block mt-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-[9px] uppercase tracking-widest">
               {displayMetier}
             </span>
           )}
@@ -84,13 +87,38 @@ const ArtisanDashboardPage = () => {
         </button>
       </div>
 
-      {/* Stats Bento */}
+      {/* Rappel du mois : rien de publié ce mois-ci */}
+      {addedThisMonth === 0 && (
+        <div className="px-6 mt-4">
+          <div className="rounded-2xl p-5 bg-[#1A120C] text-white" role="status">
+            <div className="flex items-start gap-3">
+              <CalendarPlus className="w-7 h-7 text-[#E8A27C] shrink-0" strokeWidth={1.6} />
+              <div>
+                <p className="font-serif text-xl italic">Nouvelle création en {monthName} ?</p>
+                <p className="text-sm text-white/75 mt-1 leading-relaxed">
+                  Vous n'avez encore rien ajouté ce mois-ci. Les clients reviennent voir les
+                  nouveautés : ajoutez au moins une pièce
+                  {daysLeft > 0 ? ` (il reste ${daysLeft} jour${daysLeft > 1 ? "s" : ""})` : " (dernier jour du mois)"}.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate("/espace-artisan/ia-studio")}
+              className="mt-4 w-full h-14 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-white inline-flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-widest active:scale-[0.98] transition-transform"
+            >
+              <Plus className="w-5 h-5" /> Ajouter une création
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Chiffres réels */}
       <div className="px-6 mt-6 grid grid-cols-2 gap-3">
         {[
-          { icon: Package, value: artisanProducts.length.toString(), label: "Total Produits", bg: "bg-surface-container-low", iconColor: "text-primary" },
-          { icon: Eye, value: "1,2k", label: "Vues (mois)", bg: "bg-[#F6E7DD]", iconColor: "text-[#A55427]" },
-          { icon: ShoppingCart, value: "8", label: "Commandes", bg: "bg-[#F6E7E0]", iconColor: "text-[#864521]" },
-          { icon: Star, value: displayRating.toString(), label: "Note Globale", bg: "bg-surface-container-low", iconColor: "text-primary" },
+          { icon: Package, value: online, label: "En ligne", bg: "bg-surface-container-low", iconColor: "text-primary" },
+          { icon: Clock, value: pending, label: "En validation", bg: "bg-[#F6E7DD]", iconColor: "text-[#A55427]" },
+          { icon: CalendarPlus, value: addedThisMonth, label: `Ajoutés en ${monthName}`, bg: "bg-[#F6E7E0]", iconColor: "text-[#864521]" },
+          { icon: Star, value: displayRating || "—", label: "Note globale", bg: "bg-surface-container-low", iconColor: "text-primary" },
         ].map((stat) => (
           <div key={stat.label} className={`${stat.bg} p-5 rounded-xl`}>
             <stat.icon className={`w-5 h-5 mb-2 ${stat.iconColor}`} />
@@ -100,22 +128,29 @@ const ArtisanDashboardPage = () => {
         ))}
       </div>
 
-      {/* Stock Alert */}
-      {lowStockProducts.length > 0 && (
+      {pending > 0 && (
+        <p className="px-6 mt-3 text-xs text-muted-foreground">
+          {pending} création(s) en cours de vérification par l'équipe PACTE : elles apparaîtront sur le site dès leur validation.
+        </p>
+      )}
+
+      {/* Stock faible */}
+      {lowStock.length > 0 && (
         <div className="px-6 mt-6">
           <div className="bg-[#F6E7E0] p-4 rounded-xl flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-[#864521] shrink-0 mt-0.5" />
             <div>
               <p className="font-medium text-[#864521] text-sm">Stock faible</p>
               <p className="text-xs text-[#864521]/80 mt-0.5">
-                {lowStockProducts.length} produit(s) bientôt épuisé(s).
+                {lowStock.length} produit(s) bientôt épuisé(s) : {lowStock.slice(0, 3).map((p) => p.name).join(", ")}
+                {lowStock.length > 3 ? "…" : ""}
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* IA Studio CTA */}
+      {/* Ajouter un produit (Studio IA) */}
       <div className="px-6 mt-6">
         <button
           onClick={() => navigate("/espace-artisan/ia-studio")}
@@ -124,71 +159,17 @@ const ArtisanDashboardPage = () => {
           <div className="flex items-center gap-3">
             <Sparkles className="w-6 h-6" />
             <div className="text-left">
-              <p className="font-serif text-lg italic">Studio IA</p>
-              <p className="text-xs text-white/80">Améliore tes photos et descriptions</p>
+              <p className="font-serif text-lg italic">Ajouter une création</p>
+              <p className="text-xs text-white/80">Photo, prix, et l'IA écrit la description</p>
             </div>
           </div>
           <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
-      {/* Mes Produits */}
-      <div className="px-6 mt-8">
-        <h2 className="font-serif text-xl italic text-foreground mb-4">Mes Créations</h2>
-        {artisanProducts.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Aucun produit pour le moment.</p>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {artisanProducts.map((p) => (
-              <div key={p.id} className="bg-surface-container-low rounded-xl overflow-hidden">
-                <div className="aspect-square overflow-hidden">
-                  {p.image ? (
-                    <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center" style={{ background: "#E8E0D5" }}>
-                      <span className="font-serif italic text-xs text-muted-foreground">{p.category}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="p-3">
-                  <p className="font-serif text-sm text-foreground line-clamp-1">{p.name}</p>
-                  <p className="font-serif text-primary text-sm mt-0.5">{p.price.toLocaleString("fr-FR")} FCFA</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Gestion des produits (édition + suppression) */}
-      <div className="px-6 mt-8">
-        <ProductManager artisanId={session.id} title="Gérer mes produits" />
-      </div>
-
-      {/* Commandes récentes */}
+      {/* Mes produits : modification, photos, suppression, statut de validation */}
       <div className="px-6 mt-8 pb-32">
-        <h2 className="font-serif text-xl italic text-foreground mb-4">Commandes récentes</h2>
-        <div className="space-y-3">
-          {mockOrders.map((order) => (
-            <div key={order.id} className="bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary text-xs font-bold">{order.initials}</span>
-                </div>
-                <div>
-                  <p className="text-sm text-foreground font-medium">{order.client}</p>
-                  <p className="text-[10px] text-muted-foreground">{order.id}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="font-serif text-foreground">{order.amount.toLocaleString("fr-FR")} F</p>
-                <span className={`text-[9px] uppercase tracking-widest ${order.status === "pending" ? "text-[#864521]" : "text-[#A55427]"}`}>
-                  {order.status === "pending" ? "En attente" : "Expédiée"}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+        <ProductManager artisanId={session.id} title="Mes créations" onChange={() => refetch()} />
       </div>
     </AppShell>
   );

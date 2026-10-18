@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Pencil, Trash2, X, Check, Loader2, AlertTriangle, Image as ImageIcon, Plus, Star } from "lucide-react";
+import { Pencil, Trash2, X, Check, Loader2, AlertTriangle, Image as ImageIcon, Plus, Star, Eye, EyeOff, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { IMG } from "@/lib/image";
 import { compressImage } from "@/lib/compressImage";
+import { adminApi } from "@/lib/admin";
 
 interface ManagedProduct {
   id: string;
@@ -16,6 +17,9 @@ interface ManagedProduct {
   image_url: string;
   gallery: string[];
   artisan_name?: string;
+  status: "pending" | "approved" | "rejected";
+  published: boolean;
+  moderation_note: string | null;
 }
 
 interface EditForm {
@@ -31,6 +35,9 @@ interface Props {
   // If undefined → all products (admin mode).
   artisanId?: string;
   title?: string;
+  // Mode admin : lecture de tous les produits via la fonction sécurisée
+  adminCode?: string;
+  onChange?: () => void;
 }
 
 const CATEGORIES = [
@@ -38,7 +45,7 @@ const CATEGORIES = [
   "Bijouterie", "Botterie", "Accessoires", "Sérigraphie",
 ];
 
-const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) => {
+const ProductManager = ({ artisanId, title = "Gestion des produits", adminCode, onChange }: Props) => {
   const [products, setProducts] = useState<ManagedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -51,13 +58,23 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
   const loadProducts = async () => {
     setLoading(true);
     try {
-      let query = (supabase as any)
-        .from("products")
-        .select("*, artisans(name)")
-        .order("created_at", { ascending: false });
-      if (artisanId) query = query.eq("artisan_id", artisanId);
-      const { data, error } = await query;
-      if (error) throw error;
+      let data: any[] = [];
+      if (adminCode) {
+        data = await adminApi.produits(adminCode);
+      } else if (artisanId) {
+        // Inclut les produits en attente / refusés de l'artisan
+        const res = await (supabase as any).rpc("artisan_produits", { p_artisan_id: artisanId });
+        if (!res.error) {
+          data = res.data ?? [];
+        } else {
+          // Base pas encore mise à jour : lecture classique (produits publiés)
+          const fb = await (supabase as any)
+            .from("products").select("*").eq("artisan_id", artisanId)
+            .order("created_at", { ascending: false });
+          if (fb.error) throw fb.error;
+          data = fb.data ?? [];
+        }
+      }
       const mapped: ManagedProduct[] = (data ?? []).map((row: any) => ({
         id: row.id,
         slug: row.slug,
@@ -68,7 +85,10 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
         category: row.category,
         image_url: row.image_url ?? "",
         gallery: Array.isArray(row.gallery) ? row.gallery : (row.image_url ? [row.image_url] : []),
-        artisan_name: row.artisans?.name ?? "",
+        artisan_name: row.artisan_name ?? row.artisans?.name ?? "",
+        status: row.status ?? "approved",
+        published: row.published ?? true,
+        moderation_note: row.moderation_note ?? null,
       }));
       setProducts(mapped);
     } catch (e) {
@@ -82,7 +102,23 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
   useEffect(() => {
     loadProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artisanId]);
+  }, [artisanId, adminCode]);
+
+  const refresh = () => {
+    loadProducts();
+    onChange?.();
+  };
+
+  const toggleVisibility = async (p: ManagedProduct) => {
+    if (!adminCode) return;
+    try {
+      await adminApi.moderer(adminCode, p.id, p.published ? "hide" : "show");
+      toast.success(p.published ? "Produit masqué du site" : "Produit de nouveau visible");
+      refresh();
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
 
   const startEdit = (p: ManagedProduct) => {
     setEditingId(p.id);
@@ -115,7 +151,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
       toast.success("Produit modifié");
       setEditingId(null);
       setForm({ name: "", price: 0, description: "", stock: 0, category: "" });
-      loadProducts();
+      refresh();
     } catch (e) {
       console.error(e);
       toast.error("Erreur lors de la modification");
@@ -131,7 +167,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
       if (error) throw error;
       toast.success("Produit supprimé");
       setDeletingId(null);
-      loadProducts();
+      refresh();
     } catch (e) {
       console.error(e);
       toast.error("Erreur lors de la suppression");
@@ -166,7 +202,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
         .eq("id", product.id);
       if (error) throw error;
       toast.success(`${newUrls.length} photo(s) ajoutée(s)`);
-      loadProducts();
+      refresh();
     } catch (e) {
       console.error(e);
       toast.error("Erreur lors de l'ajout des photos");
@@ -186,7 +222,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
         .eq("id", product.id);
       if (error) throw error;
       toast.success("Photo supprimée");
-      loadProducts();
+      refresh();
     } catch (e) {
       console.error(e);
       toast.error("Erreur lors de la suppression de la photo");
@@ -201,7 +237,7 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
         .eq("id", product.id);
       if (error) throw error;
       toast.success("Photo principale définie");
-      loadProducts();
+      refresh();
     } catch (e) {
       console.error(e);
       toast.error("Erreur");
@@ -326,26 +362,52 @@ const ProductManager = ({ artisanId, title = "Gestion des produits" }: Props) =>
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-serif text-sm text-foreground truncate">{p.name}</p>
+                    {p.status === "pending" && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700">
+                        <Clock className="w-3 h-3" /> En attente de validation
+                      </span>
+                    )}
+                    {p.status === "rejected" && (
+                      <span className="block text-[10px] font-bold text-red-700">
+                        Refusé{p.moderation_note ? ` : ${p.moderation_note}` : ""}
+                      </span>
+                    )}
+                    {p.status === "approved" && !p.published && (
+                      <span className="text-[10px] font-bold text-muted-foreground">Masqué du site</span>
+                    )}
                     <p className="text-xs text-muted-foreground">
                       {p.price.toLocaleString("fr-FR")} FCFA · Stock {p.stock}
                       {!artisanId && p.artisan_name ? ` · ${p.artisan_name}` : ""}
                     </p>
                   </div>
                   <div className="flex gap-2 shrink-0">
+                    {adminCode && p.status === "approved" && (
+                      <button
+                        onClick={() => toggleVisibility(p)}
+                        aria-label={p.published ? `Masquer ${p.name} du site` : `Réafficher ${p.name}`}
+                        title={p.published ? "Masquer du site" : "Réafficher"}
+                        className="w-9 h-9 rounded-full bg-background flex items-center justify-center text-foreground hover:bg-muted/50"
+                      >
+                        {p.published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    )}
                     <button
                       onClick={() => setManagingPhotosId(managingPhotosId === p.id ? null : p.id)}
+                      aria-label={`Photos de ${p.name}`}
                       className="w-9 h-9 rounded-full bg-background flex items-center justify-center text-foreground hover:bg-muted/50"
                     >
                       <ImageIcon className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => startEdit(p)}
+                      aria-label={`Modifier ${p.name}`}
                       className="w-9 h-9 rounded-full bg-background flex items-center justify-center text-primary hover:bg-primary/10"
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setDeletingId(p.id)}
+                      aria-label={`Supprimer ${p.name}`}
                       className="w-9 h-9 rounded-full bg-background flex items-center justify-center text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="w-4 h-4" />

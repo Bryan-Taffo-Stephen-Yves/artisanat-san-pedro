@@ -94,6 +94,42 @@ export function useProduct(slug: string | undefined) {
   });
 }
 
+export interface ArtisanProductRow {
+  id: string;
+  name: string;
+  published: boolean;
+  status: "pending" | "approved" | "rejected";
+  stock: number;
+  created_at: string;
+}
+
+// Tous les produits d'un artisan, y compris en attente / refusés
+// (repli sur les produits publiés si la base n'est pas encore à jour)
+export function useArtisanAllProducts(artisanId: string | undefined) {
+  return useQuery({
+    queryKey: ["artisan-all-products", artisanId],
+    enabled: !!artisanId,
+    queryFn: async (): Promise<ArtisanProductRow[]> => {
+      const res = await (supabase as any).rpc("artisan_produits", { p_artisan_id: artisanId });
+      let rows: any[] = res.data ?? [];
+      if (res.error) {
+        const fb = await (supabase as any)
+          .from("products").select("id, name, published, stock, created_at").eq("artisan_id", artisanId);
+        if (fb.error) throw fb.error;
+        rows = fb.data ?? [];
+      }
+      return rows.map((r) => ({
+        id: r.id,
+        name: r.name,
+        published: r.published ?? true,
+        status: r.status ?? "approved",
+        stock: r.stock ?? 0,
+        created_at: r.created_at,
+      }));
+    },
+  });
+}
+
 export function useProductsByArtisan(artisanId: string | undefined) {
   return useQuery({
     queryKey: ["products-by-artisan", artisanId],

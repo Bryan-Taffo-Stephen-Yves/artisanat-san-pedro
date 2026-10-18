@@ -42,6 +42,8 @@ export interface CreateProductResult {
   ok: boolean;
   error?: string;
   productId?: string;
+  // "pending" : envoyé à l'équipe PACTE pour validation avant publication
+  status?: "pending" | "approved" | "rejected";
 }
 
 /**
@@ -112,14 +114,15 @@ export async function createProduct(input: NewProductInput): Promise<CreateProdu
     const { data, error } = await (supabase as any)
       .from("products")
       .insert(row)
-      .select("id")
+      .select("*")
       .single();
 
     if (error) {
       return { ok: false, error: `Publication impossible : ${error.message}` };
     }
 
-    return { ok: true, productId: data?.id };
+    // La base décide du statut (validation obligatoire sauf artisan de confiance)
+    return { ok: true, productId: data?.id, status: data?.status ?? (data?.published === false ? "pending" : "approved") };
   } catch (e: any) {
     return { ok: false, error: e?.message || "Erreur inattendue." };
   }
