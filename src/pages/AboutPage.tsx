@@ -3,13 +3,22 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { staggerContainer, staggerItem, scaleReveal } from "@/lib/motionVariants";
+import { useArtisans } from "@/hooks/useArtisans";
+import { useProducts } from "@/hooks/useProducts";
 
-const stats = [
-  { value: "24", label: "Artisans PACTE" },
-  { value: "80+", label: "Œuvres référencées" },
-  { value: "9", label: "Corps de métiers" },
-  { value: "2026", label: "Année de lancement" },
-];
+// Chiffres réels, calculés en direct depuis la base
+const useImpactStats = () => {
+  const { data: artisans = [] } = useArtisans();
+  const { data: products = [] } = useProducts();
+  const metiers = new Set(artisans.map((a) => a.metierCategory)).size;
+  const show = (n: number) => (n > 0 ? String(n) : "—");
+  return [
+    { value: show(artisans.length), label: "Artisans PACTE" },
+    { value: show(products.length), label: "Œuvres en ligne" },
+    { value: show(metiers), label: "Corps de métiers" },
+    { value: "2026", label: "Année de lancement" },
+  ];
+};
 
 const MISSION_BORDERS = ["#C3622D", "#A55427", "#864521"];
 
@@ -42,7 +51,9 @@ const partnerLogos = [
   },
 ];
 
-const AboutPage = () => (
+const AboutPage = () => {
+  const stats = useImpactStats();
+  return (
   <AppShell>
     {/* Hero */}
     <ScrollReveal variants={scaleReveal} className="bg-[#2C1810] rounded-[2rem] p-8 mx-6 mt-6">
@@ -59,9 +70,9 @@ const AboutPage = () => (
       <p className="text-sm font-light leading-relaxed text-white/70">
         La vitrine numérique officielle des artisans de la région de San Pedro,
         en Côte d'Ivoire. Portée par le programme PACTE, la plateforme connecte
-        des créateurs d'exception aux marchés local, national et international, à
-        travers neuf corps de métiers et une expérience d'achat moderne, sécurisée
-        et culturellement ancrée.
+        des créateurs d'exception aux marchés local, national et international :
+        botterie, bijouterie, peinture, sculpture, accessoires, vannerie et
+        sérigraphie.
       </p>
     </ScrollReveal>
 
@@ -168,6 +179,7 @@ const AboutPage = () => (
 
     <div className="pb-16" />
   </AppShell>
-);
+  );
+};
 
 export default AboutPage;

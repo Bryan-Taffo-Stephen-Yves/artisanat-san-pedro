@@ -20,7 +20,7 @@ const ArtisansPage = () => {
   const filtered = useMemo(() => {
     if (selectedMetier === "Tous") return allArtisans;
     return allArtisans.filter((a) => a.metierCategory === selectedMetier);
-  }, [selectedMetier]);
+  }, [selectedMetier, allArtisans]);
 
   return (
     <AppShell>
@@ -33,7 +33,7 @@ const ArtisansPage = () => {
           Maîtres Artisans
         </h1>
         <p className="text-sm text-muted-foreground font-light mt-2">
-          240 créateurs exceptionnels de San Pedro, Côte d'Ivoire
+          {allArtisans.length > 0 ? `${allArtisans.length} créateurs` : "Les créateurs"} de San Pedro, Côte d'Ivoire
         </p>
       </ScrollReveal>
 
