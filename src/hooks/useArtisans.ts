@@ -34,6 +34,10 @@ const ACCENT_BY_CATEGORY: Record<string, string> = {
   Sérigraphie: "#C3622D",
 };
 
+// Colonnes publiques uniquement : jamais pin_code, login_id, email ni téléphone
+const PUBLIC_COLUMNS =
+  "id, slug, name, metier, metier_category, location, since, bio, avatar_url, cover_image_url, rating, reviews_count, products_count, featured, published, diagnostic_order";
+
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
@@ -68,7 +72,7 @@ export function useArtisans() {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("artisans")
-        .select("*")
+        .select(PUBLIC_COLUMNS)
         .eq("published", true)
         .order("diagnostic_order", { ascending: true });
       if (error) throw error;
@@ -85,7 +89,7 @@ export function useArtisan(slug: string | undefined) {
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("artisans")
-        .select("*")
+        .select(PUBLIC_COLUMNS)
         .eq("slug", slug as string)
         .maybeSingle();
       if (error) throw error;
