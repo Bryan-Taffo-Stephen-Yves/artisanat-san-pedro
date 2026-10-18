@@ -1,1 +1,6 @@
 project_id = "iucgnqcmhqhwvvkmwnnc"
+
+# Le webhook Jèko n'envoie pas de jeton Supabase : il est authentifié par sa
+# signature HMAC (Jeko-Signature), vérifiée dans la fonction.
+[functions.jeko-webhook]
+verify_jwt = false

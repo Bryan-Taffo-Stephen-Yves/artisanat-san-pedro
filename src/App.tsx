@@ -27,6 +27,7 @@ const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
+const PaymentReturnPage = lazy(() => import("./pages/PaymentReturnPage"));
 const AIChatbot = lazy(() => import("./components/AIChatbot"));
 
 const queryClient = new QueryClient();
@@ -53,6 +54,7 @@ const AnimatedRoutes = () => {
             <Route path="/artisans/:slug" element={<ArtisanProfilePage />} />
             <Route path="/panier" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/paiement/retour" element={<PaymentReturnPage />} />
             <Route path="/mon-espace" element={<ClientHubPage />} />
             <Route path="/espace-artisan/login" element={<ArtisanLoginPage />} />
             <Route path="/espace-artisan" element={<ArtisanDashboardPage />} />

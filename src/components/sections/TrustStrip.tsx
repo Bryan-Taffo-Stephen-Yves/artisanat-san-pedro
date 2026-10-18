@@ -10,9 +10,9 @@ const TRUST_ITEMS = [
   },
   {
     icon: Plane,
-    title: "Expédition nationale & internationale",
+    title: "Livraison organisée",
     description:
-      "Livraison dans toute la Côte d'Ivoire et à l'international sous 7 à 14 jours.",
+      "L'équipe PACTE vous contacte après la commande pour convenir de la livraison.",
   },
   {
     icon: BadgeCheck,
@@ -24,7 +24,7 @@ const TRUST_ITEMS = [
     icon: ShieldCheck,
     title: "Paiements sécurisés",
     description:
-      "Wave, Orange Money, MTN MoMo, Stripe et PayPal acceptés. Transactions 100% sécurisées.",
+      "Wave, Orange Money, MTN MoMo, Moov Money et Djamo, via Jèko. Aucun code saisi sur le site.",
   },
 ];
 
