@@ -36,15 +36,6 @@ const mockProducts = [
     price: 32000,
     image: productTextile,
   },
-  {
-    id: "4",
-    name: "Bougeoir Fer Forgé",
-    category: "Forge",
-    categoryCode: "FOR",
-    artisan: "Moussa Traoré",
-    price: 27500,
-    image: productIronwork,
-  },
 ];
 
 const ProductCard = ({ product }: { product: typeof mockProducts[0] }) => {

@@ -13,7 +13,7 @@ const MonthlySelectionSection = () => {
   const { data: allArtisans = [] } = useArtisans();
 
   const selection = useMemo<ProductUI[]>(() => {
-    const targets = ["Sculpture", "Poterie", "Tissage", "Forge"];
+    const targets = ["Sculpture", "Poterie", "Tissage", "Bijouterie"];
     const picked: ProductUI[] = [];
     for (const cat of targets) {
       const found = allProducts.find(

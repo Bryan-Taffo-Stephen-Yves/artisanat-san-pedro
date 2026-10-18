@@ -136,7 +136,7 @@ const ArtisanMap = () => {
     { cx: 120, cy: 80, name: "Kofi Asante", metier: "Sculpture" },
     { cx: 200, cy: 120, name: "Fatou Diallo", metier: "Poterie" },
     { cx: 80, cy: 160, name: "Aya Coulibaly", metier: "Tressage" },
-    { cx: 260, cy: 90, name: "Moussa Traoré", metier: "Forge" },
+    { cx: 260, cy: 90, name: "Zorom Abdoulaye", metier: "Bijouterie" },
     { cx: 160, cy: 200, name: "Abou Koné", metier: "Peinture" },
     { cx: 300, cy: 160, name: "Amara Koné", metier: "Tissage" },
     { cx: 220, cy: 220, name: "Ibrahim Soro", metier: "Bijouterie" },
@@ -191,7 +191,7 @@ const seedEvents: FeedEvent[] = [
 ];
 
 const cycleEvents: Omit<FeedEvent, "time">[] = [
-  { icon: "view", title: "Nouvelle vue", detail: "Bracelet Akan · Moussa Traoré" },
+  { icon: "view", title: "Nouvelle vue", detail: "Bracelet Akan · Zorom Abdoulaye" },
   { icon: "cart", title: "Commande initiée", detail: "Écharpe Bogolan · 12 000 FCFA" },
   { icon: "chat", title: "Chat IA", detail: "Question: délai de livraison vers Paris" },
   { icon: "cart", title: "Ajout panier", detail: "Masque Dan · 72 000 FCFA" },
@@ -243,7 +243,7 @@ const AdminDashboard = () => {
     { name: "Kofi Asante", metier: "Sculpture", rev: "487 000 FCFA", trend: "↑+23%", up: true },
     { name: "Fatou Diallo", metier: "Poterie", rev: "312 000 FCFA", trend: "↑+18%", up: true },
     { name: "Aya Coulibaly", metier: "Tressage", rev: "278 000 FCFA", trend: "↑+9%", up: true },
-    { name: "Moussa Traoré", metier: "Forge", rev: "195 000 FCFA", trend: "↓-3%", up: false },
+    { name: "Zorom Abdoulaye", metier: "Bijouterie", rev: "195 000 FCFA", trend: "↓-3%", up: false },
     { name: "Abou Koné", metier: "Peinture", rev: "143 000 FCFA", trend: "↑+31%", up: true },
   ];
 

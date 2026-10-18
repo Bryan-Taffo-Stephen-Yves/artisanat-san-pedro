@@ -59,7 +59,7 @@ interface Props {
 }
 
 const CATEGORIES = [
-  "Sculpture", "Tressage", "Tissage", "Poterie", "Forge", "Peinture",
+  "Sculpture", "Tressage", "Tissage", "Poterie", "Peinture",
   "Bijouterie", "Botterie", "Accessoires", "Sérigraphie",
 ];
 

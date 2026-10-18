@@ -6,8 +6,11 @@ const CRAFT_NAMES = [
   'Tressage',
   'Tissage',
   'Poterie',
-  'Forge',
   'Peinture',
+  'Bijouterie',
+  'Botterie',
+  'Accessoires',
+  'Sérigraphie',
 ]
 
 export function Cascade() {
@@ -41,7 +44,7 @@ export function Cascade() {
   return (
     <div ref={ref} className="s-cascade py-12 px-6 overflow-hidden">
       <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-6">
-        Six Corps de Métiers
+        Nos Corps de Métiers
       </p>
       <div className="relative h-32 overflow-hidden">
         {CRAFT_NAMES.map((name, i) => (

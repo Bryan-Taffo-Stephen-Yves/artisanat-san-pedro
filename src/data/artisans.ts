@@ -56,14 +56,6 @@ export const allArtisans: Artisan[] = [
     bio: "Yao Kouadio tisse sur un métier à tisser traditionnel hérité de quatre générations. Ses créations allient motifs ancestraux et sensibilité contemporaine, utilisant des teintures végétales naturelles qu'il prépare lui-même à partir de plantes locales. Chaque pièce raconte une histoire de la culture Bété.",
   },
   {
-    id: "a4", slug: "moussa-traore", name: "Moussa Traoré",
-    metier: "Forgeron", metierCategory: "Forge",
-    avatar: artisanMoussa, coverImage: catForge,
-    location: "San Pedro", since: 2001,
-    rating: 4.5, reviews: 23, productsCount: 19,
-    bio: "Moussa Traoré forge le fer comme ses ancêtres forgerons Sénoufo. Dans sa forge traditionnelle, il transforme le métal brut en œuvres d'art fonctionnelles — bougeoirs, crochets, sculptures — avec pour seuls outils le marteau, l'enclume et le feu. Chaque marque de marteau est sa signature.",
-  },
-  {
     id: "a5", slug: "fatou-kone", name: "Fatou Koné",
     metier: "Tresseuse", metierCategory: "Tressage",
     avatar: artisanFatou, coverImage: catTressage,

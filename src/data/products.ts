@@ -70,14 +70,6 @@ export const allProducts: Product[] = [
     description: "Un châle d'une douceur remarquable, tissé à la main sur un métier traditionnel par le maître tisserand Yao Kouadio. Les teintes chaudes de terre et d'ocre sont obtenues grâce à des teintures végétales naturelles. Chaque pièce nécessite plus de 40 heures de travail. Dimensions : 200 × 70 cm.",
   },
   {
-    id: "4", slug: "bougeoir-fer-forge",
-    name: "Bougeoir Fer Forgé", category: "Forge", categoryCode: "FOR",
-    artisan: "Moussa Traoré", ...artisanProfiles.moussa,
-    price: 27500, image: productIronwork,
-    rating: 4.3, reviews: 6, date: "2026-02-10", stock: 3,
-    description: "Bougeoir en fer forgé aux courbes organiques, martelé à la main dans la forge de Moussa Traoré. La forme sinueuse évoque les lianes de la forêt tropicale. Chaque pièce est unique, portant les marques du marteau comme signature de l'artisan. Hauteur : 25 cm.",
-  },
-  {
     id: "5", slug: "panier-tresse-couvercle",
     name: "Panier Tressé à Couvercle", category: "Tressage", categoryCode: "TRE",
     artisan: "Fatou Koné", ...artisanProfiles.fatou,
@@ -100,13 +92,5 @@ export const allProducts: Product[] = [
     price: 38000, image: productFigurine,
     rating: 5.0, reviews: 18, date: "2026-01-20", stock: 3,
     description: "Figurine sculptée en ébène représentant une mère et son enfant. Cette pièce incarne la tendresse maternelle et la continuité des générations. Sculptée d'un seul bloc de bois d'ébène, elle est polie à la main pour un fini satiné. Hauteur : 28 cm.",
-  },
-  {
-    id: "8", slug: "crochets-muraux-feuille",
-    name: "Crochets Muraux Feuille", category: "Forge", categoryCode: "FOR",
-    artisan: "Moussa Traoré", ...artisanProfiles.moussa,
-    price: 15000, image: productHooks,
-    rating: 4.4, reviews: 9, date: "2026-03-28", stock: 8,
-    description: "Ensemble de trois crochets muraux en fer forgé, inspirés des feuilles tropicales. Forgés et martelés à la main, ils ajoutent une touche artistique à votre intérieur tout en étant parfaitement fonctionnels. Hauteur : 18 cm chacun.",
   },
 ];

@@ -222,7 +222,6 @@ const categories = [
   { code: "TRE", name: "Tressage", image: catTressage, count: 22 },
   { code: "TIS", name: "Tissage", image: catTissage, count: 18 },
   { code: "POT", name: "Poterie", image: catPottery, count: 24 },
-  { code: "FOR", name: "Forge", image: catForge, count: 14 },
   { code: "PNT", name: "Peinture", image: catPeinture, count: 19 },
 ];
 
