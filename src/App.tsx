@@ -8,7 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
 import HomePage from "./pages/HomePage";
 import { useLenis } from "./hooks/useLenis";
-import { Preloader } from "./components/ui/Preloader";
+import { WelcomeIntro } from "./components/ui/WelcomeIntro";
 
 // Les pages hors accueil sont chargées à la demande : le premier
 // chargement ne télécharge que le code de la page d'accueil.
@@ -69,22 +69,11 @@ const AnimatedRoutes = () => {
   );
 };
 
-const HomePreloader = () => {
+// Écran de bienvenue : uniquement si le visiteur arrive par l'accueil
+const HomeWelcome = () => {
   const location = useLocation();
-  const [shouldShow, setShouldShow] = useState(() => {
-    if (typeof window === "undefined") return false;
-    if (location.pathname !== "/") return false;
-    return !sessionStorage.getItem("pacte_preloader_shown");
-  });
-
-  useEffect(() => {
-    if (shouldShow) {
-      sessionStorage.setItem("pacte_preloader_shown", "1");
-    }
-  }, [shouldShow]);
-
-  if (!shouldShow) return null;
-  return <Preloader />;
+  const [onHome] = useState(() => location.pathname === "/");
+  return onHome ? <WelcomeIntro /> : null;
 };
 
 const App = () => {
@@ -148,7 +137,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <HomePreloader />
+            <HomeWelcome />
             <AnimatedRoutes />
             <Suspense fallback={null}>
               <AIChatbot />
