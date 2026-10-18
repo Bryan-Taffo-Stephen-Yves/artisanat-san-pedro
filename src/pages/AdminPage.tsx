@@ -261,6 +261,57 @@ const waLink = (a: AdminArtisan) => {
   return `https://wa.me/${intl}?text=${encodeURIComponent(msg)}`;
 };
 
+// Téléphone de l'artisan : nécessaire pour les rappels (WhatsApp / SMS)
+const PhoneField = ({ code, artisan, onSaved }: { code: string; artisan: AdminArtisan; onSaved: () => void }) => {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(artisan.phone ?? "");
+  const [busy, setBusy] = useState(false);
+
+  const save = async () => {
+    setBusy(true);
+    try {
+      await adminApi.telephone(code, artisan.id, value);
+      toast.success(value.trim() ? `Téléphone de ${artisan.name} enregistré` : "Téléphone retiré");
+      setEditing(false);
+      onSaved();
+    } catch (e: any) {
+      toast.error(e.message.replace(/^.*?:\s*/, "") || "Numéro invalide");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!editing) {
+    return (
+      <button onClick={() => setEditing(true)} className="text-xs text-muted-foreground underline underline-offset-4 hover:text-primary">
+        {artisan.phone ? `☎ ${artisan.phone}` : "+ Ajouter le téléphone"}
+      </button>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <label className="sr-only" htmlFor={`tel-${artisan.id}`}>Téléphone de {artisan.name}</label>
+      <input
+        id={`tel-${artisan.id}`}
+        type="tel"
+        inputMode="tel"
+        autoFocus
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && save()}
+        placeholder="07 00 00 00 00"
+        className="w-36 bg-surface-container-low rounded-lg px-2 py-1.5 text-xs outline-none focus:ring-1 focus:ring-primary"
+      />
+      <button onClick={save} disabled={busy} aria-label="Enregistrer le téléphone" className="w-7 h-7 rounded-full bg-primary text-primary-foreground inline-flex items-center justify-center disabled:opacity-50">
+        {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+      </button>
+      <button onClick={() => { setEditing(false); setValue(artisan.phone ?? ""); }} aria-label="Annuler" className="w-7 h-7 rounded-full border border-border/40 inline-flex items-center justify-center">
+        <X className="w-3.5 h-3.5" />
+      </button>
+    </span>
+  );
+};
+
 const ArtisansPanel = ({ code, artisans, reload }: { code: string; artisans: AdminArtisan[]; reload: () => void }) => {
   const monthStart = useMemo(() => {
     const d = new Date();
@@ -309,6 +360,7 @@ const ArtisansPanel = ({ code, artisans, reload }: { code: string; artisans: Adm
                 <p className="text-xs text-muted-foreground">
                   {a.metier_category} · {a.products_total} produit(s) · dernier ajout : {dateFr(a.last_product_at)}
                 </p>
+                <PhoneField code={code} artisan={a} onSaved={reload} />
               </div>
               {inactive && (
                 link ? (

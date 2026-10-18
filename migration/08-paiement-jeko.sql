@@ -3,6 +3,7 @@
 --   • suivi des tentatives de paiement Jèko (une référence par tentative)
 --   • passage "payée" idempotent + décrément du stock, réservé au serveur
 --   • lecture du statut d'une commande pour la page de retour de paiement
+--   • saisie du téléphone des artisans depuis l'admin (rappels SMS / WhatsApp)
 --
 -- Supabase > projet SAN PEDRO > SQL Editor > coller tout le fichier > Run.
 -- Transaction unique, relançable sans dommage.
@@ -133,6 +134,31 @@ as $$
   from public.orders o where o.id = p_order_id;
 $$;
 grant execute on function public.statut_commande(uuid) to anon, authenticated;
+
+-- Téléphone des artisans (rappels mensuels SMS / WhatsApp), saisi depuis l'admin
+create or replace function public.admin_maj_telephone(p_code text, p_artisan_id uuid, p_phone text)
+returns void
+language plpgsql security definer
+set search_path = public
+as $$
+declare
+  v_digits text := regexp_replace(coalesce(p_phone, ''), '\D', '', 'g');
+begin
+  if not public._admin_ok(p_code) then
+    raise exception 'Accès refusé' using errcode = '42501';
+  end if;
+  if v_digits like '225%' and length(v_digits) = 13 then
+    v_digits := substr(v_digits, 4);
+  end if;
+  if v_digits <> '' and v_digits !~ '^(01|05|07)[0-9]{8}$' then
+    raise exception 'Numéro invalide : 10 chiffres commençant par 01, 05 ou 07';
+  end if;
+  update public.artisans set phone = nullif(v_digits, '') where id = p_artisan_id;
+  if not found then
+    raise exception 'Artisan introuvable';
+  end if;
+end $$;
+grant execute on function public.admin_maj_telephone(text, uuid, text) to anon, authenticated;
 
 notify pgrst, 'reload schema';
 

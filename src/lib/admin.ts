@@ -40,6 +40,8 @@ export const adminApi = {
       p_decision: decision,
       p_note: note ?? null,
     }),
+  telephone: (code: string, artisanId: string, phone: string) =>
+    rpc<void>("admin_maj_telephone", { p_code: code, p_artisan_id: artisanId, p_phone: phone }),
   confiance: (code: string, artisanId: string, value: boolean) =>
     rpc<void>("admin_definir_confiance", { p_code: code, p_artisan_id: artisanId, p_value: value }),
 };
