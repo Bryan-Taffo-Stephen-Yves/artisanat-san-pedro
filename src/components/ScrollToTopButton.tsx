@@ -24,7 +24,7 @@ const ScrollToTopButton = () => {
           transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
           onClick={scrollToTop}
           aria-label="Retour en haut"
-          className="fixed bottom-24 right-5 md:right-6 z-[60] w-11 h-11 rounded-full bg-inverse-surface text-background flex items-center justify-center shadow-lg hover:bg-primary transition-colors"
+          className="fixed bottom-[10.5rem] right-5 md:right-6 z-[60] w-11 h-11 rounded-full bg-inverse-surface text-background flex items-center justify-center shadow-lg hover:bg-primary transition-colors"
         >
           <ChevronUp className="w-5 h-5" />
         </motion.button>

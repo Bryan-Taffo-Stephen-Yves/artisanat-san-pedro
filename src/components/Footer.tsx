@@ -12,7 +12,7 @@ const partenaires: { src: string; alt: string; className: string }[] = [
   {
     src: "/partenaires/pacte.webp",
     alt: "PACTE",
-    className: "h-20 md:h-24",
+    className: "h-16 md:h-20",
   },
   {
     src: "/partenaires/prime.jpg",
@@ -55,7 +55,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="md:col-span-2">
             <img
-              src="/logo/logo-horizontal-blanc.svg"
+              src="/logo/logo-horizontal-terracotta.svg"
               alt="Mains de San Pedro"
               className="h-12 w-auto mb-4"
             />

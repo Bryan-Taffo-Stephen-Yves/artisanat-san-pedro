@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+/* Police : Google Sans Flex, chargée dans index.html */
 
 @tailwind base;
 @tailwind components;
@@ -67,19 +67,51 @@
     @apply border-border;
   }
 
+  html {
+    /* Seule la version droite de la police est chargée : les textes marqués
+       en italique s'affichent droits, comme dans la charte (pas d'italique simulé) */
+    font-synthesis-style: none;
+  }
+
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Google Sans Flex', system-ui, sans-serif;
     @apply bg-background text-foreground antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Oswald', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
+    font-family: 'Google Sans Flex', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  h1 {
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  ::selection {
+    background: #C3622D;
+    color: #FFFCF9;
   }
 }
 
 @layer components {
+  /* Rôle "titre / nom / prix" : les classes font-serif, font-headline et
+     font-display portent le même poids que les titres (un poids explicite
+     comme font-light reste prioritaire). */
+  .font-serif,
+  .font-display,
+  .font-headline {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* Petites étiquettes en capitales */
+  .font-label {
+    font-weight: 600;
+  }
   .glass-card {
     background: rgba(255, 252, 249, 0.72);
     backdrop-filter: blur(24px);
@@ -95,7 +127,7 @@
   .label-caps {
     @apply uppercase tracking-widest font-semibold;
     font-size: 0.625rem;
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Google Sans Flex', system-ui, sans-serif;
   }
 
   .shadow-luxury {
@@ -235,7 +267,7 @@ html.lenis, html.lenis body { height: auto; }
   align-items: center;
   gap: 1.5rem;
   padding: 0 2rem;
-  font-family: 'Oswald', sans-serif;
+  font-family: 'Google Sans Flex', system-ui, sans-serif;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -282,4 +314,10 @@ html, body {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
+}
+
+/* Google Sans Flex en 300 est trop fin pour les petits textes gris :
+   le "léger" du site passe à 350 (police variable). */
+.font-light {
+  font-weight: 350;
 }

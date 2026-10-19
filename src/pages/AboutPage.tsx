@@ -38,7 +38,7 @@ const missions = [
 ];
 
 const partnerLogos = [
-  { src: "/partenaires/pacte.webp", alt: "PACTE", className: "h-16 md:h-20" },
+  { src: "/partenaires/pacte.webp", alt: "PACTE", className: "h-14 md:h-16" },
   {
     src: "/partenaires/prime.jpg",
     alt: "PRIME — Programme National d'Appui aux Réformes Institutionnelles et à la Modernisation de l'État",
@@ -116,27 +116,24 @@ const AboutPage = () => {
     <div className="px-6 py-8 bg-surface-container-low rounded-[2rem] mx-6 mb-6">
       <p className="text-[10px] uppercase tracking-widest text-on-surface-variant mb-3">NOTRE MISSION</p>
       <h2 className="font-headline text-2xl italic mb-6">Pourquoi ce projet existe</h2>
-      <motion.div
-        className="space-y-4"
+      <motion.ol
+        className="divide-y divide-black/10"
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-40px" }}
       >
         {missions.map((m, i) => (
-          <motion.div
-            key={m.title}
-            variants={staggerItem}
-            className="bg-surface-container-lowest rounded-[1.5rem] p-6 border-l-4"
-            style={{ borderLeftColor: MISSION_BORDERS[i % MISSION_BORDERS.length] }}
-          >
-            <h3 className="font-headline text-lg">{m.title}</h3>
-            <p className="text-sm font-light leading-relaxed text-on-surface-variant mt-2">
+          <motion.li key={m.title} variants={staggerItem} className="py-5 first:pt-0 last:pb-0">
+            <h3 className="font-headline text-lg" style={{ color: MISSION_BORDERS[i % MISSION_BORDERS.length] }}>
+              {m.title}
+            </h3>
+            <p className="text-sm font-light leading-relaxed text-on-surface-variant mt-1.5 max-w-prose">
               {m.body}
             </p>
-          </motion.div>
+          </motion.li>
         ))}
-      </motion.div>
+      </motion.ol>
     </div>
 
     {/* Impact Stats */}

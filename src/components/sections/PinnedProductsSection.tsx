@@ -134,7 +134,7 @@ export function PinnedProductsSection() {
                   <div style={{
                     position: 'absolute', inset: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontFamily: 'Oswald, sans-serif', fontStyle: 'italic',
+                    fontFamily: '"Google Sans Flex", system-ui, sans-serif', fontStyle: 'italic',
                     color: '#F6E7DD', fontSize: '28px', letterSpacing: '0.05em',
                   }}>
                     {p.category}
@@ -156,12 +156,12 @@ export function PinnedProductsSection() {
                 <p style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.15em', color: p.accent, marginBottom: '4px' }}>
                   {p.category}
                 </p>
-                <h3 style={{ fontSize: '18px', fontStyle: 'italic', fontFamily: 'Oswald, sans-serif', lineHeight: 1.2 }}>
+                <h3 style={{ fontSize: '18px', fontStyle: 'italic', fontFamily: '"Google Sans Flex", system-ui, sans-serif', lineHeight: 1.2 }}>
                   {p.name}
                 </h3>
                 <p style={{ fontSize: '10px', color: '#56433a', marginTop: '4px' }}>{p.artisan}</p>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
-                  <span style={{ fontSize: '20px', fontFamily: 'Oswald, sans-serif', color: '#C3622D' }}>
+                  <span style={{ fontSize: '20px', fontFamily: '"Google Sans Flex", system-ui, sans-serif', color: '#C3622D' }}>
                     {p.price} FCFA
                   </span>
                   <button style={{

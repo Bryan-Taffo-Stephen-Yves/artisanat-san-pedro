@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'Oswald'", "sans-serif"],
-        sans: ["'Inter'", "sans-serif"],
-        display: ["'Oswald'", "sans-serif"],
+        serif: ["'Google Sans Flex'", "system-ui", "sans-serif"],
+        sans: ["'Google Sans Flex'", "system-ui", "sans-serif"],
+        display: ["'Google Sans Flex'", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
