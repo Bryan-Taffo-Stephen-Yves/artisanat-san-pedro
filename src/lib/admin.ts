@@ -3,38 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 // Le code admin est vérifié par la base (fonction admin_verifier) et gardé
 // pour la durée de l'onglet uniquement : il n'est jamais écrit dans le code.
 const KEY = "sp_admin_code";
-const LEGACY_KEY = "sp_admin_legacy";
-
-// La base n'a pas encore les fonctions du script 07 (mise à jour en attente)
+// La base n'a pas (encore) une fonction appelée
 export const isMissingFunction = (message: string) =>
   /Could not find the function|schema cache|PGRST202/i.test(message ?? "");
-
-// Mode transitoire, utilisé seulement tant que le script 07 n'est pas appliqué :
-// ancien code admin, comparé via son empreinte SHA-256 (jamais en clair).
-const LEGACY_CODE_SHA256 = "c3f5179a6e98223198c0f6c619bb70c8a9988636e23350596629d5d0604c29e6";
-
-export async function legacyCodeOk(code: string): Promise<boolean> {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code));
-  const hex = Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
-  return hex === LEGACY_CODE_SHA256;
-}
-
-export function isLegacyAdmin(): boolean {
-  try {
-    return sessionStorage.getItem(LEGACY_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
-export function setLegacyAdmin(value: boolean) {
-  try {
-    if (value) sessionStorage.setItem(LEGACY_KEY, "1");
-    else sessionStorage.removeItem(LEGACY_KEY);
-  } catch {
-    /* stockage indisponible */
-  }
-}
 
 export function getAdminCode(): string | null {
   try {
