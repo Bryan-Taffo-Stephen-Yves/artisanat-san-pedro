@@ -1,124 +1,89 @@
 import { Link } from "react-router-dom";
 
-const navLinks: { label: string; to: string }[] = [
-  { label: "Boutique", to: "/boutique" },
-  { label: "Artisans", to: "/artisans" },
-  { label: "Découverte", to: "/decouverte" },
-  { label: "À propos", to: "/a-propos" },
-  { label: "Contact", to: "/contact" },
-];
-
 const partenaires: { src: string; alt: string; className: string }[] = [
-  {
-    src: "/partenaires/pacte.webp",
-    alt: "PACTE",
-    className: "h-16 md:h-20",
-  },
+  { src: "/partenaires/pacte.webp", alt: "PACTE", className: "h-14 md:h-[72px]" },
   {
     src: "/partenaires/prime.jpg",
-    alt: "PRIME — Programme national d'appui aux réformes institutionnelles et à la modernisation de l'État",
-    className: "h-14 md:h-16",
+    alt: "PRIME, programme national d'appui aux réformes institutionnelles et à la modernisation de l'État",
+    className: "h-11 md:h-14",
   },
   {
     src: "/partenaires/ministere-europe-affaires-etrangeres.jpg",
-    alt: "Ministère de l'Europe et des Affaires étrangères — République française",
-    className: "h-16 md:h-20",
+    alt: "Ministère de l'Europe et des Affaires étrangères, République française",
+    className: "h-14 md:h-[72px]",
   },
 ];
 
-const Footer = () => {
-  return (
-    <footer>
-      {/* Bande partenaires / bailleurs — fond clair */}
-      <div className="bg-white border-y border-black/5 py-10">
-        <div className="container mx-auto px-6">
-          <p className="label-caps text-center text-neutral-500 mb-7 text-[11px] tracking-[0.18em] uppercase">
-            Un projet soutenu par
+const colonnes: { titre: string; liens: { label: string; to: string }[] }[] = [
+  {
+    titre: "Boutique",
+    liens: [
+      { label: "Toutes les créations", to: "/boutique" },
+      { label: "Les artisans", to: "/artisans" },
+      { label: "Mon compte", to: "/mon-espace" },
+    ],
+  },
+  {
+    titre: "Le projet",
+    liens: [
+      { label: "Le programme PACTE", to: "/a-propos" },
+      { label: "Découverte", to: "/decouverte" },
+      { label: "Espace artisan", to: "/espace-artisan/login" },
+      { label: "Contact", to: "/contact" },
+    ],
+  },
+];
+
+const Footer = () => (
+  <footer>
+    {/* Bande partenaires */}
+    <div className="bg-white border-t border-ink/[0.08]">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-10 md:py-11 flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+        <p className="m-0 max-w-[440px] text-[15px] md:text-base leading-relaxed text-ink-soft">
+          Une initiative du <strong className="text-ink font-semibold">PRIME</strong>, à travers le programme{" "}
+          <strong className="text-ink font-semibold">PACTE</strong>, avec le soutien du ministère de l'Europe et des
+          Affaires étrangères de la République française.
+        </p>
+        <div className="flex items-center justify-between md:justify-end gap-6 md:gap-10">
+          {partenaires.map((p) => (
+            <img key={p.src} src={p.src} alt={p.alt} loading="lazy" className={`${p.className} w-auto object-contain`} />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Pied de page */}
+    <div className="bg-sand pb-24 md:pb-0">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-12 pt-14 md:pt-16 pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="flex flex-col gap-3.5">
+          <img src="/logo/logo-horizontal-terracotta.svg" alt="Mains de San Pedro" className="h-[52px] w-auto self-start" />
+          <p className="m-0 text-[15px] leading-relaxed text-ink-soft max-w-[22em]">
+            La boutique en ligne des artisans de San Pedro, Côte d'Ivoire.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-7">
-            {partenaires.map((p) => (
-              <img
-                key={p.src}
-                src={p.src}
-                alt={p.alt}
-                loading="lazy"
-                className={`${p.className} w-auto object-contain`}
-              />
+        </div>
+        {colonnes.map((c) => (
+          <nav key={c.titre} aria-label={c.titre} className="flex flex-col gap-2.5 text-[15px]">
+            <span className="font-semibold text-ink mb-1">{c.titre}</span>
+            {c.liens.map((l) => (
+              <Link key={l.to} to={l.to} className="text-ink-soft no-underline hover:text-primary hover:underline underline-offset-4">
+                {l.label}
+              </Link>
             ))}
-          </div>
+          </nav>
+        ))}
+        <div className="flex flex-col gap-2.5 text-[15px] text-ink-soft">
+          <span className="font-semibold text-ink mb-1">Contact</span>
+          <span>San Pedro, Côte d'Ivoire</span>
+          <a href="mailto:info@artisanat-sanpedro.ci" className="text-ink-soft no-underline hover:text-primary hover:underline underline-offset-4">
+            info@artisanat-sanpedro.ci
+          </a>
         </div>
       </div>
-
-      {/* Footer principal — fond sombre */}
-      <div className="bg-surface-container pt-16 pb-10">
-      <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          <div className="md:col-span-2">
-            <img
-              src="/logo/logo-horizontal-terracotta.svg"
-              alt="Mains de San Pedro"
-              className="h-12 w-auto mb-4"
-            />
-            <p className="text-muted-foreground text-sm font-light leading-relaxed max-w-sm">
-              Plateforme digitale du programme PACTE pour la promotion de
-              l'artisanat à San Pedro, Côte d'Ivoire.
-            </p>
-            <div className="flex gap-2 mt-6 opacity-70">
-              <span className="w-2 h-2 rounded-full" style={{ background: "#C3622D" }} />
-              <span className="w-2 h-2 rounded-full" style={{ background: "#864521" }} />
-              <span className="w-2 h-2 rounded-full" style={{ background: "#A55427" }} />
-            </div>
-          </div>
-
-          <div>
-            <span className="label-caps text-muted-foreground mb-5 block">
-              Navigation
-            </span>
-            <ul className="space-y-3">
-              {navLinks.map((l) => (
-                <li key={l.to}>
-                  <Link
-                    to={l.to}
-                    className="text-sm font-light text-inverse-surface hover:text-primary transition-colors"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <span className="label-caps text-muted-foreground mb-5 block">
-              Contact
-            </span>
-            <ul className="space-y-3 text-sm font-light text-inverse-surface">
-              <li>San Pedro</li>
-              <li>Côte d'Ivoire</li>
-              <li>
-                <a
-                  href="mailto:info@artisanat-sanpedro.ci"
-                  className="hover:text-primary transition-colors"
-                >
-                  info@artisanat-sanpedro.ci
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-16 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <p className="text-muted-foreground text-xs font-light">
-            © 2026 Mains de San Pedro — Programme PACTE.
-          </p>
-          <p className="label-caps text-muted-foreground text-[10px]">
-            Côte d'Ivoire · 2026
-          </p>
-        </div>
+      <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-6 md:pb-8 border-t border-ink/10 text-[13px] text-ink-muted">
+        © 2026 Mains de San Pedro, programme PACTE
       </div>
-      </div>
-    </footer>
-  );
-};
+    </div>
+  </footer>
+);
 
 export default Footer;

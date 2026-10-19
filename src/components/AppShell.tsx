@@ -1,25 +1,20 @@
-import { useLocation } from "react-router-dom";
 import TopNav from "@/components/TopNav";
-import BrandBar from "@/components/BrandBar";
 import Footer from "@/components/Footer";
+import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 interface AppShellProps {
   children: React.ReactNode;
 }
 
-const AppShell = ({ children }: AppShellProps) => {
-  const { pathname } = useLocation();
-  const isHome = pathname === "/";
-  return (
-    <div className="min-h-screen bg-background">
-      <TopNav />
-      <main className={isHome ? "" : "pt-16"}>{children}</main>
-      <Footer />
-      <BrandBar />
-      <ScrollToTopButton />
-    </div>
-  );
-};
+const AppShell = ({ children }: AppShellProps) => (
+  <div className="min-h-screen bg-background">
+    <TopNav />
+    <main>{children}</main>
+    <Footer />
+    <BottomNav />
+    <ScrollToTopButton />
+  </div>
+);
 
 export default AppShell;

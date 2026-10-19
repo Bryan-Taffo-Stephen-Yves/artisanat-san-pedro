@@ -17,9 +17,9 @@ import { compressImage } from "@/lib/compressImage";
 
 const inputClass =
   "bg-[hsl(var(--surface-container-low))] rounded-xl px-4 py-3 w-full border-none text-sm text-foreground focus:ring-1 focus:ring-primary outline-none";
-const labelClass = "text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block";
+const labelClass = "text-[13px] font-semibold text-muted-foreground mb-1 block";
 const primaryBtn =
-  "w-full h-12 inline-flex items-center justify-center gap-2 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition disabled:opacity-60";
+  "w-full h-12 inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#8E4219] text-primary-foreground rounded-full text-base font-semibold hover:opacity-90 active:scale-[0.97] transition disabled:opacity-60";
 
 const authErrorFr = (msg: string) => {
   if (/Invalid login credentials/i.test(msg)) return "E-mail ou mot de passe incorrect.";
@@ -78,8 +78,8 @@ const AuthPanel = () => {
   };
 
   return (
-    <div className="px-6 pt-24 pb-16 max-w-md mx-auto">
-      <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Mon espace</p>
+    <div className="px-6 pt-10 pb-16 max-w-md mx-auto">
+      <p className="text-[13px] font-semibold text-muted-foreground">Mon espace</p>
       <h1 className="font-serif text-4xl italic text-foreground mt-1">
         {mode === "signup" ? "Créer un compte" : mode === "reset" ? "Mot de passe oublié" : "Se connecter"}
       </h1>
@@ -95,7 +95,7 @@ const AuthPanel = () => {
               role="tab"
               aria-selected={mode === m}
               onClick={() => { setMode(m); setError(null); setInfo(null); }}
-              className={`flex-1 h-10 rounded-full text-[10px] uppercase tracking-widest font-bold transition ${mode === m ? "bg-background shadow-sm text-primary" : "text-muted-foreground"}`}
+              className={`flex-1 h-10 rounded-full text-[13px] font-semibold transition ${mode === m ? "bg-background shadow-sm text-primary" : "text-muted-foreground"}`}
             >
               {m === "login" ? "Connexion" : "Inscription"}
             </button>
@@ -158,7 +158,7 @@ const AuthPanel = () => {
         )}
       </div>
 
-      <Link to="/espace-artisan/login" className="mt-10 flex items-center justify-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground">
+      <Link to="/espace-artisan/login" className="mt-10 flex items-center justify-center gap-1 text-[13px] font-semibold text-muted-foreground">
         Vous êtes artisan ? Espace artisan <ChevronRight className="w-3 h-3" />
       </Link>
     </div>
@@ -280,7 +280,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
 
   return (
     <>
-      <div className="px-6 pt-24 pb-6">
+      <div className="px-6 pt-10 pb-6">
         <p className="font-serif text-2xl italic text-foreground">Bonjour,</p>
         <p className="font-serif text-4xl italic text-primary">{firstName}</p>
         <div className="grid grid-cols-3 gap-3 mt-6">
@@ -291,7 +291,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
           ].map((stat) => (
             <div key={stat.label} className="bg-[hsl(var(--surface-container-low))] rounded-xl p-4 text-center">
               <p className="font-serif text-2xl text-primary">{stat.value}</p>
-              <p className="text-[9px] uppercase tracking-widest text-muted-foreground mt-1">{stat.label}</p>
+              <p className="text-[13px] font-semibold text-muted-foreground mt-1">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -305,7 +305,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
               role="tab"
               aria-selected={activeTab === tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-3 text-[10px] uppercase tracking-widest transition-colors ${activeTab === tab ? "border-b-2 border-primary text-primary font-bold" : "text-muted-foreground"}`}
+              className={`pb-3 text-[13px] font-semibold transition-colors ${activeTab === tab ? "border-b-2 border-primary text-primary font-bold" : "text-muted-foreground"}`}
             >
               {tab}
             </button>
@@ -322,7 +322,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
               <div className="flex flex-col items-center py-16 text-center">
                 <Package className="w-14 h-14 text-muted-foreground/30" />
                 <p className="font-serif text-xl italic text-muted-foreground mt-4">Aucune commande pour l'instant</p>
-                <Link to="/boutique" className="mt-6 border border-muted-foreground/20 rounded-full uppercase tracking-widest text-[9px] font-bold px-6 py-3 hover:bg-muted/50">
+                <Link to="/boutique" className="mt-6 border border-muted-foreground/20 rounded-full text-sm font-semibold px-6 py-3 hover:bg-muted/50">
                   Découvrir la boutique
                 </Link>
               </div>
@@ -331,11 +331,11 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
                 <div key={order.id} className="bg-background rounded-[1.5rem] p-5 shadow-sm">
                   <div className="flex justify-between items-start gap-2">
                     <span className="font-bold text-sm text-foreground">{order.reference}</span>
-                    <span className={`text-[9px] uppercase tracking-widest px-3 py-1 rounded-full font-semibold ${statusStyle(order.status)}`}>
+                    <span className={`text-[13px] font-semibold px-3 py-1 rounded-full font-semibold ${statusStyle(order.status)}`}>
                       {ORDER_STATUS_LABEL[order.status] ?? order.status}
                     </span>
                   </div>
-                  <p className="text-[9px] text-muted-foreground uppercase mt-1">
+                  <p className="text-[13px] text-ink-soft mt-1">
                     {new Date(order.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                   </p>
                   <div className="flex gap-2 mt-3">
@@ -353,7 +353,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
                     {(order.status === "pending" || order.status === "failed") && (
                       <Link
                         to={`/paiement/retour?commande=${order.id}`}
-                        className="h-9 px-4 inline-flex items-center rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground text-[10px] uppercase tracking-widest font-bold"
+                        className="h-9 px-4 inline-flex items-center rounded-full bg-primary hover:bg-[#8E4219] text-primary-foreground text-[13px] font-semibold"
                       >
                         Payer
                       </Link>
@@ -368,7 +368,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
         {activeTab === "Favoris" && (
           <div className="px-6 pt-6 space-y-8">
             <section>
-              <h2 className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3">Artisans favoris</h2>
+              <h2 className="text-[13px] font-semibold text-muted-foreground mb-3">Artisans favoris</h2>
               {favoriteArtisans.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   Aucun artisan favori. Touchez le cœur sur la page d'un artisan pour le suivre.
@@ -397,12 +397,12 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
               )}
             </section>
             <section>
-              <h2 className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3">Créations favorites</h2>
+              <h2 className="text-[13px] font-semibold text-muted-foreground mb-3">Créations favorites</h2>
               {favoriteProducts.length === 0 ? (
                 <div className="flex flex-col items-center py-10">
                   <Heart className="w-12 h-12 text-muted-foreground/30" />
                   <p className="font-serif text-lg italic text-muted-foreground mt-3">Aucune création favorite</p>
-                  <button onClick={() => navigate("/boutique")} className="mt-5 border border-muted-foreground/20 rounded-full uppercase tracking-widest text-[9px] font-bold px-6 py-3 hover:bg-muted/50">
+                  <button onClick={() => navigate("/boutique")} className="mt-5 border border-muted-foreground/20 rounded-full text-sm font-semibold px-6 py-3 hover:bg-muted/50">
                     Découvrir des œuvres
                   </button>
                 </div>
@@ -432,7 +432,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
               <button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="mt-3 border border-muted-foreground/20 rounded-full uppercase tracking-widest text-[9px] font-bold px-4 py-2 flex items-center gap-1.5 hover:bg-muted/50 disabled:opacity-50"
+                className="mt-3 border border-muted-foreground/20 rounded-full text-sm font-semibold px-4 py-2 flex items-center gap-1.5 hover:bg-muted/50 disabled:opacity-50"
               >
                 <Camera className="w-3 h-3" /> {uploading ? "Envoi…" : "Modifier la photo"}
               </button>
@@ -465,7 +465,7 @@ const ClientDashboard = ({ userId, email }: { userId: string; email: string }) =
               {saving && <Loader2 className="w-4 h-4 animate-spin" />} Enregistrer
             </button>
 
-            <button onClick={logout} className="w-full text-center mt-6 mb-4 text-destructive text-[10px] uppercase tracking-widest font-semibold flex items-center justify-center gap-1.5">
+            <button onClick={logout} className="w-full text-center mt-6 mb-4 text-destructive text-[13px] font-semibold flex items-center justify-center gap-1.5">
               <LogOut className="w-3 h-3" /> Se déconnecter
             </button>
           </div>

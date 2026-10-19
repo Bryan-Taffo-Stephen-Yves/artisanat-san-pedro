@@ -15,7 +15,7 @@ const CartPage = () => {
           className="flex items-center gap-2 text-inverse-surface"
         >
           <ArrowLeft className="w-[18px] h-[18px]" />
-          <span className="text-[10px] uppercase tracking-widest font-bold">Retour</span>
+          <span className="text-[13px] font-semibold">Retour</span>
         </button>
         <div className="relative">
           <ShoppingBag className="w-5 h-5 text-inverse-surface" />
@@ -30,7 +30,7 @@ const CartPage = () => {
       {/* Header */}
       <div className="px-6 pt-24 pb-4">
         <h1 className="font-serif text-3xl italic text-inverse-surface">Mon Panier</h1>
-        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+        <span className="text-[13px] font-semibold text-muted-foreground">
           {totalItems} article{totalItems !== 1 ? "s" : ""}
         </span>
       </div>
@@ -47,7 +47,7 @@ const CartPage = () => {
           </p>
           <button
             onClick={() => navigate("/boutique")}
-            className="mt-8 h-12 px-8 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition-all"
+            className="mt-8 h-12 px-8 rounded-full bg-primary hover:bg-[#8E4219] text-primary-foreground text-base font-semibold hover:opacity-90 active:scale-[0.97] transition-all"
           >
             Explorer la boutique
           </button>
@@ -70,7 +70,7 @@ const CartPage = () => {
                   className="w-20 h-20 rounded-xl object-cover shrink-0 sepia-[0.1]"
                 />
                 <div className="flex-1 min-w-0">
-                  <span className="text-[8px] uppercase tracking-widest text-muted-foreground">
+                  <span className="text-[13px] font-semibold text-muted-foreground">
                     {product.category}
                   </span>
                   <h3 className="font-serif text-sm leading-tight text-inverse-surface truncate">
@@ -127,7 +127,7 @@ const CartPage = () => {
             </div>
             <button
               onClick={() => navigate("/checkout")}
-              className="w-full h-14 mt-4 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition-all"
+              className="w-full h-14 mt-4 rounded-full bg-primary hover:bg-[#8E4219] text-primary-foreground text-base font-semibold hover:opacity-90 active:scale-[0.97] transition-all"
             >
               Procéder au paiement →
             </button>

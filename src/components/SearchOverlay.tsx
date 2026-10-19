@@ -98,7 +98,7 @@ const SearchOverlay = ({ open, onClose }: Props) => {
           <div className="flex-1 overflow-y-auto px-6 py-8 max-w-3xl mx-auto w-full">
             {!query.trim() && (
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Suggestions populaires</p>
+                <p className="text-[13px] font-semibold text-muted-foreground mb-4">Suggestions populaires</p>
                 <div className="flex flex-wrap gap-2">
                   {["Sandales", "Bijouterie", "Sculpture", "Peinture", "Sac"].map((s) => (
                     <button
@@ -121,7 +121,7 @@ const SearchOverlay = ({ open, onClose }: Props) => {
 
             {artisans.length > 0 && (
               <div className="mb-8">
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Artisans</p>
+                <p className="text-[13px] font-semibold text-muted-foreground mb-4">Artisans</p>
                 <div className="space-y-2">
                   {artisans.map((a) => (
                     <Link
@@ -149,7 +149,7 @@ const SearchOverlay = ({ open, onClose }: Props) => {
 
             {products.length > 0 && (
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4">Œuvres</p>
+                <p className="text-[13px] font-semibold text-muted-foreground mb-4">Œuvres</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {products.map((p) => (
                     <Link
@@ -161,7 +161,7 @@ const SearchOverlay = ({ open, onClose }: Props) => {
                       <img src={p.image} alt={p.name} loading="lazy" className="w-16 h-16 rounded-md object-cover" />
                       <div className="flex-1 min-w-0">
                         <p className="font-serif italic text-inverse-surface truncate">{p.name}</p>
-                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{p.category}</p>
+                        <p className="text-[13px] font-semibold text-muted-foreground">{p.category}</p>
                         <p className="text-sm text-primary font-bold mt-1">{p.price.toLocaleString("fr-FR")} FCFA</p>
                       </div>
                     </Link>
@@ -170,7 +170,7 @@ const SearchOverlay = ({ open, onClose }: Props) => {
                 {products.length === 4 && (
                   <button
                     onClick={() => submitSearch(query)}
-                    className="mt-6 w-full py-3 rounded-full border border-primary/40 text-primary uppercase tracking-widest text-[10px] font-bold hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="mt-6 w-full py-3 rounded-full border border-primary/40 text-primary text-[13px] font-semibold hover:bg-primary hover:text-primary-foreground transition-colors"
                   >
                     Voir tous les résultats →
                   </button>

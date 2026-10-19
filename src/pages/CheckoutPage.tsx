@@ -15,8 +15,8 @@ interface CreatedOrder {
 }
 
 const inputClass =
-  "bg-surface-container-low rounded-xl px-4 py-3 w-full border-none text-sm outline-none focus:ring-1 focus:ring-primary transition-shadow text-foreground placeholder:text-muted-foreground";
-const labelClass = "label-caps text-[10px] text-muted-foreground mb-1 block";
+  "h-[54px] px-4 w-full rounded-[14px] border border-ink/[0.14] bg-white text-base text-ink outline-none focus:border-primary transition-colors placeholder:text-ink-muted";
+const labelClass = "text-sm font-semibold text-ink mb-1.5 block";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -57,29 +57,29 @@ const CheckoutPage = () => {
 
   if (order && outcome) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 py-24 text-center">
-        <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center animate-fade-in">
-          <Check className="w-12 h-12 text-primary" />
-        </div>
-        <h1 className="font-serif text-3xl italic text-inverse-surface mt-6">
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center px-4 py-20 text-center">
+        <span className="w-24 h-24 rounded-full bg-pacte-tint grid place-items-center animate-fade-in">
+          <Check className="w-11 h-11 text-pacte" strokeWidth={2.2} />
+        </span>
+        <h1 className="text-[28px] md:text-4xl leading-tight mt-7">
           {outcome === "paid" ? "Paiement reçu, merci !" : "Commande enregistrée !"}
         </h1>
-        <span className="text-[10px] uppercase tracking-widest text-muted-foreground mt-2">{order.reference}</span>
-        <p className="font-serif text-2xl text-primary italic mt-6">{order.total.toLocaleString("fr-FR")} FCFA</p>
-        <p className="text-sm text-muted-foreground font-light mt-4 max-w-sm leading-relaxed">
+        <p className="mt-2 text-sm text-ink-soft">Référence {order.reference}</p>
+        <p className="text-2xl font-bold mt-5">{order.total.toLocaleString("fr-FR")} FCFA</p>
+        <p className="text-base text-ink-soft mt-4 max-w-sm leading-relaxed">
           {outcome === "paid"
             ? `Votre paiement est confirmé. Les artisans préparent votre commande avec soin ; l'équipe PACTE vous contacte au ${form.phone} pour la livraison.`
             : `L'équipe PACTE vous contacte au ${form.phone} pour confirmer la livraison et le paiement.`}
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 mt-8">
+        <div className="flex flex-col sm:flex-row gap-3 mt-8 w-full sm:w-auto">
           {user && (
-            <Link to="/mon-espace" className="h-12 px-8 inline-flex items-center justify-center rounded-full border border-border/40 uppercase tracking-widest text-[0.7rem] font-bold">
+            <Link to="/mon-espace" className="h-[54px] px-8 inline-flex items-center justify-center rounded-full border border-ink/[0.18] bg-white text-base font-semibold">
               Suivre ma commande
             </Link>
           )}
           <button
             onClick={() => navigate("/")}
-            className="h-12 px-8 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition-all"
+            className="h-[54px] px-8 rounded-full bg-primary hover:bg-[#8E4219] text-white text-base font-semibold active:scale-[0.98] transition"
           >
             Retour à l'accueil
           </button>
@@ -123,36 +123,40 @@ const CheckoutPage = () => {
 
 
   return (
-    <div className="min-h-screen bg-background pb-8">
-      <header className="glass-card fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center">
-        <button
-          onClick={() => (step === 2 && !order ? setStep(1) : navigate(-1))}
-          className="flex items-center gap-2 text-inverse-surface"
-        >
-          <ArrowLeft className="w-[18px] h-[18px]" />
-          <span className="text-[10px] uppercase tracking-widest font-bold">Retour</span>
-        </button>
-        <span className="font-serif text-base italic text-inverse-surface tracking-tight">Commande</span>
-        <div className="w-16" />
+    <div className="min-h-screen bg-paper pb-10">
+      <header className="sticky top-0 z-50 bg-paper/95 border-b border-ink/[0.08]">
+        <div className="max-w-xl mx-auto h-16 px-4 grid grid-cols-[1fr_auto_1fr] items-center">
+          <button
+            onClick={() => (step === 2 && !order ? setStep(1) : navigate(-1))}
+            className="justify-self-start inline-flex items-center gap-2 h-11 -ml-2 px-2 rounded-full text-[15px] font-semibold"
+          >
+            <ArrowLeft className="w-[18px] h-[18px]" /> Retour
+          </button>
+          <span className="text-[17px] font-semibold">Commande</span>
+          <span />
+        </div>
       </header>
 
-      <div className="px-6 pt-24 pb-6 max-w-xl mx-auto">
-        <div className="flex items-center gap-3">
+      <div className="px-4 pt-6 pb-6 max-w-xl mx-auto">
+        <ol className="flex items-center gap-3" aria-label="Étapes de la commande">
           {[{ n: 1, label: "Livraison" }, { n: 2, label: "Paiement" }].map(({ n, label }, i) => (
-            <div key={n} className="flex items-center gap-2 flex-1 last:flex-none">
-              <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= n ? "bg-primary text-primary-foreground" : "bg-surface-container text-muted-foreground"}`}>{n}</span>
-              <span className={`text-[10px] uppercase tracking-widest font-bold ${step >= n ? "text-primary" : "text-muted-foreground"}`}>{label}</span>
-              {i === 0 && <div className="flex-1 h-px bg-surface-container" />}
-            </div>
+            <li key={n} className="flex items-center gap-2.5 flex-1 last:flex-none" aria-current={step === n ? "step" : undefined}>
+              <span className={`w-8 h-8 rounded-full grid place-items-center text-sm font-bold ${step >= n ? "bg-primary text-white" : "bg-sand text-ink-soft"}`}>
+                {step > n ? <Check className="w-4 h-4" strokeWidth={2.4} /> : n}
+              </span>
+              <span className={`text-[15px] font-semibold ${step >= n ? "text-ink" : "text-ink-muted"}`}>{label}</span>
+              {i === 0 && <span className="flex-1 h-px bg-ink/[0.12]" />}
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
 
       {step === 1 && (
-        <div className="px-6 space-y-4 animate-fade-in max-w-xl mx-auto">
+        <div className="px-4 space-y-4 animate-fade-in max-w-xl mx-auto">
+          <h1 className="text-[28px] leading-tight mb-2">Où livrer votre commande ?</h1>
           {!user && (
-            <p className="text-xs text-muted-foreground bg-surface-container-low rounded-xl p-3">
-              Vous avez un compte ? <Link to="/mon-espace" className="text-primary underline underline-offset-4">Connectez-vous</Link> pour
+            <p className="text-sm text-ink-soft bg-sand rounded-2xl p-3.5 leading-normal">
+              Vous avez un compte ? <Link to="/mon-espace" className="text-primary font-semibold underline underline-offset-4">Connectez-vous</Link> pour
               préremplir vos informations et suivre votre commande.
             </p>
           )}
@@ -162,13 +166,13 @@ const CheckoutPage = () => {
           </div>
           <div>
             <label htmlFor="co-phone" className={labelClass}>Téléphone</label>
-            <div className="flex gap-2">
-              <span className="bg-surface-container-low rounded-xl px-3 py-3 text-sm text-muted-foreground shrink-0">+225</span>
-              <input id="co-phone" type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => updateField("phone", e.target.value)} placeholder="07 00 00 00 00" className={inputClass} />
+            <div className="h-[54px] px-4 rounded-[14px] border border-ink/[0.14] bg-white flex items-center gap-2.5 focus-within:border-primary">
+              <span className="text-[15px] text-ink-muted shrink-0">+225</span>
+              <input id="co-phone" type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => updateField("phone", e.target.value)} placeholder="07 00 00 00 00" className="flex-1 min-w-0 bg-transparent border-0 outline-none text-base text-ink placeholder:text-ink-muted" />
             </div>
           </div>
           <div>
-            <label htmlFor="co-email" className={labelClass}>E-mail (facultatif)</label>
+            <label htmlFor="co-email" className={labelClass}>E-mail <span className="font-normal text-ink-muted">(facultatif)</span></label>
             <input id="co-email" type="email" autoComplete="email" value={form.email} onChange={(e) => updateField("email", e.target.value)} placeholder="votre@email.com" className={inputClass} />
           </div>
           <div>
@@ -189,32 +193,32 @@ const CheckoutPage = () => {
           <button
             onClick={() => setStep(2)}
             disabled={!deliveryValid}
-            className="w-full h-14 mt-6 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition-all disabled:opacity-40"
+            className="w-full h-[58px] mt-4 rounded-full bg-primary hover:bg-[#8E4219] text-white text-[17px] font-semibold active:scale-[0.98] transition disabled:opacity-40"
           >
-            Continuer →
+            Continuer vers le paiement
           </button>
           {!deliveryValid && (
-            <p className="text-[11px] text-muted-foreground text-center">Nom, téléphone et adresse sont nécessaires pour la livraison.</p>
+            <p className="text-[13px] text-ink-soft text-center">Nom, téléphone et adresse sont nécessaires pour la livraison.</p>
           )}
         </div>
       )}
 
       {step === 2 && (
-        <div className="px-6 animate-fade-in max-w-xl mx-auto">
-          <h2 className="font-serif text-xl italic text-inverse-surface mb-4">Récapitulatif</h2>
-          <div className="bg-surface-container-low rounded-bento p-4">
+        <div className="px-4 animate-fade-in max-w-xl mx-auto">
+          <h1 className="text-[28px] leading-tight mb-4">Récapitulatif</h1>
+          <div className="bg-white rounded-[18px] border border-ink/[0.08] p-4 md:p-5">
             {(order ? [] : items).map((i) => (
-              <div key={i.product.id} className="flex justify-between text-sm text-muted-foreground">
-                <span className="truncate pr-3">{i.quantity} × {i.product.name}</span>
+              <div key={i.product.id} className="flex justify-between gap-3 py-1.5 text-[15px] text-ink-soft">
+                <span className="truncate">{i.quantity} × {i.product.name}</span>
                 <span className="whitespace-nowrap">{(i.product.price * i.quantity).toLocaleString("fr-FR")} FCFA</span>
               </div>
             ))}
-            <div className="bg-border/20 h-px my-3" />
-            <div className="flex justify-between items-center">
-              <span className="font-serif text-lg text-inverse-surface">Total</span>
-              <span className="font-serif text-lg text-primary font-bold">{(order?.total ?? subtotal).toLocaleString("fr-FR")} FCFA</span>
+            {!order && <div className="bg-ink/[0.08] h-px my-3" />}
+            <div className="flex justify-between items-baseline">
+              <span className="text-[17px] font-semibold">Total</span>
+              <span className="text-xl font-bold">{(order?.total ?? subtotal).toLocaleString("fr-FR")} FCFA</span>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-2">Frais de livraison confirmés par l'équipe selon votre adresse.</p>
+            <p className="text-[13px] text-ink-soft mt-2">Frais de livraison confirmés par l'équipe selon votre adresse.</p>
           </div>
 
           {error && <p className="text-sm text-destructive mt-4" role="alert">{error}</p>}
@@ -223,17 +227,15 @@ const CheckoutPage = () => {
             <button
               onClick={handleConfirm}
               disabled={submitting}
-              className="w-full h-14 mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition-all disabled:opacity-60"
+              className="w-full h-[58px] mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-primary hover:bg-[#8E4219] text-white text-[17px] font-semibold active:scale-[0.98] transition disabled:opacity-60"
             >
               {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
-              Valider la commande et payer →
+              Valider la commande et payer
             </button>
           ) : (
-            <div className="mt-6">
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">
-                Commande {order.reference} enregistrée
-              </p>
-              <h2 className="font-serif text-xl italic text-inverse-surface mb-4">Paiement Mobile Money</h2>
+            <div className="mt-8">
+              <p className="text-sm text-ink-soft mb-1">Commande {order.reference} enregistrée</p>
+              <h2 className="text-xl font-semibold mb-4">Payer avec Mobile Money</h2>
               <JekoPayment
                 orderId={order.id}
                 total={order.total}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Loader2, Smartphone, ShieldCheck, RotateCcw } from "lucide-react";
+import { Loader2, Smartphone, ShieldCheck, RotateCcw, Check } from "lucide-react";
 import { JEKO_METHODS, PAID_STATUSES, guessMethod, isValidCiMobile, jeko, type JekoMethod } from "@/lib/jeko";
 
 interface Props {
@@ -89,60 +89,62 @@ const JekoPayment = ({ orderId, total, defaultPhone = "", onPaid, onOffline }: P
 
   if (state === "waiting" || state === "slow") {
     return (
-      <div className="rounded-bento border border-primary/30 bg-primary/5 p-6 text-center" role="status" aria-live="polite">
-        <Smartphone className="w-10 h-10 text-primary mx-auto" strokeWidth={1.5} />
-        <p className="font-serif text-xl italic mt-3">Validez sur votre téléphone</p>
-        <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-          Une demande de paiement {current.label} de <strong>{total.toLocaleString("fr-FR")} FCFA</strong> a été envoyée au{" "}
-          <strong>{phone}</strong>. Saisissez votre code secret pour confirmer.
+      <div className="py-6 flex flex-col items-center text-center" role="status" aria-live="polite">
+        <span className="w-28 h-28 rounded-full bg-[#FFF4D6] grid place-items-center shadow-[0_0_0_14px_rgba(255,203,5,0.12)]">
+          <Smartphone className="w-12 h-12 text-ink" strokeWidth={1.5} />
+        </span>
+        <p className="mt-9 text-[28px] leading-tight tracking-[-0.03em] font-[650]">Validez sur votre téléphone</p>
+        <p className="mt-4 text-base md:text-[17px] leading-relaxed text-[#3F352E] max-w-sm">
+          Une demande de paiement {current.label} de <strong className="font-bold">{total.toLocaleString("fr-FR")} FCFA</strong> vient
+          d'être envoyée au <strong className="font-bold">{phone}</strong>. Tapez votre code secret pour confirmer.
         </p>
         {state === "waiting" ? (
-          <p className="inline-flex items-center gap-2 text-xs text-muted-foreground mt-5">
-            <Loader2 className="w-4 h-4 animate-spin" /> En attente de votre confirmation…
+          <p className="mt-7 inline-flex items-center gap-2.5 h-11 px-[18px] rounded-full bg-white border border-ink/10 text-[15px] text-ink-soft">
+            <Loader2 className="w-[18px] h-[18px] text-primary animate-spin" /> En attente de votre confirmation
           </p>
         ) : (
-          <div className="mt-5 space-y-3">
-            <p className="text-xs text-muted-foreground">
-              Rien reçu ? Vérifiez que le téléphone est allumé et a du réseau. La demande reste valable 30 minutes.
-            </p>
-            <button
-              onClick={() => { stopTimers(); setState("idle"); }}
-              className="inline-flex items-center gap-2 h-10 px-5 rounded-full border border-border/40 text-[10px] uppercase tracking-widest font-bold"
-            >
-              <RotateCcw className="w-3.5 h-3.5" /> Changer de moyen de paiement
-            </button>
-          </div>
+          <p className="mt-7 text-[15px] font-semibold text-amber-ink">Toujours rien ? Pas d'inquiétude.</p>
         )}
+        <p className="mt-6 w-full p-3.5 rounded-2xl bg-sand text-sm leading-normal text-[#3F352E] text-left">
+          Rien reçu ? Vérifiez que le téléphone est allumé et capte le réseau. La demande reste valable 30 minutes.
+        </p>
+        <button
+          onClick={() => { stopTimers(); setState("idle"); }}
+          className="mt-3.5 w-full h-[54px] rounded-full border border-ink/[0.18] bg-white text-base font-semibold inline-flex items-center justify-center gap-2"
+        >
+          <RotateCcw className="w-4 h-4" /> Changer de moyen de paiement
+        </button>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2" role="radiogroup" aria-label="Opérateur Mobile Money">
+      <div className="grid grid-cols-2 gap-2.5" role="radiogroup" aria-label="Opérateur Mobile Money">
         {JEKO_METHODS.map((m) => (
           <button
             key={m.id}
             role="radio"
             aria-checked={method === m.id}
             onClick={() => { setMethod(m.id); setError(null); }}
-            className={`rounded-xl p-3 text-left border transition-colors ${method === m.id ? "border-2 border-primary bg-primary/5" : "border-border/30 bg-background"}`}
+            className={`h-14 px-3.5 rounded-[14px] text-left text-[15px] font-semibold flex items-center gap-2.5 transition-colors ${
+              method === m.id ? "border-2 border-primary bg-[#FFF7F1]" : "border border-ink/[0.14] bg-white hover:border-ink/30"
+            }`}
           >
-            <span className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: m.color }} />
-              <span className="text-sm font-bold">{m.label}</span>
-            </span>
+            <span className="w-3 h-3 rounded-full shrink-0" style={{ background: m.color }} />
+            <span className="flex-1">{m.label}</span>
+            {method === m.id && <Check className="w-[18px] h-[18px] text-primary" strokeWidth={2.2} aria-hidden="true" />}
           </button>
         ))}
       </div>
-      <p className="text-[11px] text-muted-foreground">{current.hint}</p>
+      <p className="text-[13px] text-ink-soft">{current.hint}</p>
 
       <div>
-        <label htmlFor="payer-phone" className="label-caps text-[10px] text-muted-foreground mb-1 block">
-          Numéro qui paie {defaultPhone && "(celui de votre compte, modifiable)"}
+        <label htmlFor="payer-phone" className="block text-sm font-semibold mb-2">
+          Numéro qui paie
         </label>
-        <div className="flex gap-2">
-          <span className="bg-surface-container-low rounded-xl px-3 py-3 text-sm text-muted-foreground shrink-0">+225</span>
+        <div className="h-[54px] px-4 rounded-[14px] border border-ink/[0.14] bg-white flex items-center gap-2.5 focus-within:border-primary">
+          <span className="text-[15px] text-ink-muted shrink-0">+225</span>
           <input
             id="payer-phone"
             type="tel"
@@ -151,11 +153,14 @@ const JekoPayment = ({ orderId, total, defaultPhone = "", onPaid, onOffline }: P
             value={phone}
             onChange={(e) => { setPhone(e.target.value); setError(null); }}
             placeholder={current.prefix ? `${current.prefix} 00 00 00 00` : "07 00 00 00 00"}
-            className="bg-surface-container-low rounded-xl px-4 py-3 w-full border-none text-sm outline-none focus:ring-1 focus:ring-primary"
+            className="flex-1 min-w-0 bg-transparent border-0 outline-none text-[17px] font-semibold tracking-wide text-ink"
           />
+          {defaultPhone && phone === defaultPhone && (
+            <span className="shrink-0 text-xs font-semibold text-pacte-ink bg-pacte-tint px-2 py-1 rounded-full">Votre compte</span>
+          )}
         </div>
         {prefixMismatch && (
-          <p className="text-xs text-amber-700 mt-1.5">Un numéro {current.label} commence par {current.prefix}.</p>
+          <p className="text-[13px] text-amber-ink mt-1.5">Un numéro {current.label} commence par {current.prefix}.</p>
         )}
       </div>
 
@@ -164,13 +169,13 @@ const JekoPayment = ({ orderId, total, defaultPhone = "", onPaid, onOffline }: P
       <button
         onClick={pay}
         disabled={!canPay}
-        className="w-full h-14 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition disabled:opacity-40"
+        className="w-full h-[58px] inline-flex items-center justify-center gap-2 rounded-full bg-primary text-white text-[17px] font-semibold hover:bg-[#8E4219] active:scale-[0.98] transition disabled:opacity-40"
       >
         {state === "sending" && <Loader2 className="w-4 h-4 animate-spin" />}
         Payer {total.toLocaleString("fr-FR")} FCFA avec {current.label}
       </button>
-      <p className="flex items-center justify-center gap-1.5 text-[10px] text-muted-foreground">
-        <ShieldCheck className="w-3.5 h-3.5" /> Paiement sécurisé par Jèko · aucun code n'est saisi sur ce site
+      <p className="flex items-center justify-center gap-1.5 text-[13px] text-ink-soft text-center">
+        <ShieldCheck className="w-4 h-4 shrink-0" strokeWidth={1.8} /> Vous validez chez votre opérateur, aucun code n'est saisi sur ce site
       </p>
     </div>
   );

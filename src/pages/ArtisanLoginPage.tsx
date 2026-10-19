@@ -82,7 +82,7 @@ const ArtisanLoginPage = () => {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 py-10">
       {/* Logo / titre */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 rounded-full bg-primary hover:bg-[#8E4219] flex items-center justify-center mx-auto mb-4">
           <User className="w-8 h-8 text-white" />
         </div>
         <h1 className="font-serif text-2xl italic text-foreground">Espace Artisan</h1>
@@ -144,7 +144,7 @@ const ArtisanLoginPage = () => {
         <button
           onClick={step === "login" ? handleNext : handleVerifyPin}
           disabled={loading}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-white flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
+          className="w-20 h-20 rounded-full bg-primary hover:bg-[#8E4219] text-white flex items-center justify-center active:scale-90 transition-all disabled:opacity-50"
         >
           {loading ? <Loader2 className="w-7 h-7 animate-spin" /> : <ArrowRight className="w-7 h-7" />}
         </button>

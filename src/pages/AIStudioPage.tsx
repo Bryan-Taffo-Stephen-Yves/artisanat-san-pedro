@@ -105,11 +105,10 @@ const AIStudioPage = () => {
   return (
     <AppShell>
       {/* Header */}
-      <div className="px-6 pt-24 pb-6">
+      <div className="px-6 pt-10 pb-6">
         <button onClick={() => navigate("/espace-artisan")} className="flex items-center gap-1 text-muted-foreground text-sm mb-4">
           <ArrowLeft className="w-4 h-4" /> Retour
         </button>
-        <p className="text-[10px] uppercase tracking-widest text-primary mb-1">IA STUDIO</p>
         <h1 className="font-serif text-3xl text-foreground">Le Conteur</h1>
         <p className="text-sm text-muted-foreground font-light mt-1">
           Décrivez votre œuvre, l'IA génère une fiche professionnelle.
@@ -119,7 +118,7 @@ const AIStudioPage = () => {
       {/* Input description */}
       <div className="px-6">
         <div className="bg-surface-container-low rounded-[2rem] p-6">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4">01 — DÉCRIVEZ VOTRE ŒUVRE</p>
+          <p className="text-[13px] font-semibold text-muted-foreground mb-4">01 — DÉCRIVEZ VOTRE ŒUVRE</p>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -130,7 +129,7 @@ const AIStudioPage = () => {
           <button
             onClick={handleGenerate}
             disabled={isGenerating || !description.trim()}
-            className="w-full h-14 mt-4 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full uppercase tracking-widest text-[11px] font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full h-14 mt-4 bg-primary hover:bg-[#8E4219] text-primary-foreground rounded-full text-[13px] font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {isGenerating ? <><Loader2 className="w-4 h-4 animate-spin" /> Génération...</> : <><Sparkles className="w-4 h-4" /> Générer la fiche</>}
           </button>
@@ -144,7 +143,7 @@ const AIStudioPage = () => {
             <button onClick={handleCopy} className="absolute top-4 right-4 text-muted-foreground hover:text-primary">
               <Copy className="w-4 h-4" />
             </button>
-            <p className="text-[10px] uppercase tracking-widest text-primary mb-2">Description générée</p>
+            <p className="text-[13px] font-semibold text-primary mb-2">Description générée</p>
             <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{generatedText}</p>
           </div>
         </div>
@@ -154,10 +153,10 @@ const AIStudioPage = () => {
       {showForm && (
         <div className="px-6 mt-4 animate-fade-in">
           <div className="bg-surface-container-low rounded-[2rem] p-6">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4">02 — INFORMATIONS DU PRODUIT</p>
+            <p className="text-[13px] font-semibold text-muted-foreground mb-4">02 — INFORMATIONS DU PRODUIT</p>
             <div className="space-y-4">
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Nom du produit</label>
+                <label className="text-[13px] font-semibold text-muted-foreground mb-1 block">Nom du produit</label>
                 <input
                   value={productName}
                   onChange={(e) => setProductName(e.target.value)}
@@ -167,7 +166,7 @@ const AIStudioPage = () => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Prix en FCFA</label>
+                  <label className="text-[13px] font-semibold text-muted-foreground mb-1 block">Prix en FCFA</label>
                   <input
                     type="number" value={price} onChange={(e) => setPrice(e.target.value)}
                     className="bg-background rounded-xl px-4 py-3 w-full border-none text-sm focus:ring-1 focus:ring-primary focus:outline-none"
@@ -175,7 +174,7 @@ const AIStudioPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Stock disponible</label>
+                  <label className="text-[13px] font-semibold text-muted-foreground mb-1 block">Stock disponible</label>
                   <input
                     type="number" value={stock} onChange={(e) => setStock(e.target.value)}
                     className="bg-background rounded-xl px-4 py-3 w-full border-none text-sm focus:ring-1 focus:ring-primary focus:outline-none"
@@ -184,7 +183,7 @@ const AIStudioPage = () => {
                 </div>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Catégorie</label>
+                <label className="text-[13px] font-semibold text-muted-foreground mb-1 block">Catégorie</label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -196,7 +195,7 @@ const AIStudioPage = () => {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1 block">Photo</label>
+                <label className="text-[13px] font-semibold text-muted-foreground mb-1 block">Photo</label>
                 <label className="rounded-xl border-2 border-dashed border-muted-foreground/30 p-6 text-center cursor-pointer hover:border-primary/40 transition-colors block">
                   {imagePreview ? (
                     <img src={imagePreview} alt="Aperçu" className="w-full h-40 object-cover rounded-lg" />
@@ -221,7 +220,7 @@ const AIStudioPage = () => {
               <button
                 onClick={handlePublish}
                 disabled={isPublishing}
-                className="w-full h-14 mt-2 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full uppercase tracking-widest text-[11px] font-bold flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full h-14 mt-2 bg-primary hover:bg-[#8E4219] text-primary-foreground rounded-full text-[13px] font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isPublishing ? <><Loader2 className="w-4 h-4 animate-spin" /> Publication...</> : "Publier le produit"}
               </button>
@@ -242,7 +241,7 @@ const AIStudioPage = () => {
               <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto mb-2 text-sm font-bold">
                 {s.step}
               </div>
-              <p className="text-[9px] uppercase tracking-widest text-muted-foreground">{s.title}</p>
+              <p className="text-[13px] font-semibold text-muted-foreground">{s.title}</p>
               <p className="text-xs text-foreground font-light mt-1">{s.text}</p>
             </div>
           ))}

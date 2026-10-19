@@ -25,8 +25,8 @@ const ArtisansPage = () => {
   return (
     <AppShell>
       {/* Header */}
-      <ScrollReveal variants={slideLeft} className="px-6 pt-24 pb-6">
-        <span className="label-caps text-[10px] text-muted-foreground mb-1 block">Nos créateurs</span>
+      <ScrollReveal variants={slideLeft} className="px-6 pt-10 pb-6">
+        <span className="text-sm font-semibold text-ink mb-1.5 block">Nos créateurs</span>
         <h1 className="font-serif text-4xl italic text-inverse-surface leading-tight">
           Le Village des
           <br />
@@ -43,7 +43,7 @@ const ArtisansPage = () => {
           <button
             key={m}
             onClick={() => setSelectedMetier(m)}
-            className={`shrink-0 rounded-full px-4 py-2 text-[10px] uppercase tracking-widest font-bold transition-colors ${
+            className={`shrink-0 rounded-full px-4 py-2 text-[13px] font-semibold transition-colors ${
               selectedMetier === m
                 ? "bg-primary text-primary-foreground"
                 : "bg-surface-container-low text-muted-foreground hover:bg-surface-container"
@@ -72,7 +72,7 @@ const ArtisansPage = () => {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-primary text-[9px] uppercase tracking-widest font-bold">À la une</span>
+              <span className="text-primary text-[13px] font-semibold">À la une</span>
               <p className="font-serif text-xl text-primary-foreground italic truncate">{featured.name}</p>
               <p className="text-primary-foreground/70 text-xs line-clamp-2 mt-1">{featured.bio}</p>
             </div>
@@ -117,17 +117,17 @@ const ArtisansPage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface/70 via-transparent to-transparent" />
                 {artisan.featured && (
-                  <span className="absolute top-3 right-3 glass-card px-2.5 py-1 rounded-full text-[8px] uppercase tracking-wider font-bold text-primary">
+                  <span className="absolute top-3 right-3 glass-card px-2.5 py-1 rounded-full text-xs font-semibold text-primary">
                     Vedette
                   </span>
                 )}
                 <div className="absolute bottom-4 left-4">
-                  <span className="text-[9px] uppercase tracking-widest text-primary-foreground/70">{artisan.metier}</span>
+                  <span className="text-[13px] font-semibold text-primary-foreground/70">{artisan.metier}</span>
                   <p className="font-serif text-base font-medium text-primary-foreground">{artisan.name}</p>
                 </div>
               </div>
               <div className="p-3">
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wide">
+                <p className="text-[13px] text-ink-soft">
                   {artisan.location} · Depuis {artisan.since}
                 </p>
                 <div className="flex items-center gap-1 mt-1">

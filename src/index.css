@@ -6,52 +6,61 @@
 
 @layer base {
   :root {
-    /* ====== MAINS DE SAN PEDRO — charte Elie Kouassi ====== */
-    /* Signature terracotta #C3622D = hsl(22 63% 47%) */
-    --background: 24 60% 99%;
-    --foreground: 25 45% 8%;
+    /* ====== MAINS DE SAN PEDRO — charte « Atelier en plein jour » ======
+       Papier #FAF6F1 · Sable #F2EAE1 · Encre #1D1712 · Encre douce #5F5249
+       Terre cuite #C3622D (grands titres) · Terre cuite foncée #A84F1F
+       (boutons, liens : 5,5:1 sur blanc) · Vert PACTE #2F6B3E (validé) */
+    --background: 33 47% 96%;           /* papier */
+    --foreground: 27 23% 9%;            /* encre */
 
     --card: 0 0% 100%;
-    --card-foreground: 25 45% 8%;
+    --card-foreground: 27 23% 9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 25 45% 8%;
+    --popover-foreground: 27 23% 9%;
 
-    --primary: 22 63% 47%;            /* #C3622D */
-    --primary-foreground: 24 60% 99%;
+    --primary: 21 69% 39%;              /* terre cuite foncée #A84F1F */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 20 25% 40%;
-    --secondary-foreground: 24 60% 99%;
+    --secondary: 25 13% 33%;            /* encre douce */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 24 35% 94%;
-    --muted-foreground: 25 12% 42%;
+    --muted: 32 39% 92%;                /* sable */
+    --muted-foreground: 25 13% 33%;     /* encre douce, 7:1 sur papier */
 
-    --accent: 22 55% 88%;             /* clay-100 tint */
-    --accent-foreground: 22 63% 30%;
+    --accent: 32 39% 92%;
+    --accent-foreground: 21 69% 30%;
 
-    --destructive: 0 72% 48%;
+    --destructive: 7 71% 35%;           /* #9A2A1A */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 24 30% 90%;
-    --input: 24 30% 90%;
-    --ring: 22 63% 47%;
+    --success: 135 39% 30%;             /* vert PACTE #2F6B3E */
+    --success-foreground: 0 0% 100%;
 
-    --radius: 0.75rem;
+    --border: 32 13% 86%;
+    --input: 32 13% 82%;
+    --ring: 21 69% 39%;
 
-    /* Custom surface tokens */
-    --surface: 24 60% 99%;
-    --surface-container-low: 24 40% 96%;
-    --surface-container: 24 35% 93%;
-    --inverse-surface: 25 30% 14%;
+    --radius: 1rem;
 
-    --sidebar-background: 24 40% 96%;
-    --sidebar-foreground: 25 45% 8%;
-    --sidebar-primary: 22 63% 47%;
-    --sidebar-primary-foreground: 24 60% 99%;
-    --sidebar-accent: 24 35% 93%;
-    --sidebar-accent-foreground: 25 45% 8%;
-    --sidebar-border: 24 30% 90%;
-    --sidebar-ring: 22 63% 47%;
+    /* Surfaces */
+    --surface: 33 47% 96%;
+    --surface-container-lowest: 0 0% 100%;
+    --surface-container-low: 32 45% 94%;
+    --surface-container: 32 39% 92%;    /* sable */
+    --inverse-surface: 27 23% 9%;       /* encre */
+    --on-surface: 27 23% 9%;
+    --on-surface-variant: 25 13% 33%;
+    --outline-variant: 32 13% 86%;
+
+    --sidebar-background: 32 45% 94%;
+    --sidebar-foreground: 27 23% 9%;
+    --sidebar-primary: 21 69% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 32 39% 92%;
+    --sidebar-accent-foreground: 27 23% 9%;
+    --sidebar-border: 32 13% 86%;
+    --sidebar-ring: 21 69% 39%;
 
     /* ====== Échelle terracotta (raw hex, pour usages directs) ====== */
     --clay-50:#FAF2EE;  --clay-100:#F6E7E0; --clay-200:#EDD0C0; --clay-300:#E1B096;
@@ -294,14 +303,12 @@ html.lenis, html.lenis body { height: auto; }
 }
 .clip-reveal.is-inview { clip-path: inset(0% 0 0 0); }
 
-/* Section background color transitions — monochrome terracotta */
-body {
-  transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/* Focus clavier visible et aux couleurs de la charte */
+:focus-visible {
+  outline: 2px solid #A84F1F;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
-body[data-theme="dark"] { background-color: #1A120C; }
-body[data-theme="forest"] { background-color: #66361B; }
-body[data-theme="light"] { background-color: #FFFCF9; }
-body[data-theme="terracotta"] { background-color: #F6E7DD; }
 
 html, body {
   touch-action: pan-y;

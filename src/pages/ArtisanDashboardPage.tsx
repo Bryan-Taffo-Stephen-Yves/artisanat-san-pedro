@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package, Clock, CalendarPlus, Star, Sparkles, ChevronRight, AlertTriangle, LogOut, Plus } from "lucide-react";
+import { Camera, CalendarPlus, AlertTriangle, LogOut, Check } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import ProductManager from "@/components/ProductManager";
 import { useArtisan } from "@/hooks/useArtisans";
@@ -44,8 +44,8 @@ const ArtisanDashboardPage = () => {
   if (!checked || !session) {
     return (
       <AppShell>
-        <div className="px-6 pt-24 flex items-center justify-center">
-          <p className="text-muted-foreground">Chargement...</p>
+        <div className="px-4 pt-16 flex items-center justify-center">
+          <p className="text-ink-soft">Chargement…</p>
         </div>
       </AppShell>
     );
@@ -62,114 +62,98 @@ const ArtisanDashboardPage = () => {
   const lowStock = products.filter((p) => p.published && p.stock <= 2);
 
   const displayName = artisan?.name || session.name;
+  const firstName = displayName.split(" ")[0];
   const displayMetier = artisan?.metier || "";
-  const displayRating = artisan?.rating || 0;
 
   return (
     <AppShell>
-      {/* Header */}
-      <div className="px-6 pt-24 pb-4 flex items-start justify-between">
-        <div>
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground">TABLEAU DE BORD</p>
-          <h1 className="font-serif text-3xl italic text-foreground">{displayName}</h1>
-          {displayMetier && (
-            <span className="inline-block mt-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-[9px] uppercase tracking-widest">
-              {displayMetier}
-            </span>
-          )}
+      <div className="max-w-2xl mx-auto px-4 pt-8 pb-32">
+        {/* En-tête */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <h1 className="text-[28px] md:text-4xl leading-tight">Bonjour, {firstName}</h1>
+            {displayMetier && <p className="mt-1 text-base text-ink-soft">{displayMetier}</p>}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="shrink-0 inline-flex items-center gap-2 h-11 px-4 rounded-full border border-ink/[0.14] bg-white text-[15px] font-semibold text-ink-soft hover:text-destructive hover:border-destructive/40 transition-colors"
+          >
+            <LogOut className="w-4 h-4" /> Quitter
+          </button>
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-surface-container-low text-muted-foreground text-[10px] uppercase tracking-widest hover:bg-destructive/10 hover:text-destructive transition-colors"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          Quitter
-        </button>
-      </div>
 
-      {/* Rappel du mois : rien de publié ce mois-ci */}
-      {addedThisMonth === 0 && (
-        <div className="px-6 mt-4">
-          <div className="rounded-2xl p-5 bg-[#1A120C] text-white" role="status">
-            <div className="flex items-start gap-3">
-              <CalendarPlus className="w-7 h-7 text-[#E8A27C] shrink-0" strokeWidth={1.6} />
+        {/* Rappel du mois */}
+        {addedThisMonth === 0 ? (
+          <div className="mt-6 rounded-[22px] p-5 md:p-6 bg-ink text-white" role="status">
+            <div className="flex items-start gap-3.5">
+              <span className="w-11 h-11 shrink-0 rounded-full bg-white/10 grid place-items-center">
+                <CalendarPlus className="w-5 h-5 text-[#F2B48C]" strokeWidth={1.8} />
+              </span>
               <div>
-                <p className="font-serif text-xl italic">Nouvelle création en {monthName} ?</p>
-                <p className="text-sm text-white/75 mt-1 leading-relaxed">
-                  Vous n'avez encore rien ajouté ce mois-ci. Les clients reviennent voir les
-                  nouveautés : ajoutez au moins une pièce
-                  {daysLeft > 0 ? ` (il reste ${daysLeft} jour${daysLeft > 1 ? "s" : ""})` : " (dernier jour du mois)"}.
+                <p className="text-xl font-semibold leading-snug">Une nouvelle création en {monthName} ?</p>
+                <p className="text-[15px] text-white/75 mt-1.5 leading-relaxed">
+                  Rien d'ajouté ce mois-ci. Les clients reviennent voir les nouveautés : ajoutez au moins une pièce
+                  {daysLeft > 0 ? ` (il reste ${daysLeft} jour${daysLeft > 1 ? "s" : ""}).` : " (dernier jour du mois)."}
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => navigate("/espace-artisan/ia-studio")}
-              className="mt-4 w-full h-14 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-white inline-flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-widest active:scale-[0.98] transition-transform"
-            >
-              <Plus className="w-5 h-5" /> Ajouter une création
-            </button>
+          </div>
+        ) : (
+          <p className="mt-6 inline-flex items-center gap-2 text-[15px] font-semibold text-pacte-ink bg-pacte-tint px-3.5 py-2 rounded-full">
+            <Check className="w-4 h-4" strokeWidth={2.4} />
+            {addedThisMonth} création{addedThisMonth > 1 ? "s" : ""} ajoutée{addedThisMonth > 1 ? "s" : ""} en {monthName}
+          </p>
+        )}
+
+        {/* Action principale : une photo suffit */}
+        <button
+          onClick={() => navigate("/espace-artisan/ia-studio")}
+          className="mt-4 w-full min-h-[88px] rounded-[22px] bg-primary hover:bg-[#8E4219] text-white px-5 py-4 flex items-center gap-4 text-left active:scale-[0.99] transition"
+        >
+          <span className="w-14 h-14 shrink-0 rounded-full bg-white/15 grid place-items-center">
+            <Camera className="w-7 h-7" strokeWidth={1.8} />
+          </span>
+          <span>
+            <span className="block text-xl font-semibold">Ajouter une création</span>
+            <span className="block text-[15px] text-white/85 mt-0.5">Une photo et un prix, l'assistant écrit la description</span>
+          </span>
+        </button>
+
+        {/* Chiffres réels */}
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="rounded-[18px] bg-white border border-ink/[0.08] p-4">
+            <p className="text-[32px] font-bold leading-none">{online}</p>
+            <p className="mt-2 text-[15px] text-ink-soft">En ligne</p>
+          </div>
+          <div className="rounded-[18px] bg-white border border-ink/[0.08] p-4">
+            <p className="text-[32px] font-bold leading-none">{pending}</p>
+            <p className="mt-2 text-[15px] text-ink-soft">En validation</p>
           </div>
         </div>
-      )}
+        {pending > 0 && (
+          <p className="mt-3 text-sm text-ink-soft leading-normal">
+            L'équipe PACTE vérifie vos nouvelles créations : elles apparaissent sur le site dès leur validation.
+          </p>
+        )}
 
-      {/* Chiffres réels */}
-      <div className="px-6 mt-6 grid grid-cols-2 gap-3">
-        {[
-          { icon: Package, value: online, label: "En ligne", bg: "bg-surface-container-low", iconColor: "text-primary" },
-          { icon: Clock, value: pending, label: "En validation", bg: "bg-[#F6E7DD]", iconColor: "text-[#A55427]" },
-          { icon: CalendarPlus, value: addedThisMonth, label: `Ajoutés en ${monthName}`, bg: "bg-[#F6E7E0]", iconColor: "text-[#864521]" },
-          { icon: Star, value: displayRating || "—", label: "Note globale", bg: "bg-surface-container-low", iconColor: "text-primary" },
-        ].map((stat) => (
-          <div key={stat.label} className={`${stat.bg} p-5 rounded-xl`}>
-            <stat.icon className={`w-5 h-5 mb-2 ${stat.iconColor}`} />
-            <p className="font-serif text-3xl text-foreground">{stat.value}</p>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{stat.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {pending > 0 && (
-        <p className="px-6 mt-3 text-xs text-muted-foreground">
-          {pending} création(s) en cours de vérification par l'équipe PACTE : elles apparaîtront sur le site dès leur validation.
-        </p>
-      )}
-
-      {/* Stock faible */}
-      {lowStock.length > 0 && (
-        <div className="px-6 mt-6">
-          <div className="bg-[#F6E7E0] p-4 rounded-xl flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-[#864521] shrink-0 mt-0.5" />
+        {/* Stock faible */}
+        {lowStock.length > 0 && (
+          <div className="mt-4 bg-amber-tint p-4 rounded-[18px] flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-ink shrink-0 mt-0.5" />
             <div>
-              <p className="font-medium text-[#864521] text-sm">Stock faible</p>
-              <p className="text-xs text-[#864521]/80 mt-0.5">
-                {lowStock.length} produit(s) bientôt épuisé(s) : {lowStock.slice(0, 3).map((p) => p.name).join(", ")}
-                {lowStock.length > 3 ? "…" : ""}
+              <p className="font-semibold text-amber-ink text-[15px]">Bientôt épuisé</p>
+              <p className="text-sm text-amber-ink mt-0.5">
+                {lowStock.slice(0, 3).map((p) => p.name).join(", ")}
+                {lowStock.length > 3 ? ` et ${lowStock.length - 3} autre(s)` : ""}
               </p>
             </div>
           </div>
+        )}
+
+        {/* Mes créations : statut, photos, modification */}
+        <div className="mt-10">
+          <ProductManager artisanId={session.id} title="Mes créations" onChange={() => refetch()} />
         </div>
-      )}
-
-      {/* Ajouter un produit (Studio IA) */}
-      <div className="px-6 mt-6">
-        <button
-          onClick={() => navigate("/espace-artisan/ia-studio")}
-          className="w-full bg-gradient-to-br from-terracotta to-terracotta-light text-white p-5 rounded-xl flex items-center justify-between active:scale-[0.98] transition-transform"
-        >
-          <div className="flex items-center gap-3">
-            <Sparkles className="w-6 h-6" />
-            <div className="text-left">
-              <p className="font-serif text-lg italic">Ajouter une création</p>
-              <p className="text-xs text-white/80">Photo, prix, et l'IA écrit la description</p>
-            </div>
-          </div>
-          <ChevronRight className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* Mes produits : modification, photos, suppression, statut de validation */}
-      <div className="px-6 mt-8 pb-32">
-        <ProductManager artisanId={session.id} title="Mes créations" onChange={() => refetch()} />
       </div>
     </AppShell>
   );

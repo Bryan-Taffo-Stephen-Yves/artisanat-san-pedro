@@ -1,127 +1,79 @@
-import { Heart, Plus, Star } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Heart, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { Product } from "@/data/products";
-import { categoryAccent } from "@/lib/categoryColors";
-import { useTilt } from "@/hooks/useTilt";
 import { useCart } from "@/context/CartContext";
 import { toast } from "sonner";
 import { useFavorites } from "@/hooks/useFavorites";
 
 interface BoutiqueProductCardProps {
   product: Product;
+  // Libellé sous le nom : l'artisan (par défaut) ou masqué sur sa propre page
+  showArtisan?: boolean;
 }
 
-const BoutiqueProductCard = ({ product }: BoutiqueProductCardProps) => {
+const fcfa = (n: number) => `${n.toLocaleString("fr-FR")} FCFA`;
+
+// Carte produit de la charte : photo 4/5, favori, nom, artisan, prix, panier.
+const BoutiqueProductCard = ({ product, showArtisan = true }: BoutiqueProductCardProps) => {
+  const { addItem } = useCart();
   const favorites = useFavorites("product");
   const liked = favorites.isFavorite(product.id);
-  const navigate = useNavigate();
-  const accent = categoryAccent(product.category);
-  const { ref, onMouseMove, onMouseLeave } = useTilt(12);
-  const { addItem } = useCart();
   const outOfStock = product.stock <= 0;
-
-  const handleCardClick = () => {
-    navigate(`/boutique/${product.slug}`);
-  };
+  const href = `/boutique/${product.slug}`;
 
   return (
-    <div
-      ref={ref}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
-      className="rounded-bento overflow-hidden bg-background cursor-pointer shadow-luxury"
-      onClick={handleCardClick}
-    >
-      <div
-        className="relative aspect-[3/4] overflow-hidden"
-        style={{ background: !product.image ? '#E8E0D5' : undefined }}
-      >
-        {product.image ? (
-          <img
-            src={product.image}
-            alt={product.name}
-            loading="lazy"
-            width={800}
-            height={1000}
-            className="w-full h-full object-cover brightness-[0.95] sepia-[0.1] transition-transform duration-500 hover:scale-105"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              className="font-serif italic text-2xl"
-              style={{ color: accent.hex }}
-            >
-              {product.category}
-            </span>
-          </div>
-        )}
-        {product.badge && (
-          <span className="absolute top-3 left-3 glass-card px-2.5 py-1 rounded-full text-[8px] uppercase tracking-widest font-bold text-inverse-surface">
-            {product.badge}
-          </span>
-        )}
+    <article className="flex flex-col gap-1.5">
+      <div className="relative">
+        <Link to={href} className="block rounded-2xl overflow-hidden bg-sand" tabIndex={-1} aria-hidden="true">
+          {product.image ? (
+            <img
+              src={product.image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="w-full aspect-[4/5] object-cover transition-transform duration-500 ease-out hover:scale-[1.03]"
+            />
+          ) : (
+            <div className="w-full aspect-[4/5] grid place-items-center text-ink-muted text-sm">{product.category}</div>
+          )}
+        </Link>
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            favorites.toggle(product.id, product.name);
-          }}
-          className="absolute top-3 right-3 glass-card w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-          aria-label={liked ? `Retirer ${product.name} des favoris` : `Ajouter ${product.name} aux favoris`}
+          onClick={() => favorites.toggle(product.id, product.name)}
           aria-pressed={liked}
+          aria-label={liked ? `Retirer ${product.name} des favoris` : `Ajouter ${product.name} aux favoris`}
+          className="absolute top-3 right-3 w-11 h-11 rounded-full bg-white text-ink grid place-items-center shadow-[0_2px_10px_rgba(29,23,18,0.14)] hover:scale-105 transition-transform"
         >
-          <Heart
-            className={`w-3.5 h-3.5 ${liked ? "fill-primary text-primary" : "text-inverse-surface"}`}
-          />
+          <Heart className={`w-5 h-5 ${liked ? "fill-primary text-primary" : ""}`} strokeWidth={1.8} />
         </button>
       </div>
-      <div className="p-3 space-y-1">
-        <span
-          className="text-[8px] uppercase tracking-widest font-semibold"
-          style={{ color: accent.hex }}
-        >
-          {product.category}
-        </span>
-        <h3 className="font-serif text-sm leading-tight line-clamp-2 text-inverse-surface">
+
+      <h3 className="mt-2 text-[15px] md:text-[17px] leading-snug font-semibold tracking-normal">
+        <Link to={href} className="text-ink no-underline hover:underline underline-offset-4">
           {product.name}
-        </h3>
-        <p className="text-[9px] text-muted-foreground">{product.artisan}</p>
-        <div className="flex items-center gap-0.5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              className={`w-3 h-3 ${
-                i < Math.round(product.rating)
-                  ? "fill-primary text-primary"
-                  : "text-border"
-              }`}
-            />
-          ))}
-          <span className="text-[9px] text-muted-foreground ml-1">({product.reviews})</span>
-        </div>
-        <div className="flex justify-between items-center mt-2">
-          <span className="font-serif text-primary text-base">
-            {product.price.toLocaleString("fr-FR")} <span className="text-[9px]">FCFA</span>
-          </span>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (outOfStock) {
-                toast.error("Cette pièce n'est plus en stock");
-                return;
-              }
-              addItem(product);
-              toast.success(`${product.name} ajouté au panier`);
-            }}
-            disabled={outOfStock}
-            aria-label={outOfStock ? `${product.name} : épuisé` : `Ajouter ${product.name} au panier`}
-            className="w-8 h-8 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light flex items-center justify-center text-primary-foreground hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
-          >
-            <Plus className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        </Link>
+      </h3>
+      {showArtisan && <span className="text-[13px] md:text-sm text-ink-muted">{product.artisan}</span>}
+
+      <div className="flex items-center justify-between gap-2 mt-1">
+        <span className="text-base md:text-lg font-bold tracking-tight">{fcfa(product.price)}</span>
+        <button
+          onClick={() => {
+            if (outOfStock) {
+              toast.error("Cette pièce n'est plus en stock");
+              return;
+            }
+            addItem(product);
+            toast.success(`${product.name} ajouté au panier`);
+          }}
+          disabled={outOfStock}
+          aria-label={outOfStock ? `${product.name} : épuisé` : `Ajouter ${product.name} au panier`}
+          className="h-11 min-w-11 px-3 md:px-4 rounded-full border border-ink/[0.16] bg-white text-ink text-sm font-semibold inline-flex items-center justify-center gap-1.5 hover:border-ink/40 transition-colors disabled:opacity-40"
+        >
+          <Plus className="w-4 h-4" strokeWidth={2} />
+          <span className="hidden sm:inline">{outOfStock ? "Épuisé" : "Panier"}</span>
+        </button>
       </div>
-    </div>
+    </article>
   );
 };
 

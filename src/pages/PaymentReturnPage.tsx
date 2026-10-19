@@ -70,7 +70,7 @@ const PaymentReturnPage = () => {
 
   return (
     <AppShell>
-      <div className="px-6 pt-28 pb-20 max-w-md mx-auto">
+      <div className="px-6 pt-12 pb-20 max-w-md mx-auto">
         {view === "checking" && (
           <div className="text-center py-16" role="status" aria-live="polite">
             <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto" />
@@ -85,18 +85,18 @@ const PaymentReturnPage = () => {
               <Check className="w-12 h-12 text-primary" />
             </div>
             <h1 className="font-serif text-3xl italic mt-6">Paiement reçu, merci !</h1>
-            {info.reference && <p className="text-[10px] uppercase tracking-widest text-muted-foreground mt-2">{info.reference}</p>}
+            {info.reference && <p className="text-[13px] font-semibold text-muted-foreground mt-2">{info.reference}</p>}
             {info.total != null && <p className="font-serif text-2xl text-primary italic mt-4">{info.total.toLocaleString("fr-FR")} FCFA</p>}
             <p className="text-sm text-muted-foreground mt-4 leading-relaxed">
               Les artisans préparent votre commande. L'équipe PACTE vous contacte pour la livraison.
             </p>
             <div className="flex flex-col gap-3 mt-8">
               {user && (
-                <Link to="/mon-espace" className="h-12 inline-flex items-center justify-center rounded-full border border-border/40 uppercase tracking-widest text-[0.7rem] font-bold">
+                <Link to="/mon-espace" className="h-12 inline-flex items-center justify-center rounded-full border border-border/40 text-base font-semibold">
                   Voir mes commandes
                 </Link>
               )}
-              <Link to="/boutique" className="h-12 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold">
+              <Link to="/boutique" className="h-12 inline-flex items-center justify-center rounded-full bg-primary hover:bg-[#8E4219] text-primary-foreground text-base font-semibold">
                 Continuer mes achats
               </Link>
             </div>
@@ -111,7 +111,7 @@ const PaymentReturnPage = () => {
                 Le paiement n'a pas abouti. Vous pouvez réessayer, avec le même opérateur ou un autre.
               </p>
             )}
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Commande {info.reference}</p>
+            <p className="text-[13px] font-semibold text-muted-foreground">Commande {info.reference}</p>
             <h1 className="font-serif text-3xl italic mt-1 mb-6">Payer ma commande</h1>
             {info.total != null && (
               <JekoPayment
@@ -135,7 +135,7 @@ const PaymentReturnPage = () => {
             </p>
             <button
               onClick={() => setView("pay")}
-              className="mt-6 h-12 px-8 rounded-full border border-border/40 uppercase tracking-widest text-[0.7rem] font-bold"
+              className="mt-6 h-12 px-8 rounded-full border border-border/40 text-base font-semibold"
             >
               Réessayer le paiement
             </button>
@@ -148,7 +148,7 @@ const PaymentReturnPage = () => {
             <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
               Le paiement en ligne est momentanément indisponible. L'équipe PACTE vous contacte pour le règlement.
             </p>
-            <Link to="/" className="mt-6 inline-flex h-12 px-8 items-center rounded-full border border-border/40 uppercase tracking-widest text-[0.7rem] font-bold">
+            <Link to="/" className="mt-6 inline-flex h-12 px-8 items-center rounded-full border border-border/40 text-base font-semibold">
               Retour à l'accueil
             </Link>
           </div>
@@ -157,7 +157,7 @@ const PaymentReturnPage = () => {
         {view === "invalid" && (
           <div className="text-center py-16">
             <p className="font-serif text-2xl italic text-muted-foreground">Commande introuvable</p>
-            <Link to="/boutique" className="mt-6 inline-flex h-12 px-8 items-center rounded-full border border-border/40 uppercase tracking-widest text-[0.7rem] font-bold">
+            <Link to="/boutique" className="mt-6 inline-flex h-12 px-8 items-center rounded-full border border-border/40 text-base font-semibold">
               Aller à la boutique
             </Link>
           </div>

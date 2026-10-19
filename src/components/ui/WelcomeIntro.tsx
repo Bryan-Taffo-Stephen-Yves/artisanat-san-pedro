@@ -101,7 +101,7 @@ export function WelcomeIntro() {
               custom={0}
             />
             <motion.p
-              className="text-[10px] uppercase tracking-[0.3em] text-white/50 mb-3"
+              className="text-[13px] font-semibold text-white/50 mb-3"
               variants={item}
               initial="hidden"
               animate="show"
@@ -152,7 +152,7 @@ export function WelcomeIntro() {
             <motion.button
               ref={buttonRef}
               onClick={close}
-              className="mt-8 inline-flex items-center justify-center gap-2 h-12 w-full sm:w-auto px-8 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              className="mt-8 inline-flex items-center justify-center gap-2 h-12 w-full sm:w-auto px-8 rounded-full bg-primary hover:bg-[#8E4219] text-primary-foreground text-base font-semibold hover:opacity-90 active:scale-[0.97] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
               variants={item}
               initial="hidden"
               animate="show"

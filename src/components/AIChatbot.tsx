@@ -101,7 +101,7 @@ const AIChatbot = () => {
           )}
           <button
             onClick={() => setIsOpen(true)}
-            className="relative w-14 h-14 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
+            className="relative w-14 h-14 bg-primary hover:bg-[#8E4219] text-primary-foreground rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform"
           >
             <Sparkles className="w-6 h-6 fill-current" />
             <span className="absolute top-1 right-1 w-3 h-3 bg-destructive rounded-full" />
@@ -124,7 +124,7 @@ const AIChatbot = () => {
               </div>
               <div className="flex-1">
                 <p className="font-serif text-base">Assistant IA</p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-widest">Mains de San Pedro · PACTE</p>
+                <p className="text-xs text-ink-soft">Mains de San Pedro · PACTE</p>
               </div>
               <div className="flex items-center gap-1.5 mr-2">
                 <span className="w-2 h-2 rounded-full bg-green-400" />
@@ -149,7 +149,7 @@ const AIChatbot = () => {
                     key={action}
                     onClick={() => sendMessage(action)}
                     style={{ color: p.c, backgroundColor: p.bg, borderColor: `${p.c}33` }}
-                    className="flex-shrink-0 px-3 py-2 rounded-full text-[9px] uppercase tracking-widest border transition-colors"
+                    className="flex-shrink-0 px-3 py-2 rounded-full text-[13px] font-semibold border transition-colors"
                   >
                     {action}
                   </button>
@@ -227,7 +227,7 @@ const AIChatbot = () => {
               <button
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || isLoading}
-                className="w-10 h-10 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full flex items-center justify-center disabled:opacity-50 transition-opacity"
+                className="w-10 h-10 bg-primary hover:bg-[#8E4219] text-primary-foreground rounded-full flex items-center justify-center disabled:opacity-50 transition-opacity"
               >
                 <Send className="w-4 h-4" />
               </button>

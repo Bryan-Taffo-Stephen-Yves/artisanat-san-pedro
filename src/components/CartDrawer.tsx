@@ -50,7 +50,7 @@ const CartDrawer = ({ open, onClose }: Props) => {
                   <Link
                     to="/boutique"
                     onClick={onClose}
-                    className="mt-6 inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-primary-foreground uppercase tracking-widest text-[10px] font-bold"
+                    className="mt-6 inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary text-primary-foreground text-[13px] font-semibold"
                   >
                     Explorer la boutique
                   </Link>
@@ -62,7 +62,7 @@ const CartDrawer = ({ open, onClose }: Props) => {
                       <img src={product.image} alt={product.name} className="w-20 h-20 rounded-md object-cover shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-serif italic text-inverse-surface truncate">{product.name}</p>
-                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{product.category}</p>
+                        <p className="text-[13px] font-semibold text-muted-foreground">{product.category}</p>
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center gap-1 border border-border/30 rounded-full px-1">
                             <button
@@ -97,20 +97,20 @@ const CartDrawer = ({ open, onClose }: Props) => {
             {items.length > 0 && (
               <div className="border-t border-border/20 px-6 py-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Total</span>
+                  <span className="text-[13px] font-semibold text-muted-foreground">Total</span>
                   <span className="font-serif italic text-xl text-inverse-surface">{subtotal.toLocaleString("fr-FR")} FCFA</span>
                 </div>
                 <Link
                   to="/checkout"
                   onClick={onClose}
-                  className="block text-center py-3 rounded-full bg-primary text-primary-foreground uppercase tracking-widest text-[10px] font-bold"
+                  className="block text-center py-3 rounded-full bg-primary text-primary-foreground text-[13px] font-semibold"
                 >
                   Procéder au paiement
                 </Link>
                 <Link
                   to="/panier"
                   onClick={onClose}
-                  className="block text-center py-2 text-[10px] uppercase tracking-widest text-muted-foreground hover:text-primary"
+                  className="block text-center py-2 text-[13px] font-semibold text-muted-foreground hover:text-primary"
                 >
                   Voir le panier complet
                 </Link>

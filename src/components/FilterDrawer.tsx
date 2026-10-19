@@ -75,7 +75,7 @@ const FilterDrawer = ({ open, onClose }: Props) => {
                       <button
                         key={cat}
                         onClick={() => toggleCat(cat)}
-                        className={`px-4 py-2 rounded-full uppercase tracking-widest text-[10px] font-bold transition-all ${
+                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                           active
                             ? "bg-primary text-primary-foreground"
                             : "bg-surface-container-low text-inverse-surface hover:bg-surface-container"

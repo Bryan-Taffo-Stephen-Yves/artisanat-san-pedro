@@ -60,7 +60,7 @@ const AdminGate = ({ onSuccess }: { onSuccess: (code: string) => void }) => {
         <button
           onClick={submit}
           disabled={loading}
-          className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground rounded-full py-3 uppercase tracking-widest text-[0.7rem] font-bold hover:opacity-90 active:scale-[0.97] transition disabled:opacity-60"
+          className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#8E4219] text-primary-foreground rounded-full py-3 text-base font-semibold hover:opacity-90 active:scale-[0.97] transition disabled:opacity-60"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
           Accéder

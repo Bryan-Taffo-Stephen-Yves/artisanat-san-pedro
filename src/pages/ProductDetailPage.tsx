@@ -1,430 +1,286 @@
 import { useState, useMemo, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Share2, Heart, Star, Minus, Plus, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { useParams, Link } from "react-router-dom";
+import { Share2, Heart, Minus, Plus, Check, ChevronLeft, ChevronRight, ChevronRight as Chevron, ShieldCheck, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
-import { motion } from "framer-motion";
 
+import AppShell from "@/components/AppShell";
+import BoutiqueProductCard from "@/components/BoutiqueProductCard";
+import ArtisanAvatar from "@/components/ArtisanAvatar";
 import { useProduct, useProducts } from "@/hooks/useProducts";
 import { useCart } from "@/context/CartContext";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { staggerContainer, staggerItem, scaleReveal } from "@/lib/motionVariants";
-import Footer from "@/components/Footer";
-import BrandBar from "@/components/BrandBar";
+import { useFavorites } from "@/hooks/useFavorites";
 
-const TABS = ["Description", "Livraison", "Avis"] as const;
-type Tab = typeof TABS[number];
+const fcfa = (n: number) => `${n.toLocaleString("fr-FR")} FCFA`;
 
-const mockReviews = [
-  { name: "Marie L.", rating: 5, text: "Une pièce magnifique, le travail est d'une finesse incroyable. L'emballage était soigné.", date: "Mars 2026" },
-  { name: "Jean-Pierre K.", rating: 4, text: "Très belle qualité artisanale. Livraison un peu longue mais le résultat en vaut la peine.", date: "Février 2026" },
-  { name: "Aïcha D.", rating: 5, text: "Exactement ce que je cherchais. L'artisan a même ajouté un petit mot personnel.", date: "Janvier 2026" },
-];
-
-const paymentMethods = ["Wave", "Orange Money", "MTN MoMo", "Stripe", "PayPal"];
+// Les descriptions peuvent contenir un peu de Markdown (# titre, **gras**)
+const blocs = (texte: string) =>
+  (texte || "")
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean)
+    .map((b) => ({ titre: b.startsWith("#"), texte: b.replace(/^#+\s*/, "").replace(/\*\*/g, "") }));
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
-  const navigate = useNavigate();
   const { addItem } = useCart();
-  const [activeTab, setActiveTab] = useState<Tab>("Description");
-  const [liked, setLiked] = useState(false);
+  const favoris = useFavorites("product");
   const [qty, setQty] = useState(1);
-  const [added, setAdded] = useState(false);
-  const [activePhoto, setActivePhoto] = useState(0);
+  const [ajoute, setAjoute] = useState(false);
+  const [photo, setPhoto] = useState(0);
+  const [toucheX, setToucheX] = useState<number | null>(null);
 
   const { data: product, isLoading } = useProduct(slug);
-  const { data: allProducts = [] } = useProducts();
+  const { data: tous = [] } = useProducts();
 
   useEffect(() => {
-    setActivePhoto(0);
+    setPhoto(0);
+    setQty(1);
   }, [slug]);
 
-  const relatedProducts = useMemo(() => {
-    if (!product) return [];
-    const sameCategory = allProducts.filter(
-      (p) => p.category === product.category && p.id !== product.id
-    );
-    const others = allProducts.filter(
-      (p) => p.category !== product.category && p.id !== product.id
-    );
-    return [...sameCategory, ...others].slice(0, 6);
-  }, [product, allProducts]);
+  const memeCategorie = useMemo(
+    () => (product ? tous.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4) : []),
+    [product, tous]
+  );
+  const nbOeuvresArtisan = useMemo(
+    () => (product ? tous.filter((p) => p.artisanSlug === product.artisanSlug).length : 0),
+    [product, tous]
+  );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background pt-24 px-6">
-        <div className="aspect-[4/5] rounded-bento bg-surface-container-low animate-pulse" />
-      </div>
+      <AppShell>
+        <div className="max-w-[1280px] mx-auto px-4 md:px-12 pt-6 grid lg:grid-cols-2 gap-12">
+          <div className="aspect-[4/5] rounded-[20px] bg-sand animate-pulse" />
+          <div className="space-y-4 pt-4">
+            <div className="h-10 w-3/4 rounded-lg bg-sand animate-pulse" />
+            <div className="h-8 w-1/3 rounded-lg bg-sand animate-pulse" />
+          </div>
+        </div>
+      </AppShell>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="text-center">
-          <p className="font-serif text-2xl italic text-muted-foreground">Œuvre introuvable</p>
-          <button
-            onClick={() => navigate("/boutique")}
-            className="mt-4 inline-flex items-center justify-center h-10 px-6 rounded-full border border-secondary/20 text-primary uppercase tracking-widest text-[0.7rem] font-bold hover:bg-primary/5 transition-colors"
-          >
+      <AppShell>
+        <div className="max-w-md mx-auto px-6 py-24 text-center">
+          <p className="text-2xl font-semibold">Cette pièce est introuvable</p>
+          <p className="text-ink-soft mt-2">Elle a peut-être été vendue ou retirée.</p>
+          <Link to="/boutique" className="mt-6 inline-flex h-12 px-6 items-center rounded-full border border-ink/[0.18] text-ink font-semibold no-underline">
             Retour à la boutique
-          </button>
+          </Link>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
-  const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : (product.image ? [product.image] : []);
-  const hasMultiple = gallery.length > 1;
+  const galerie = product.gallery?.length ? product.gallery : product.image ? [product.image] : [];
+  const plusieurs = galerie.length > 1;
+  const suivante = () => setPhoto((p) => (p + 1) % galerie.length);
+  const precedente = () => setPhoto((p) => (p - 1 + galerie.length) % galerie.length);
+  const epuise = product.stock <= 0;
+  const aime = favoris.isFavorite(product.id);
 
-  const goNext = () => setActivePhoto((p) => (p + 1) % gallery.length);
-  const goPrev = () => setActivePhoto((p) => (p - 1 + gallery.length) % gallery.length);
-
-  const handleAddToCart = () => {
-    setAdded(true);
+  const ajouter = () => {
+    if (epuise) return;
     addItem(product, qty);
-    toast.success(`${product.name} ajouté au panier`, {
-      description: `Quantité : ${qty}`,
-    });
-    setTimeout(() => setAdded(false), 2000);
+    setAjoute(true);
+    toast.success(`${product.name} ajouté au panier`, { description: qty > 1 ? `Quantité : ${qty}` : undefined });
+    setTimeout(() => setAjoute(false), 2000);
   };
 
+  const partager = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) await navigator.share({ title: product.name, url });
+      else {
+        await navigator.clipboard.writeText(url);
+        toast.success("Lien copié");
+      }
+    } catch {
+      /* partage annulé */
+    }
+  };
+
+  const boutonPanier = (
+    <button
+      onClick={ajouter}
+      disabled={epuise}
+      className={`flex-1 h-[54px] rounded-full text-base font-semibold inline-flex items-center justify-center gap-2 transition-colors disabled:opacity-40 ${
+        ajoute ? "bg-pacte text-white" : "bg-primary text-white hover:bg-[#8E4219]"
+      }`}
+    >
+      {ajoute ? <Check className="w-5 h-5" strokeWidth={2.2} /> : <ShoppingBag className="w-[18px] h-[18px]" strokeWidth={1.8} />}
+      {epuise ? "Épuisée" : ajoute ? "Ajoutée au panier" : "Ajouter au panier"}
+    </button>
+  );
+
   return (
-    <div className="min-h-screen bg-background pb-32">
-      {/* Top Nav */}
-      <header className="glass-card fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center">
-        <button
-          onClick={() => navigate(-1)}
-          className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors"
-        >
-          <ArrowLeft className="w-[18px] h-[18px] text-inverse-surface" />
-        </button>
-        <Link to="/" className="font-serif text-base italic text-inverse-surface tracking-tight hover:text-primary transition-colors">
-          Mains de San Pedro
-        </Link>
-        <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors">
-          <Share2 className="w-[18px] h-[18px] text-inverse-surface" />
-        </button>
-      </header>
+    <AppShell>
+      <div className="max-w-[1280px] mx-auto px-4 md:px-12 pt-4 md:pt-8 pb-36 md:pb-20">
+        <nav aria-label="Fil d'Ariane" className="hidden md:flex items-center gap-2 text-sm text-ink-muted mb-6">
+          <Link to="/boutique" className="text-ink-muted no-underline hover:text-primary">Boutique</Link>
+          <Chevron className="w-3.5 h-3.5" aria-hidden="true" />
+          <Link to={`/boutique?cat=${encodeURIComponent(product.category)}`} className="text-ink-muted no-underline hover:text-primary">{product.category}</Link>
+        </nav>
 
-      {/* SECTION 1 — Photo Gallery (carousel) */}
-      <div className="pt-[72px] px-4">
-        <ScrollReveal variants={scaleReveal} className="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden">
-          {gallery.length > 0 ? (
-            <motion.img
-              key={activePhoto}
-              src={gallery[activePhoto]}
-              alt={`${product.name} - photo ${activePhoto + 1}`}
-              width={800}
-              height={1000}
-              className="w-full h-full object-cover brightness-[0.95] sepia-[0.15] touch-pan-y"
-              drag={hasMultiple ? "x" : false}
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.2}
-              onDragEnd={(_, info) => {
-                if (info.offset.x < -60) goNext();
-                else if (info.offset.x > 60) goPrev();
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-14 items-start">
+          {/* Galerie */}
+          <div>
+            <div
+              className="relative rounded-[20px] overflow-hidden bg-sand"
+              onTouchStart={(e) => setToucheX(e.touches[0].clientX)}
+              onTouchEnd={(e) => {
+                if (toucheX === null || !plusieurs) return;
+                const dx = e.changedTouches[0].clientX - toucheX;
+                if (dx < -50) suivante();
+                else if (dx > 50) precedente();
+                setToucheX(null);
               }}
-              initial={{ opacity: 0.6 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.25 }}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center" style={{ background: "#E8E0D5" }}>
-              <span className="font-serif italic text-muted-foreground">{product.category}</span>
-            </div>
-          )}
-
-          <div className="absolute top-6 left-6 right-6 flex justify-between pointer-events-none">
-            {product.badge ? (
-              <span className="glass-card px-4 py-1.5 rounded-full text-primary font-bold uppercase text-[10px] pointer-events-auto">
-                {product.badge}
-              </span>
-            ) : <span />}
-            <button
-              onClick={() => setLiked(!liked)}
-              className="glass-card w-10 h-10 rounded-full flex items-center justify-center pointer-events-auto"
             >
-              <Heart className={`w-5 h-5 ${liked ? "fill-primary text-primary" : "text-inverse-surface"}`} />
-            </button>
-          </div>
-
-          {/* Arrow buttons */}
-          {hasMultiple && (
-            <>
-              <button
-                onClick={goPrev}
-                aria-label="Photo précédente"
-                className="absolute left-3 top-1/2 -translate-y-1/2 glass-card w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-              >
-                <ChevronLeft className="w-5 h-5 text-inverse-surface" />
-              </button>
-              <button
-                onClick={goNext}
-                aria-label="Photo suivante"
-                className="absolute right-3 top-1/2 -translate-y-1/2 glass-card w-10 h-10 rounded-full flex items-center justify-center active:scale-90 transition-transform"
-              >
-                <ChevronRight className="w-5 h-5 text-inverse-surface" />
-              </button>
-            </>
-          )}
-
-          {/* Pagination dots */}
-          {hasMultiple && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
-              {gallery.map((_, i) => (
+              {galerie.length ? (
+                <img src={galerie[photo]} alt={`${product.name}, photo ${photo + 1} sur ${galerie.length}`} className="w-full aspect-[4/5] object-cover" />
+              ) : (
+                <div className="w-full aspect-[4/5] grid place-items-center text-ink-muted">{product.category}</div>
+              )}
+              <div className="absolute top-3 right-3 flex gap-2">
+                <button onClick={partager} aria-label="Partager cette pièce" className="w-11 h-11 rounded-full bg-white text-ink grid place-items-center shadow-[0_2px_10px_rgba(29,23,18,0.14)]">
+                  <Share2 className="w-[19px] h-[19px]" strokeWidth={1.8} />
+                </button>
                 <button
-                  key={i}
-                  onClick={() => setActivePhoto(i)}
-                  aria-label={`Photo ${i + 1}`}
-                  className={`h-1 rounded-full transition-all ${i === activePhoto ? "w-8 bg-primary-foreground" : "w-1.5 bg-primary-foreground/40"}`}
-                />
-              ))}
+                  onClick={() => favoris.toggle(product.id, product.name)}
+                  aria-pressed={aime}
+                  aria-label={aime ? "Retirer des favoris" : "Ajouter aux favoris"}
+                  className="w-11 h-11 rounded-full bg-white text-ink grid place-items-center shadow-[0_2px_10px_rgba(29,23,18,0.14)]"
+                >
+                  <Heart className={`w-5 h-5 ${aime ? "fill-primary text-primary" : ""}`} strokeWidth={1.8} />
+                </button>
+              </div>
+              {plusieurs && (
+                <>
+                  <button onClick={precedente} aria-label="Photo précédente" className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 text-ink grid place-items-center">
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button onClick={suivante} aria-label="Photo suivante" className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 text-ink grid place-items-center">
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
+              )}
             </div>
-          )}
-        </ScrollReveal>
-
-        {/* Thumbnails row */}
-        {hasMultiple && (
-          <div className="flex gap-2 overflow-x-auto pb-1 mt-3">
-            {gallery.map((photo, i) => (
-              <button
-                key={i}
-                onClick={() => setActivePhoto(i)}
-                className={`flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
-                  i === activePhoto ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"
-                }`}
-              >
-                <img src={photo} alt={`miniature ${i + 1}`} className="w-full h-full object-cover" />
-              </button>
-            ))}
+            {plusieurs && (
+              <div className="flex gap-2 overflow-x-auto mt-3" role="tablist" aria-label="Photos">
+                {galerie.map((src, i) => (
+                  <button
+                    key={src}
+                    role="tab"
+                    aria-selected={i === photo}
+                    aria-label={`Photo ${i + 1}`}
+                    onClick={() => setPhoto(i)}
+                    className={`shrink-0 w-16 h-20 rounded-xl overflow-hidden border-2 transition-opacity ${i === photo ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}
+                  >
+                    <img src={src} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Informations */}
+          <div className="lg:sticky lg:top-28">
+            <Link
+              to={`/boutique?cat=${encodeURIComponent(product.category)}`}
+              className="inline-flex items-center h-[30px] px-3 rounded-full bg-sand text-ink-soft text-[13px] font-semibold no-underline hover:bg-[#E9DFD4]"
+            >
+              {product.category}
+            </Link>
+            <h1 className="mt-3.5 mb-0 text-[30px] md:text-[44px] leading-[1.06] tracking-[-0.03em] font-[650]">{product.name}</h1>
+            <p className="mt-2.5 md:mt-4 text-[26px] md:text-[32px] font-bold tracking-tight">{fcfa(product.price)}</p>
+            {epuise ? (
+              <p className="mt-2.5 text-sm font-semibold text-coral-ink">Épuisée pour le moment</p>
+            ) : (
+              <p className="mt-2.5 flex items-center gap-2 text-sm font-semibold text-pacte">
+                <ShieldCheck className="w-[18px] h-[18px]" strokeWidth={1.8} />
+                {product.stock} en stock, vérifiée par l'équipe PACTE
+              </p>
+            )}
+
+            <div className="hidden md:flex items-center gap-3 mt-7">
+              <div className="flex items-center h-[54px] rounded-full border border-ink/[0.16] bg-white px-1.5">
+                <button onClick={() => setQty(Math.max(1, qty - 1))} disabled={qty <= 1} aria-label="Diminuer la quantité" className="w-11 h-11 grid place-items-center rounded-full disabled:opacity-30">
+                  <Minus className="w-4 h-4" />
+                </button>
+                <span className="w-8 text-center font-bold" aria-live="polite">{qty}</span>
+                <button onClick={() => setQty(Math.min(product.stock, qty + 1))} disabled={qty >= product.stock} aria-label="Augmenter la quantité" className="w-11 h-11 grid place-items-center rounded-full disabled:opacity-30">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </div>
+              {boutonPanier}
+            </div>
+
+            <Link
+              to={`/artisans/${product.artisanSlug}`}
+              className="mt-6 md:mt-8 flex items-center gap-3.5 p-3 rounded-[18px] bg-white border border-ink/[0.08] text-ink no-underline hover:border-ink/20 transition-colors"
+            >
+              <ArtisanAvatar src={product.artisanAvatar} initials={product.artisan.split(" ").map((w) => w[0]).slice(0, 2).join("")} accentColor="#A84F1F" name={product.artisan} className="w-14 h-14 rounded-full shrink-0" />
+              <span className="flex-1 min-w-0 flex flex-col gap-0.5">
+                <span className="text-base font-semibold">{product.artisan}</span>
+                <span className="text-sm text-ink-muted truncate">
+                  {[product.artisanMetier, product.artisanLocation].filter(Boolean).join(" à ")} · {nbOeuvresArtisan} création{nbOeuvresArtisan > 1 ? "s" : ""}
+                </span>
+              </span>
+              <Chevron className="w-[18px] h-[18px] shrink-0" strokeWidth={2} />
+            </Link>
+
+            {product.description && (
+              <>
+                <h2 className="mt-8 mb-0 text-xl tracking-[-0.02em] font-semibold">L'histoire de la pièce</h2>
+                <div className="mt-2.5 space-y-3 max-w-prose">
+                  {blocs(product.description).map((b, i) =>
+                    b.titre ? (
+                      <h3 key={i} className="m-0 text-base font-semibold">{b.texte}</h3>
+                    ) : (
+                      <p key={i} className="m-0 text-base leading-relaxed text-[#3F352E] whitespace-pre-line">{b.texte}</p>
+                    )
+                  )}
+                </div>
+              </>
+            )}
+
+            <dl className="mt-6 flex flex-col border-t border-ink/10">
+              <div className="flex gap-3.5 py-3.5 border-b border-ink/10">
+                <dt className="basis-[104px] shrink-0 text-sm font-semibold">Paiement</dt>
+                <dd className="m-0 text-sm leading-normal text-ink-soft">Wave, Orange Money, MTN MoMo ou Moov Money, avec le numéro de votre compte</dd>
+              </div>
+              <div className="flex gap-3.5 py-3.5 border-b border-ink/10">
+                <dt className="basis-[104px] shrink-0 text-sm font-semibold">Livraison</dt>
+                <dd className="m-0 text-sm leading-normal text-ink-soft">L'équipe PACTE vous appelle après la commande pour l'organiser</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        {memeCategorie.length > 0 && (
+          <section className="mt-14 md:mt-20">
+            <div className="flex justify-between items-end gap-4 mb-5 md:mb-7">
+              <h2 className="m-0 text-xl md:text-[28px] tracking-[-0.02em] font-semibold">Autres créations en {product.category.toLowerCase()}</h2>
+              <Link to={`/boutique?cat=${encodeURIComponent(product.category)}`} className="text-[15px] font-semibold no-underline hover:underline underline-offset-4 whitespace-nowrap">Tout voir</Link>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 md:gap-x-6 gap-y-8">
+              {memeCategorie.map((p) => <BoutiqueProductCard key={p.id} product={p} />)}
+            </div>
+          </section>
         )}
       </div>
 
-      {/* SECTION 2 — Product Info */}
-      <div className="px-6 mt-6 space-y-6">
-        {/* Name + Category */}
-        <ScrollReveal delay={0.1}>
-          <span className="label-caps text-[10px] text-muted-foreground">{product.category}</span>
-          <h1 className="font-serif text-4xl italic text-inverse-surface leading-tight mt-1">
-            {product.name}
-          </h1>
-        </ScrollReveal>
-
-        {/* Ratings + Stock */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className={`w-4 h-4 ${i < Math.round(product.rating) ? "fill-primary text-primary" : "text-border"}`}
-              />
-            ))}
-            <span className="text-xs text-muted-foreground ml-1">({product.reviews} avis)</span>
-          </div>
-          {product.stock <= 2 && (
-            <span className="bg-destructive/10 text-destructive px-3 py-1 rounded-full text-[10px] font-bold uppercase">
-              Plus que {product.stock} en stock
-            </span>
-          )}
-        </div>
-
-        {/* Price */}
-        <ScrollReveal delay={0.2}>
-          <p className="font-serif text-3xl italic text-primary">
-            {product.price.toLocaleString("fr-FR")} <span className="text-base not-italic">FCFA</span>
-          </p>
-        </ScrollReveal>
-
-        {/* Artisan Card */}
-        <ScrollReveal delay={0.3} className="bg-surface-container-low p-5 rounded-bento flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <img
-              src={product.artisanAvatar}
-              alt={product.artisan}
-              loading="lazy"
-              width={56}
-              height={56}
-              className="w-14 h-14 rounded-full object-cover border-2 border-background"
-            />
-            <div>
-              <p className="font-serif text-lg text-inverse-surface">{product.artisan}</p>
-              <p className="text-xs text-muted-foreground">
-                {product.artisanMetier} · {product.artisanLocation}
-              </p>
-            </div>
-          </div>
-          <Link
-            to={`/artisans/${product.artisanSlug}`}
-            className="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline shrink-0"
-          >
-            Voir →
-          </Link>
-        </ScrollReveal>
-
-        {/* Tabs */}
-        <ScrollReveal>
-          <div className="flex gap-6 border-b border-border/20 mb-6">
-            {TABS.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`pb-3 text-[10px] uppercase tracking-widest font-bold transition-colors ${
-                  activeTab === tab
-                    ? "border-b-2 border-primary text-primary"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          {activeTab === "Description" && (
-            <p className="text-sm text-muted-foreground font-light leading-relaxed animate-fade-in">
-              {product.description}
-            </p>
-          )}
-
-          {activeTab === "Livraison" && (
-            <div className="text-sm text-muted-foreground font-light leading-relaxed space-y-3 animate-fade-in">
-              <p>📦 <strong className="font-medium text-inverse-surface">Délai de livraison :</strong> 5 à 10 jours ouvrés selon votre localisation.</p>
-              <p>🎁 <strong className="font-medium text-inverse-surface">Emballage :</strong> Chaque pièce est soigneusement emballée dans un écrin artisanal avec protection renforcée.</p>
-              <p>🌍 <strong className="font-medium text-inverse-surface">Zones desservies :</strong> Côte d'Ivoire, Afrique de l'Ouest, France, Belgique, Canada.</p>
-              <p>💳 <strong className="font-medium text-inverse-surface">Paiement :</strong> Wave, Orange Money, MTN MoMo, Stripe et PayPal acceptés.</p>
-            </div>
-          )}
-
-          {activeTab === "Avis" && (
-            <div className="space-y-4 animate-fade-in">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="font-serif text-2xl text-primary">{product.rating}</span>
-                <div>
-                  <div className="flex items-center gap-0.5">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={`w-3 h-3 ${i < Math.round(product.rating) ? "fill-primary text-primary" : "text-border"}`} />
-                    ))}
-                  </div>
-                  <p className="text-[10px] text-muted-foreground">{product.reviews} avis</p>
-                </div>
-              </div>
-              {mockReviews.map((r, i) => (
-                <div key={i} className="bg-surface-container-low p-4 rounded-bento">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 5 }).map((_, j) => (
-                        <Star key={j} className={`w-3 h-3 ${j < r.rating ? "fill-primary text-primary" : "text-border"}`} />
-                      ))}
-                    </div>
-                    <span className="text-[10px] text-muted-foreground">{r.date}</span>
-                  </div>
-                  <p className="text-sm text-inverse-surface font-medium mb-1">{r.name}</p>
-                  <p className="text-sm text-muted-foreground font-light leading-relaxed">{r.text}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </ScrollReveal>
-
-        {/* Payment methods */}
-        <div className="flex gap-2 flex-wrap">
-          {paymentMethods.map((m) => (
-            <span key={m} className="bg-surface-container text-muted-foreground text-[9px] uppercase px-3 py-1 rounded-full">
-              {m}
-            </span>
-          ))}
-        </div>
+      {/* Mobile : barre d'achat toujours visible, au-dessus des onglets */}
+      <div className="md:hidden fixed inset-x-0 bottom-[68px] z-40 px-4 py-3 bg-white border-t border-ink/10 flex items-center gap-3.5 shadow-[0_-6px_20px_rgba(29,23,18,0.06)]">
+        <span className="flex flex-col">
+          <span className="text-[13px] text-ink-muted">Prix</span>
+          <span className="text-[19px] font-bold whitespace-nowrap">{fcfa(product.price)}</span>
+        </span>
+        {boutonPanier}
       </div>
-
-      {/* SECTION 3 — Related Products */}
-      {relatedProducts.length > 0 && (
-        <div className="bg-surface-container-low py-10 px-6 mt-8">
-          <h2 className="font-serif italic text-2xl text-inverse-surface mb-6">Vous aimerez aussi</h2>
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 gap-4"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
-          >
-            {relatedProducts.map((rp) => (
-              <motion.div key={rp.id} variants={staggerItem}>
-              <Link to={`/boutique/${rp.slug}`} className="group block">
-                <div className="aspect-square rounded-bento overflow-hidden mb-2">
-                  <img
-                    src={rp.image}
-                    alt={rp.name}
-                    loading="lazy"
-                    width={400}
-                    height={400}
-                    className="w-full h-full object-cover brightness-[0.95] sepia-[0.1] group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <p className="font-serif text-sm text-inverse-surface leading-snug line-clamp-1">{rp.name}</p>
-                <p className="font-serif text-primary text-sm mt-0.5">
-                  {rp.price.toLocaleString("fr-FR")} FCFA
-                </p>
-              </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-          <div className="mt-8 flex justify-center">
-            <Link
-              to="/boutique"
-              className="inline-flex items-center justify-center h-10 px-6 rounded-full border border-secondary/20 text-primary uppercase tracking-widest text-[0.7rem] font-bold hover:bg-primary/5 transition-colors"
-            >
-              Voir toute la boutique →
-            </Link>
-          </div>
-        </div>
-      )}
-
-      <Footer />
-      <BrandBar />
-
-      {/* Bottom Action Bar */}
-      <div className="fixed bottom-0 w-full z-50 glass-card backdrop-blur-xl px-6 py-6 flex items-center gap-4 border-t border-border/10"
-           style={{ boxShadow: "0 -10px 40px rgba(14,13,13,0.04)" }}>
-        {/* Quantity selector */}
-        <div className="flex items-center bg-surface-container rounded-full px-2 py-1">
-          <button
-            onClick={() => setQty(Math.max(1, qty - 1))}
-            disabled={qty <= 1}
-            className="w-10 h-10 flex items-center justify-center text-primary disabled:opacity-30 transition-opacity"
-          >
-            <Minus className="w-4 h-4" />
-          </button>
-          <span className="w-8 text-center font-bold text-inverse-surface">{qty}</span>
-          <button
-            onClick={() => setQty(Math.min(product.stock, qty + 1))}
-            disabled={qty >= product.stock}
-            className="w-10 h-10 flex items-center justify-center text-primary disabled:opacity-30 transition-opacity"
-          >
-            <Plus className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Add to cart */}
-        <button
-          onClick={handleAddToCart}
-          className={`flex-1 h-12 rounded-full flex items-center justify-center gap-2 uppercase tracking-widest text-[0.7rem] font-bold transition-all active:scale-[0.97] ${
-            added
-              ? "bg-green-600 text-primary-foreground"
-              : "bg-gradient-to-br from-terracotta to-terracotta-light text-primary-foreground hover:opacity-90"
-          }`}
-        >
-          {added ? (
-            <>
-              <Check className="w-4 h-4" />
-              Ajouté !
-            </>
-          ) : (
-            "Ajouter au panier"
-          )}
-        </button>
-      </div>
-    </div>
+    </AppShell>
   );
 };
 

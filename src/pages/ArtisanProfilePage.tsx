@@ -50,7 +50,7 @@ const ArtisanProfilePage = () => {
           <p className="font-serif text-2xl italic text-muted-foreground">Artisan introuvable</p>
           <button
             onClick={() => navigate("/artisans")}
-            className="mt-4 inline-flex items-center justify-center h-10 px-6 rounded-full border border-secondary/20 text-primary uppercase tracking-widest text-[0.7rem] font-bold hover:bg-primary/5 transition-colors"
+            className="mt-4 inline-flex items-center justify-center h-10 px-6 rounded-full border border-secondary/20 text-primary text-base font-semibold hover:bg-primary/5 transition-colors"
           >
             Retour aux artisans
           </button>
@@ -113,7 +113,7 @@ const ArtisanProfilePage = () => {
           <div className="flex-1 min-w-0">
             <h1 className="font-serif text-2xl italic text-inverse-surface">{artisan.name}</h1>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
-              <span className="glass-card text-primary text-[9px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">
+              <span className="glass-card text-primary text-[13px] font-semibold px-3 py-1 rounded-full">
                 {artisan.metier}
               </span>
               <span className="text-xs text-muted-foreground">{artisan.location}, Côte d'Ivoire</span>

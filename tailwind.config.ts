@@ -54,13 +54,31 @@ export default {
         },
         surface: {
           DEFAULT: "hsl(var(--surface))",
+          "container-lowest": "hsl(var(--surface-container-lowest))",
           "container-low": "hsl(var(--surface-container-low))",
           container: "hsl(var(--surface-container))",
         },
         "inverse-surface": "hsl(var(--inverse-surface))",
+        "on-surface": "hsl(var(--on-surface))",
+        "on-surface-variant": "hsl(var(--on-surface-variant))",
+        "outline-variant": "hsl(var(--outline-variant))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        /* Charte : papier, sable, encre, terre cuite, vert PACTE */
+        paper: "#FAF6F1",
+        sand: "#F2EAE1",
+        ink: { DEFAULT: "#1D1712", soft: "#5F5249", muted: "#6E6158" },
+        pacte: { DEFAULT: "#2F6B3E", tint: "#E7F1E9", ink: "#23502F" },
+        amber: { tint: "#FFF1CC", ink: "#6B4500" },
+        coral: { tint: "#FBE3DF", ink: "#9A2A1A" },
+        /* Les anciens dégradés "from-terracotta to-terracotta-light"
+           deviennent des aplats terre cuite foncée (boutons de la charte) */
         terracotta: {
-          DEFAULT: "#C3622D",
-          light: "#D28962",
+          DEFAULT: "#A84F1F",
+          light: "#A84F1F",
+          bright: "#C3622D",
         },
         /* forest & bordeaux conservés comme alias terracotta pour
            compatibilité — la charte Mains de San Pedro est monochrome */

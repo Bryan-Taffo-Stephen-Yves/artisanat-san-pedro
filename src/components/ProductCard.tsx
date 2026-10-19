@@ -90,7 +90,7 @@ const ProductCard = ({ product }: { product: typeof mockProducts[0] }) => {
           <span className="font-serif text-primary text-lg">
             {product.price.toLocaleString("fr-FR")} <span className="text-xs">CFA</span>
           </span>
-          <button className="w-9 h-9 rounded-full bg-gradient-to-br from-terracotta to-terracotta-light flex items-center justify-center text-primary-foreground hover:opacity-90 active:scale-95 transition-all">
+          <button className="w-9 h-9 rounded-full bg-primary hover:bg-[#8E4219] flex items-center justify-center text-primary-foreground hover:opacity-90 active:scale-95 transition-all">
             <Plus className="w-4 h-4" />
           </button>
         </div>
