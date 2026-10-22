@@ -33,7 +33,7 @@ const BottomNav = () => {
             <Icon className="w-[22px] h-[22px]" strokeWidth={1.8} aria-hidden="true" />
             {label}
             {to === "/panier" && totalItems > 0 && (
-              <span className="absolute top-2 left-1/2 ml-1.5 min-w-[16px] h-4 px-1 rounded-full bg-primary text-white text-[10px] font-bold grid place-items-center">
+              <span key={totalItems} className="animate-pop absolute top-2 left-1/2 ml-1.5 min-w-[16px] h-4 px-1 rounded-full bg-primary text-white text-[10px] font-bold grid place-items-center">
                 {totalItems > 9 ? "9+" : totalItems}
               </span>
             )}

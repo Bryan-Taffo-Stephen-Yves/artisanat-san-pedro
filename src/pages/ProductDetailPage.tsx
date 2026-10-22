@@ -139,7 +139,15 @@ const ProductDetailPage = () => {
               }}
             >
               {galerie.length ? (
-                <img src={galerie[photo]} alt={`${product.name}, photo ${photo + 1} sur ${galerie.length}`} className="w-full aspect-[4/5] object-cover" />
+                <img
+                  key={photo}
+                  src={galerie[photo]}
+                  srcSet={product.gallerySrcSets?.[photo]}
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  alt={`${product.name}, photo ${photo + 1} sur ${galerie.length}`}
+                  {...(photo === 0 ? ({ fetchpriority: "high" } as Record<string, string>) : {})}
+                  className="animate-photo-in w-full aspect-[4/5] object-cover"
+                />
               ) : (
                 <div className="w-full aspect-[4/5] grid place-items-center text-ink-muted">{product.category}</div>
               )}
@@ -178,7 +186,7 @@ const ProductDetailPage = () => {
                     onClick={() => setPhoto(i)}
                     className={`shrink-0 w-16 h-20 rounded-xl overflow-hidden border-2 transition-opacity ${i === photo ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"}`}
                   >
-                    <img src={src} alt="" className="w-full h-full object-cover" />
+                    <img src={product.galleryThumbs?.[i] || src} alt="" loading="lazy" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -246,7 +254,7 @@ const ProductDetailPage = () => {
               </>
             )}
 
-            <dl className="mt-6 flex flex-col border-t border-ink/10">
+            <dl data-san-scroll className="mt-6 flex flex-col border-t border-ink/10">
               <div className="flex gap-3.5 py-3.5 border-b border-ink/10">
                 <dt className="basis-[104px] shrink-0 text-sm font-semibold">Paiement</dt>
                 <dd className="m-0 text-sm leading-normal text-ink-soft">Wave, Orange Money, MTN MoMo ou Moov Money, avec le numéro de votre compte</dd>
@@ -260,13 +268,13 @@ const ProductDetailPage = () => {
         </div>
 
         {memeCategorie.length > 0 && (
-          <section className="mt-14 md:mt-20">
+          <section data-san-scroll className="mt-14 md:mt-20">
             <div className="flex justify-between items-end gap-4 mb-5 md:mb-7">
               <h2 className="m-0 text-xl md:text-[28px] tracking-[-0.02em] font-semibold">Autres créations en {product.category.toLowerCase()}</h2>
               <Link to={`/boutique?cat=${encodeURIComponent(product.category)}`} className="text-[15px] font-semibold no-underline hover:underline underline-offset-4 whitespace-nowrap">Tout voir</Link>
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 md:gap-x-6 gap-y-8">
-              {memeCategorie.map((p) => <BoutiqueProductCard key={p.id} product={p} />)}
+              {memeCategorie.map((p, i) => <BoutiqueProductCard key={p.id} product={p} reveal={i % 4} />)}
             </div>
           </section>
         )}

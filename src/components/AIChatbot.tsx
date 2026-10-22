@@ -112,8 +112,8 @@ const AIChatbot = () => {
       {/* Overlay + Panel */}
       {isOpen && (
         <>
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" onClick={() => setIsOpen(false)} />
-          <div className="fixed bottom-0 left-0 right-0 z-50 h-[85svh] rounded-t-[2rem] bg-background overflow-hidden flex flex-col shadow-[0_-20px_60px_rgba(14,13,13,0.12)]">
+          <div className="animate-backdrop-in fixed inset-0 bg-black/20 backdrop-blur-sm z-40" onClick={() => setIsOpen(false)} />
+          <div role="dialog" aria-label="Assistant" className="animate-sheet-up fixed bottom-0 left-0 right-0 z-50 h-[85svh] rounded-t-[2rem] bg-background overflow-hidden flex flex-col shadow-[0_-20px_60px_rgba(14,13,13,0.12)]">
             {/* Drag indicator */}
             <div className="w-10 h-1 bg-muted-foreground/30 rounded-full mx-auto mt-3 mb-2" />
 

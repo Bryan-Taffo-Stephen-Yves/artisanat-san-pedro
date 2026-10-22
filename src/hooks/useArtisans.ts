@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { readSnapshot, writeSnapshot } from "@/lib/snapshot";
 import { supabase } from "@/integrations/supabase/client";
 import { IMG } from "@/lib/image";
 
@@ -76,13 +77,17 @@ export function useArtisans() {
         .eq("published", true)
         .order("diagnostic_order", { ascending: true });
       if (error) throw error;
-      return ((data as any[]) ?? []).map(mapArtisanRow);
+      const rows = (data as any[]) ?? [];
+      writeSnapshot("san_artisans_v1", rows);
+      return rows.map(mapArtisanRow);
     },
-    staleTime: 60000,
+    initialData: () => readSnapshot<any[]>("san_artisans_v1")?.map(mapArtisanRow),
+    initialDataUpdatedAt: 0,
   });
 }
 
 export function useArtisan(slug: string | undefined) {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ["artisan", slug],
     enabled: !!slug,
@@ -95,5 +100,7 @@ export function useArtisan(slug: string | undefined) {
       if (error) throw error;
       return data ? mapArtisanRow(data) : null;
     },
+    placeholderData: () =>
+      queryClient.getQueryData<ArtisanUI[]>(["artisans"])?.find((a) => a.slug === slug),
   });
 }

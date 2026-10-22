@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Search, ShoppingBag, User } from "lucide-react";
-import SearchOverlay from "@/components/SearchOverlay";
-import CartDrawer from "@/components/CartDrawer";
+// Panier et recherche : chargés à part (ils embarquent les animations),
+// préchargés dès que le navigateur est disponible
+const chargerRecherche = () => import("@/components/SearchOverlay");
+const chargerPanier = () => import("@/components/CartDrawer");
+const SearchOverlay = lazy(chargerRecherche);
+const CartDrawer = lazy(chargerPanier);
 import { useCart } from "@/context/CartContext";
 
 const links = [
@@ -17,6 +21,14 @@ const TopNav = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const { totalItems } = useCart();
+  // Préchargement discret du panier et de la recherche, une fois la page affichée
+  const [prets, setPrets] = useState(false);
+  useEffect(() => {
+    const go = () => Promise.all([chargerRecherche(), chargerPanier()]).then(() => setPrets(true));
+    const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+    if (w.requestIdleCallback) w.requestIdleCallback(go, { timeout: 4000 });
+    else setTimeout(go, 2500);
+  }, []);
 
   return (
     <>
@@ -75,7 +87,7 @@ const TopNav = () => {
             >
               <ShoppingBag className="w-[22px] h-[22px]" strokeWidth={1.8} />
               {totalItems > 0 && (
-                <span className="absolute top-1 right-0.5 min-w-[18px] h-[18px] px-[5px] rounded-full bg-primary text-white text-[11px] font-bold grid place-items-center">
+                <span key={totalItems} className="animate-pop absolute top-1 right-0.5 min-w-[18px] h-[18px] px-[5px] rounded-full bg-primary text-white text-[11px] font-bold grid place-items-center">
                   {totalItems > 9 ? "9+" : totalItems}
                 </span>
               )}
@@ -84,8 +96,10 @@ const TopNav = () => {
         </div>
       </header>
 
-      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      <Suspense fallback={null}>
+        {(searchOpen || prets) && <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />}
+        {(cartOpen || prets) && <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />}
+      </Suspense>
     </>
   );
 };

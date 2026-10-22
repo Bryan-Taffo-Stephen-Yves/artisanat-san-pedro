@@ -1,14 +1,12 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
 import HomePage from "./pages/HomePage";
-import { useLenis } from "./hooks/useLenis";
-import { WelcomeIntro } from "./components/ui/WelcomeIntro";
+import { useLenis, lenisInstance } from "./hooks/useLenis";
 
 // Les pages hors accueil sont chargées à la demande : le premier
 // chargement ne télécharge que le code de la page d'accueil.
@@ -29,22 +27,30 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 const PaymentReturnPage = lazy(() => import("./pages/PaymentReturnPage"));
 const AIChatbot = lazy(() => import("./components/AIChatbot"));
+const WelcomeIntro = lazy(() => import("./components/ui/WelcomeIntro").then((m) => ({ default: m.WelcomeIntro })));
 
-const queryClient = new QueryClient();
+// Les listes changent peu : on les garde 5 minutes au lieu de les recharger
+// à chaque changement de page (gros gain sur les connexions mobiles).
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { staleTime: 5 * 60 * 1000, gcTime: 30 * 60 * 1000, refetchOnWindowFocus: false, retry: 1 },
+  },
+});
 
 const PageFallback = () => <div className="min-h-screen bg-background" />;
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  // Nouvelle page : on repart du haut (sauf lien vers une ancre)
+  useLayoutEffect(() => {
+    if (location.hash) return;
+    lenisInstance?.scrollTo(0, { immediate: true });
+    window.scrollTo(0, 0);
+  }, [location.pathname, location.hash]);
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.18, ease: "easeOut" }}
-      >
+      // Fondu d'entrée en CSS : pas d'attente de la page précédente,
+      // et aucune librairie d'animation à charger au démarrage
+      <div key={location.pathname} className="page-enter">
         <Suspense fallback={<PageFallback />}>
           <Routes location={location}>
             <Route path="/" element={<HomePage />} />
@@ -66,8 +72,7 @@ const AnimatedRoutes = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
-      </motion.div>
-    </AnimatePresence>
+      </div>
   );
 };
 
@@ -75,7 +80,18 @@ const AnimatedRoutes = () => {
 const HomeWelcome = () => {
   const location = useLocation();
   const [onHome] = useState(() => location.pathname === "/");
-  return onHome ? <WelcomeIntro /> : null;
+  const [premiereVisite] = useState(() => {
+    try {
+      return localStorage.getItem("pacte_welcome_seen") !== "1";
+    } catch {
+      return true;
+    }
+  });
+  return onHome && premiereVisite ? (
+    <Suspense fallback={null}>
+      <WelcomeIntro />
+    </Suspense>
+  ) : null;
 };
 
 const App = () => {

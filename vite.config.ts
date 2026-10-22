@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
         // Bibliothèques en fichiers séparés : téléchargés en parallèle et
         // gardés en cache par le navigateur d'une mise en ligne à l'autre.
         manualChunks: {
-          react: ["react", "react-dom", "react-router-dom"],
+          react: ["react", "react-dom", "react/jsx-runtime", "react-router-dom"],
           supabase: ["@supabase/supabase-js"],
           motion: ["framer-motion"],
           query: ["@tanstack/react-query"],

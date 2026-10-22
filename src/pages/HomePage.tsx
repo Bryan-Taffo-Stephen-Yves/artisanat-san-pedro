@@ -7,8 +7,9 @@ import { useProducts } from "@/hooks/useProducts";
 import { useArtisans } from "@/hooks/useArtisans";
 import { useFavorites } from "@/hooks/useFavorites";
 
-import heroDesktop from "@/assets/home/hero-desktop.webp";
-import heroMobile from "@/assets/home/hero-mobile.webp";
+// Bannière servie depuis /public : préchargée dès le HTML (voir index.html)
+const heroDesktop = "/home/hero-desktop.webp";
+const heroMobile = "/home/hero-mobile.webp";
 import imgBotterie from "@/assets/metiers/botterie.webp";
 import imgBijouterie from "@/assets/metiers/bijouterie.webp";
 import imgPeinture from "@/assets/metiers/peinture.webp";
@@ -82,15 +83,15 @@ const HomePage = () => {
       {/* Bannière */}
       <section className="max-w-[1280px] mx-auto px-4 md:px-12 pt-4 md:pt-14 pb-14 md:pb-20 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
         <div className="order-2 lg:order-1">
-          <h1 className="m-0 text-[42px] sm:text-6xl lg:text-[80px] leading-none tracking-[-0.035em] font-[650]">
+          <h1 className="intro-rise m-0 text-[42px] sm:text-6xl lg:text-[80px] leading-none tracking-[-0.035em] font-[650]">
             Les mains de San Pedro, <span className="text-terracotta-bright">chez vous.</span>
           </h1>
-          <p className="mt-4 md:mt-6 text-base md:text-[19px] leading-relaxed text-ink-soft max-w-[32em]">
+          <p className="intro-rise intro-d1 mt-4 md:mt-6 text-base md:text-[19px] leading-relaxed text-ink-soft max-w-[32em]">
             Sandales en cuir, bijoux, toiles, sculptures : {produits.length || "des"} créations faites main par{" "}
             {artisans.length || "les"} artisans du programme PACTE, vendues directement par celles et ceux qui les
             fabriquent.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 mt-6 md:mt-8">
+          <div className="intro-rise intro-d2 flex flex-col sm:flex-row gap-3 mt-6 md:mt-8">
             <Link
               to="/boutique"
               className="h-[54px] px-7 rounded-full bg-primary text-white text-base font-semibold no-underline inline-flex items-center justify-center gap-2.5 hover:bg-[#8E4219] transition-colors"
@@ -104,7 +105,7 @@ const HomePage = () => {
               Rencontrer les artisans
             </Link>
           </div>
-          <div className="mt-6 md:mt-10 flex items-center gap-2 md:gap-2.5 flex-wrap text-[13px] md:text-sm text-ink-soft">
+          <div className="intro-rise intro-d3 mt-6 md:mt-10 flex items-center gap-2 md:gap-2.5 flex-wrap text-[13px] md:text-sm text-ink-soft">
             <span className="hidden md:inline-flex items-center gap-2 font-semibold text-ink">
               <Smartphone className="w-[18px] h-[18px]" strokeWidth={1.8} /> Paiement Mobile Money
             </span>
@@ -124,13 +125,13 @@ const HomePage = () => {
               src={heroMobile}
               alt="Atelier de sculpture à San Pedro"
               {...({ fetchpriority: "high" } as Record<string, string>)}
-              className="w-full h-[400px] lg:h-[620px] object-cover lg:object-[55%_50%] rounded-[20px] lg:rounded-3xl bg-sand"
+              className="intro-image w-full h-[400px] lg:h-[620px] object-cover rounded-[20px] lg:rounded-3xl bg-sand"
             />
           </picture>
           {vedette && (
             <Link
               to={`/boutique/${vedette.slug}`}
-              className="hidden sm:flex absolute left-5 bottom-5 w-[316px] max-w-[calc(100%-40px)] items-center gap-3.5 p-3 rounded-[18px] bg-white text-ink no-underline shadow-[0_14px_36px_rgba(29,23,18,0.22)] hover:-translate-y-0.5 transition-transform"
+              className="intro-rise intro-d4 hidden sm:flex absolute left-5 bottom-5 w-[316px] max-w-[calc(100%-40px)] items-center gap-3.5 p-3 rounded-[18px] bg-white text-ink no-underline shadow-[0_14px_36px_rgba(29,23,18,0.22)] hover:-translate-y-0.5 transition-transform"
             >
               <img src={vedette.image} alt="" className="w-[68px] h-[68px] rounded-xl object-cover shrink-0" />
               <span className="flex flex-col gap-0.5 min-w-0">
@@ -145,19 +146,21 @@ const HomePage = () => {
 
       {/* Métiers */}
       <section id="metiers" className="max-w-[1280px] mx-auto px-4 md:px-12 pb-16 md:pb-[88px]">
-        <div className="flex justify-between items-end gap-4 flex-wrap mb-5 md:mb-7">
+        <div data-san-scroll className="flex justify-between items-end gap-4 flex-wrap mb-5 md:mb-7">
           <h2 className="m-0 text-[26px] md:text-[40px] leading-tight tracking-[-0.025em] font-semibold">Sept savoir-faire</h2>
           <Link to="/boutique" className="text-[15px] font-semibold no-underline inline-flex items-center gap-1.5 hover:underline underline-offset-4">
             Toute la boutique <ArrowRight className="w-4 h-4" strokeWidth={2} />
           </Link>
         </div>
         <div className="flex md:grid md:grid-cols-4 lg:grid-cols-7 gap-3 md:gap-[18px] overflow-x-auto md:overflow-visible -mx-4 px-4 md:mx-0 md:px-0 pb-2 md:pb-0 snap-x">
-          {METIERS.map((m) => {
+          {METIERS.map((m, i) => {
             const n = m.cats.reduce((s, c) => s + (comptes[c] ?? 0), 0);
             return (
               <Link
                 key={m.name}
                 to={`/boutique?cat=${encodeURIComponent(m.filtre)}`}
+                data-san-scroll="zoom"
+                data-san-delay={Math.min(i, 5)}
                 className="group shrink-0 w-32 md:w-auto flex flex-col gap-2 md:gap-2.5 text-ink no-underline snap-start"
               >
                 <span className="block rounded-2xl overflow-hidden bg-sand">
@@ -174,7 +177,7 @@ const HomePage = () => {
       {/* Nouveautés */}
       <section className="bg-white border-y border-ink/[0.06]">
         <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-10 md:py-20">
-          <div className="flex justify-between items-end gap-5 flex-wrap mb-6 md:mb-8">
+          <div data-san-scroll className="flex justify-between items-end gap-5 flex-wrap mb-6 md:mb-8">
             <h2 className="m-0 text-[26px] md:text-[40px] leading-tight tracking-[-0.025em] font-semibold">Nouveautés de l'atelier</h2>
             <div role="group" aria-label="Filtrer par métier" className="flex gap-2 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
               {FILTRES.map((f) => (
@@ -192,8 +195,8 @@ const HomePage = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 md:gap-x-6 gap-y-7 md:gap-y-9">
-            {nouveautes.map((p) => (
-              <BoutiqueProductCard key={p.id} product={p} />
+            {nouveautes.map((p, i) => (
+              <BoutiqueProductCard key={p.id} product={p} reveal={i % 4} />
             ))}
           </div>
           <div className="flex justify-center mt-8 md:mt-12">
@@ -216,6 +219,7 @@ const HomePage = () => {
                 src={artisan.avatar}
                 alt={`Portrait de ${artisan.name}`}
                 loading="lazy"
+                data-san-scroll="zoom"
                 className="w-full aspect-[4/5] max-h-[420px] lg:max-h-[640px] object-cover rounded-[20px] lg:rounded-3xl bg-[#2A211B]"
               />
             ) : (
@@ -223,7 +227,7 @@ const HomePage = () => {
                 {artisan.initials}
               </div>
             )}
-            <div>
+            <div data-san-scroll data-san-delay="2">
               <h2 className="m-0 text-[32px] md:text-5xl leading-[1.02] tracking-[-0.03em] font-[650] text-white">
                 Ce mois-ci, {artisan.name}, {artisan.metier.toLowerCase()}
               </h2>
@@ -267,14 +271,14 @@ const HomePage = () => {
 
       {/* Comment acheter */}
       <section className="max-w-[1280px] mx-auto px-4 md:px-12 py-10 md:py-[88px]">
-        <h2 className="m-0 mb-5 md:mb-10 text-[26px] md:text-[40px] leading-tight tracking-[-0.025em] font-semibold">Acheter en trois temps</h2>
+        <h2 data-san-scroll className="m-0 mb-5 md:mb-10 text-[26px] md:text-[40px] leading-tight tracking-[-0.025em] font-semibold">Acheter en trois temps</h2>
         <ol className="list-none m-0 p-0 grid grid-cols-1 md:grid-cols-3 md:border-t border-ink/[0.12]">
           {[
             { t: "Choisissez une pièce", d: "Chaque création est vérifiée par l'équipe PACTE avant sa mise en ligne." },
             { t: "Payez avec votre téléphone", d: "Wave, Orange Money, MTN MoMo ou Moov Money, avec le numéro de votre compte : pas de carte, pas de formulaire en plus." },
             { t: "Recevez votre commande", d: "L'équipe PACTE vous appelle pour convenir de la livraison." },
           ].map((s, i) => (
-            <li key={s.t} className="flex md:flex-col gap-4 md:gap-2.5 py-4 md:pt-7 md:pr-8 border-t md:border-t-0 border-ink/[0.12] last:border-b md:last:border-b-0">
+            <li key={s.t} data-san-scroll data-san-delay={i + 1} className="flex md:flex-col gap-4 md:gap-2.5 py-4 md:pt-7 md:pr-8 border-t md:border-t-0 border-ink/[0.12] last:border-b md:last:border-b-0">
               <span className="text-[28px] md:text-[44px] font-[650] tracking-[-0.03em] text-terracotta-bright leading-none w-6 md:w-auto shrink-0">{i + 1}</span>
               <span className="flex flex-col gap-1 md:gap-2.5">
                 <span className="text-[17px] md:text-xl font-semibold">{s.t}</span>

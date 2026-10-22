@@ -157,7 +157,7 @@ const BoutiquePage = () => {
           <aside
             id="panneau-filtres"
             aria-label="Filtres"
-            className={`${filtresOuverts ? "block" : "hidden"} lg:block w-full lg:w-[260px] shrink-0 bg-white lg:bg-transparent rounded-2xl lg:rounded-none p-5 lg:p-0 border lg:border-0 border-ink/[0.08]`}
+            className={`${filtresOuverts ? "block animate-panel-in" : "hidden"} lg:block lg:animate-none w-full lg:w-[260px] shrink-0 bg-white lg:bg-transparent rounded-2xl lg:rounded-none p-5 lg:p-0 border lg:border-0 border-ink/[0.08]`}
           >
             {filtres}
           </aside>
@@ -172,7 +172,7 @@ const BoutiquePage = () => {
                   <button
                     key={f.label}
                     onClick={f.retirer}
-                    className="h-9 pl-3.5 pr-3 rounded-full bg-sand text-ink text-sm font-medium inline-flex items-center gap-1.5 hover:bg-[#E9DFD4]"
+                    className="animate-chip-in h-9 pl-3.5 pr-3 rounded-full bg-sand text-ink text-sm font-medium inline-flex items-center gap-1.5 hover:bg-[#E9DFD4]"
                     aria-label={`Retirer le filtre ${f.label}`}
                   >
                     {f.label}
@@ -202,8 +202,8 @@ const BoutiquePage = () => {
             ) : resultats.length > 0 ? (
               <>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-x-3 md:gap-x-6 gap-y-8 md:gap-y-9">
-                  {resultats.slice(0, visibles).map((p) => (
-                    <BoutiqueProductCard key={p.id} product={p} />
+                  {resultats.slice(0, visibles).map((p, i) => (
+                    <BoutiqueProductCard key={p.id} product={p} reveal={i < 4 ? undefined : i % 3} eager={i < 4} />
                   ))}
                 </div>
                 {resultats.length > visibles && (

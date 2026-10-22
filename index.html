@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mains de San Pedro</title>
     <!-- Police chargée dès le HTML (plus rapide qu'un @import dans le CSS) -->
+    <!-- Bannière d'accueil : téléchargée en parallèle du code (page d'accueil seulement) -->
+    <script>
+      if (location.pathname === "/") {
+        var l = document.createElement("link");
+        l.rel = "preload"; l.as = "image"; l.fetchPriority = "high";
+        l.href = matchMedia("(min-width: 1024px)").matches ? "/home/hero-desktop.webp" : "/home/hero-mobile.webp";
+        document.head.appendChild(l);
+      }
+    </script>
+    <!-- Connexion anticipée aux données et aux photos (Supabase) -->
+    <link rel="preconnect" href="https://ghzrzlkezdgnldlpnlbc.supabase.co" crossorigin />
+    <link rel="preconnect" href="https://ghzrzlkezdgnldlpnlbc.supabase.co" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@300..800&display=swap" />
